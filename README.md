@@ -1,60 +1,90 @@
-# Membership Allocation System
+# Role-Based Membership Allocation Application
 
-A comprehensive desktop application for managing church membership allocation and tracking, built with Electron, React, and TypeScript.
+A comprehensive desktop application for managing school membership with role-based access control, built with Electron, React, and TypeScript.
 
 ## 📋 Project Overview
 
-The Membership Allocation System is designed to streamline the management of church members across different units, departments, and service groups. This application provides an intuitive interface for administrators to allocate members, track attendance, manage service assignments, and generate reports.
+The Role-Based Membership Allocation Application is a locally installed desktop system designed for schools requiring accurate record keeping, role control, and structured information access. The system operates completely offline without internet dependency, providing reliable and secure membership management.
+
+**Project Title:** Design and Implementation of a Role-Based Membership Allocation Application
+
+This application provides three distinct access levels:
+
+- **Super Administrators** - Highest level of control with ability to assign/revoke administrative privileges
+- **Administrators** - Moderate privileges to manage member records and operations
+- **Members** - Limited access to view and edit their personal information only
 
 ## ✨ Key Features
 
+### Role-Based Access Control
+
+- **Three-Tier Access System**: Super Administrators, Administrators, and Members
+- **Privilege Management**: Super admins can assign and revoke administrative privileges
+- **Secure Authentication**: Role-based login system with session management
+- **Separate Dashboards**: Custom interfaces for each user role
+
 ### Member Management
 
-- **Member Registration**: Add and manage member profiles with detailed information
-- **Member Directory**: Search, filter, and view member lists
-- **Profile Management**: Update member information, contact details, and status
+- **Member Registration**: Add and manage comprehensive member profiles
+- **Biodata Management**: Members can edit their own biodata without deletion privileges
+- **Dependants Management**: Track and manage member dependants
+- **Membership Status**: Manage active, inactive, dormant, and deceased member records
+- **Member Directory**: Advanced search, filter, and view capabilities
 
-### Allocation System
+### Payment & Subscription Management
 
-- **Unit Allocation**: Assign members to specific church units
-- **Department Assignment**: Allocate members to departments based on skills and interests
-- **Service Group Management**: Organize members into service groups and teams
-- **Dynamic Reallocation**: Transfer members between units and departments
+- **Payment Tracking**: Monitor member payments and financial records
+- **Subscription Management**: Handle membership subscriptions and renewals
+- **Payment History**: Detailed payment records and transaction logs
+- **Financial Reports**: Generate payment-related reports and analytics
 
-### Attendance Tracking
+### Messaging System
 
-- **Service Attendance**: Track member attendance at various church services
-- **Meeting Records**: Monitor attendance at department and unit meetings
-- **Attendance Reports**: Generate attendance statistics and reports
+- **Email Communication**: Send emails to members directly from the system
+- **Birthday Notifications**: Automated birthday greetings to members
+- **Bulk Messaging**: Send announcements to multiple members
+- **Communication Logs**: Track all sent messages and notifications
 
 ### Reporting & Analytics
 
-- **Member Statistics**: View demographics and membership trends
-- **Allocation Reports**: Generate reports on member distribution across units
-- **Attendance Analysis**: Analyze attendance patterns and engagement levels
+- **Member Statistics**: Comprehensive demographics and membership trends
+- **Data Analytics**: Analyze membership patterns and engagement
+- **Custom Reports**: Generate various reports on membership data
 - **Export Functionality**: Export reports to PDF and Excel formats
+- **Visual Dashboards**: Interactive charts and graphs for data visualization
 
-### User Management
+### Administrative Tools
 
-- **Role-Based Access**: Different access levels for administrators and staff
-- **User Authentication**: Secure login and user management
-- **Activity Logs**: Track system activities and changes
+- **Record Management**: Full control over member records for administrators
+- **Status Updates**: Update membership status (active, inactive, dormant, deceased)
+- **Bulk Operations**: Perform operations on multiple records simultaneously
+- **Activity Audit**: Track all system activities and changes
 
 ## 🛠️ Tech Stack
 
 ### Frontend
 
-- **Electron** - Desktop application framework
-- **React 19** - UI library
-- **TypeScript** - Type-safe development
-- **Vite** - Build tool and development server
+- **React** - User interface development
+- **TypeScript** - Type-safe JavaScript development
+- **Tailwind CSS** - Modern utility-first CSS framework for UI styling
+- **Vite** - Fast build tool and development server
+
+### Desktop Framework
+
+- **Electron** - Cross-platform desktop application framework
+- **Electron Builder** - Application packaging and distribution
+
+### Backend & Database
+
+- **Node.js** - JavaScript runtime environment
+- **Local Database** - Embedded database for offline data storage
 
 ### Development Tools
 
-- **Electron Vite** - Electron build tooling
-- **ESLint** - Code linting
+- **Visual Studio Code** - Recommended IDE
+- **ESLint** - Code linting and quality
 - **Prettier** - Code formatting
-- **Electron Builder** - Application packaging and distribution
+- **Git** - Version control system
 
 ## 📦 Project Structure
 
@@ -95,6 +125,7 @@ membership-allocation/
 1. **Clone the repository**
 
    ```bash
+   # Private repository
    git clone https://github.com/thecoder-co/Membership-Project.git
    cd membership-allocation
    ```
@@ -192,72 +223,78 @@ Application build settings are in `electron-builder.yml`. Configure:
 
 ## 📱 Application Features
 
-### Dashboard
+### Super Administrator Dashboard
 
-- Quick overview of membership statistics
-- Recent activities and updates
-- Quick access to common tasks
+- Complete system control and oversight
+- User role assignment and privilege management
+- System-wide analytics and reports
+- Administrator account management
+- Global settings and configurations
 
-### Member Management Module
+### Administrator Dashboard
 
-- Add/Edit/Delete member records
-- Advanced search and filtering
-- Bulk operations support
-- Member status management
+- Member record management (add/edit/delete)
+- Membership status updates
+- Payment and subscription tracking
+- Report generation and analytics
+- Messaging and notification system
+- Dependants management
+- Access to all member records
 
-### Allocation Module
+### Member Dashboard
 
-- Visual allocation interface
-- Drag-and-drop support
-- Bulk allocation tools
-- Allocation history tracking
+- Personal biodata viewing and editing
+- Dependants information management
+- Payment history and subscription status
+- Personal profile updates
+- Limited to own information only (no deletion rights)
 
-### Reports Module
+### Record Management
 
-- Pre-defined report templates
-- Custom report builder
-- Export to multiple formats
-- Scheduled report generation
+- **Active Members**: Current participating members
+- **Inactive Members**: Temporarily inactive member records
+- **Dormant Members**: Long-term inactive members
+- **Deceased Members**: Memorial records management
 
 ## 🔐 Security Features
 
-- Secure authentication system
-- Role-based access control
-- Data encryption at rest
-- Activity audit logging
-- Session management
+- **Role-Based Access Control (RBAC)**: Three-tier permission system
+- **Secure Authentication**: Protected login system for all user roles
+- **Data Encryption**: Local data encryption at rest
+- **Privilege Management**: Controlled administrative privilege assignment
+- **Activity Audit Logging**: Complete tracking of all system activities
+- **Session Management**: Secure session handling and timeout
+- **Access Restrictions**: Members cannot delete records or access others' data
+- **Offline Security**: No internet dependency eliminates online vulnerabilities
 
-## 🌐 Future Enhancements
-
-- [ ] Cloud synchronization
-- [ ] Mobile companion app
-- [ ] SMS and email notifications
-- [ ] Advanced analytics dashboard
-- [ ] Integration with church management systems
-- [ ] Multi-language support
-- [ ] Offline mode with sync
-
-## 📄 License
-
-This project is part of an academic project proposal. Please refer to the project proposal document for more details.
-
-## 👥 Contributors
-
-- **Project ID**: 210805502
-- **Repository**: [thecoder-co/Membership-Project](https://github.com/thecoder-co/Membership-Project)
-
-## 📞 Support
-
-For issues, questions, or contributions, please:
-
-1. Check existing issues on GitHub
-2. Create a new issue with detailed information
-3. Follow the contribution guidelines
 
 ## 📝 Project Status
 
-This project is currently in active development. The client application provides the foundation for the membership allocation system with plans for backend integration and additional features.
+This project is currently in active development. The desktop application is being built to provide:
 
----
+- Reliable offline operation without internet dependency
+- Secure role-based membership management
+- Efficient data organization and administration
+- Practical demonstration of modern web technologies adapted for desktop use
 
-**Built with ❤️ for efficient church membership management**
+## 🎯 Significance
+
+This project demonstrates the practical application of role-based access control in a real-world school administrative system. It provides:
+
+- A reliable membership management solution without internet dependency
+- Enhanced data organization, security, and administration processes
+- A scholarly example of converting modern web technologies into secure offline desktop applications
+- Efficient tools for schools to manage their membership data locally
+
+## 📚 Methodology
+
+The development follows a structured software development approach:
+
+1. Requirements analysis and system specification
+2. System design (database and user interface)
+3. Frontend development using React
+4. Role-based access control and business logic implementation
+5. Electron integration for desktop packaging
+6. Reporting, analytics, and messaging features implementation
+7. Comprehensive testing, debugging, and validation
+8. Complete system documentation
