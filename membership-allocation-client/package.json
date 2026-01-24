@@ -2,9 +2,10 @@
   "name": "membership-allocation-client",
   "version": "1.0.0",
   "description": "An Electron application with React and TypeScript",
+  "license": "MIT",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "Igbayilola David",
+  "homepage": "https://membership-allocation.com",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -25,6 +26,7 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-router": "^1.157.2",
     "electron-updater": "^6.3.9",
     "tailwindcss": "^4.1.18"
   },
@@ -32,6 +34,7 @@
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.1.0",
     "@electron-toolkit/tsconfig": "^2.0.0",
+    "@tanstack/router-plugin": "^1.157.2",
     "@types/node": "^22.19.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
