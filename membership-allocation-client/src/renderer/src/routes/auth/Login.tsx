@@ -1,8 +1,7 @@
-const Login = () => {
+export const Login = () => {
   return (
     <>
-      <h1></h1>
+      <h1 className="text-2xl">Welcome to login page</h1>
     </>
   )
 }
-export default Login

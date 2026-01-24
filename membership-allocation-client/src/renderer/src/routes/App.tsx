@@ -1,12 +1,13 @@
 import { Link, Outlet } from '@tanstack/react-router'
 import { JSX } from 'react'
 
-const App = (): JSX.Element => {
+export const App = (): JSX.Element => {
   return (
     <>
       <div>
         <nav>
           <Link to="/" className='text-black'>Home</Link> |{' '}
+          <Link to="/login" className='text-black'>Login</Link> |{' '}
         </nav>
         <main>
           <Outlet />
@@ -15,4 +16,3 @@ const App = (): JSX.Element => {
     </>
   )
 }
-export default App
