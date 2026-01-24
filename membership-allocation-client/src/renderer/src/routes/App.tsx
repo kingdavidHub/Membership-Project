@@ -1,7 +1,7 @@
 import { Link, Outlet } from '@tanstack/react-router'
 
 
-export const App = (): JSX.Element => {
+export const App = () => {
   return (
     <div>
       <nav>
