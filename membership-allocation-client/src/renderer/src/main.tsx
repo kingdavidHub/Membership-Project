@@ -14,6 +14,7 @@ import { routeTree } from './routeTree.gen'
 // Styles
 import './styles/index.css'
 
+// * Create a Query Client instance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -65,7 +66,7 @@ const queryClient = new QueryClient({
   })
 })
 
-// Create a new router instance
+// * Create a new router instance
 const router = createRouter({
   routeTree,
   context: { queryClient },
@@ -80,16 +81,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
-// Render the app
+// * Render the application
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
+      {/* //* TanstackQuery: server state management */}
       <QueryClientProvider client={queryClient}>
+        {/* //* Theme: (dark/light mode) */}
         <ThemeProvider>
+          {/* //* Font: (typography) */}
           <FontProvider>
+            {/* //* Direction: (ltr/rtl) */}
             <DirectionProvider>
+              {/* //* Router: (navigation) */}
               <RouterProvider router={router} />
             </DirectionProvider>
           </FontProvider>

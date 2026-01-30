@@ -1,12 +1,18 @@
 import { create } from 'zustand'
 import { getCookie, setCookie, removeCookie } from '@/lib/cookies'
 
-const ACCESS_TOKEN = 'thisisjustarandomstring'
+const ACCESS_TOKEN = 'membership_access_token'
 
-interface AuthUser {
+export enum UserRole {
+  SUPER_ADMIN = 'super_admin',
+  ADMIN = 'admin',
+  USER = 'user'
+}
+
+export interface AuthUser {
   accountNo: string
   email: string
-  role: string[]
+  role: UserRole
   exp: number
 }
 
