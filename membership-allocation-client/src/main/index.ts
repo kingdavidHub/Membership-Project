@@ -1,7 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, session } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 function createWindow(): void {
   // Create the browser window.
@@ -65,6 +67,20 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  // * Only clearing cookies on dev mode to prevent issues with stale cookies during development
+  if (isDev) {
+    session.defaultSession
+      .clearStorageData()
+      .then(() => {
+        if (process.platform !== 'darwin') {
+          app.quit()
+        }
+      })
+      .catch((error) => {
+        console.error('Error clearing storage data:', error)
+      })
+  }
+
   if (process.platform !== 'darwin') {
     app.quit()
   }
