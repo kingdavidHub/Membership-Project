@@ -22,7 +22,6 @@ import {
   Command,
   GalleryVerticalEnd
 } from 'lucide-react'
-import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
@@ -77,7 +76,7 @@ export const sidebarData: SidebarData = {
           title: 'Users',
           url: '/users',
           icon: Users
-        },
+        }
         // {
         //   title: 'Secured by Clerk',
         //   icon: ClerkLogo,
