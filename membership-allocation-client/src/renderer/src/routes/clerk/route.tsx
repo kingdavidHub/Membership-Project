@@ -40,7 +40,7 @@ function MissingClerkPubKey() {
   const codeBlock = 'bg-foreground/10 rounded-sm py-0.5 px-1 text-xs text-foreground font-bold'
   return (
     <AuthenticatedLayout>
-      <div className="bg-backgroundh-16 flex justify-between p-4">
+      <div className="bg-background h-16 flex justify-between p-4">
         <SidebarTrigger variant="outline" className="scale-125 sm:scale-100" />
         <div className="space-x-4">
           <ThemeSwitch />
@@ -68,6 +68,7 @@ function MissingClerkPubKey() {
                 <a
                   href="https://go.clerk.com/GttUAaK"
                   target="_blank"
+                  rel="noreferrer"
                   className="underline decoration-dashed underline-offset-4 hover:decoration-solid"
                 >
                   Clerk
@@ -114,11 +115,11 @@ function MissingClerkPubKey() {
                 <code className={codeBlock}>ClerkProvider</code> at the root route.
               </p>
               <p>
-                However, if you don't plan to use Clerk, you can safely remove this directory and
-                related dependency_ <code className={codeBlock}>@clerk/clerk-react</code>.
+                However, if you don&apos;t plan to use Clerk, you can safely remove this directory
+                and related dependency <code className={codeBlock}>@clerk/clerk-react</code>.
               </p>
               <p className="mt-2 text-sm">
-                This setup is modular by design and won't affect the rest of the application.
+                This setup is modular by design and won&apos;t affect the rest of the application.
               </p>
             </AlertDescription>
           </Alert>
