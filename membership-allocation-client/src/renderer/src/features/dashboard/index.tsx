@@ -12,6 +12,7 @@ import { Analytics } from './components/analytics'
 import { Overview } from './components/overview'
 import { RecentSales } from './components/recent-sales'
 import { useAuthStore, UserRole } from '@/stores/auth-store'
+import { IsUserOnline } from '@/components/is-user-online'
 
 export function Dashboard() {
   const user = useAuthStore((state) => state.auth.user)
@@ -24,6 +25,7 @@ export function Dashboard() {
           <Search />
           <ThemeSwitch />
           <ConfigDrawer />
+          <IsUserOnline />
           <ProfileDropdown />
         </div>
       </Header>
