@@ -23,10 +23,10 @@ const authRouter = require('./routes/authRoutes');
 // Start express app
 const app = express();
 
-app.enable('trust proxy');
+// app.enable('trust proxy');
 
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
@@ -87,8 +87,8 @@ app.use((req, res, next) => {
 // 3) ROUTES
 // app.use('/', viewRouter);
 // app.use('/api/v1/tours', tourRouter);
-app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
 // app.use('/api/v1/reviews', reviewRouter);
 // app.use('/api/v1/bookings', bookingRouter);
 

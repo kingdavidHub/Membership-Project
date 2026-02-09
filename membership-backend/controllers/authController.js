@@ -29,12 +29,13 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.createUser = catchAsync(async (req, res, next) => {
-  const { email, name } = req.body.email;
+  const email = req.body.email;
+  const name = req.body.name;
   const password = generateTempPassword();
   const user = await User.create({
-    name: name,
-    email: email,
-    password: password
+    name,
+    email,
+    password
   });
 
   await new Email().onCreateUser(email, name, password);
@@ -96,8 +97,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -136,7 +135,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 // Protects roles endpoints
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    // roles ['admin', 'super-admin']. role='user'
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError('You do not have permission to perform this action', 403)

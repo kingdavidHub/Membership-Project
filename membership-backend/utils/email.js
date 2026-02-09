@@ -75,7 +75,7 @@ module.exports = class Email {
       Messages: [
         {
           From: {
-            Email: 'membership@idunnuoluwa.online',
+            Email: 'qarrfutureme@idunnuoluwa.online',
             Name: 'Membership'
           },
           To: [
