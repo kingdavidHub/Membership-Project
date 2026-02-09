@@ -64,9 +64,9 @@ module.exports = class Email {
     const html = pug.renderFile(
       `${__dirname}/emailTemplates/userCreationConfirmation.pug`,
       {
-        name,
-        email,
-        password,
+        name: name,
+        email: email,
+        password: password,
         url: 'google.com'
       }
     );

@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema({
   },
   member: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Member'
+    ref: 'Member',
+    default: null
   },
   enforcePasswordReset: Boolean,
   passwordChangedAt: Date,

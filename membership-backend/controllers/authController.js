@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
@@ -5,10 +6,7 @@ const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const Email = require('./../utils/email');
-
-const generateTempPassword = () => {
-  return crypto.randomBytes(9).toString('base64');
-};
+const { generateTempPassword } = require('../utils/generateTempPassword');
 
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -35,10 +33,9 @@ exports.createUser = catchAsync(async (req, res, next) => {
   const user = await User.create({
     name,
     email,
-    password
+    password,
+    enforcePasswordReset: true
   });
-
-  await new Email().onCreateUser(email, name, password);
 
   res.status(201).json({
     status: 'success',

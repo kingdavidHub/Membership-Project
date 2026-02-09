@@ -1,7 +1,10 @@
 const User = require('./../models/userModel');
+const Member = require('./../models/memberModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
+const Email = require('../utils/email');
+const { generateTempPassword } = require('../utils/generateTempPassword');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -41,6 +44,78 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     status: 'success',
     data: {
       user: updatedUser
+    }
+  });
+});
+
+exports.addMemberDetailsAdmin = catchAsync(async (req, res, next) => {
+  const oldUser = await User.findById(req.params.id);
+
+  if (oldUser.member) {
+    return next(new AppError('User already has a member', 400));
+  }
+
+  const body = filterObj(
+    req.body,
+    'firstName',
+    'lastName',
+    'dob',
+    'membershipId',
+    'entryYear'
+  );
+
+  const member = await Member.create({
+    user: req.params.id,
+    ...body
+  });
+
+  const password = generateTempPassword();
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      member: member.id,
+      enforcePasswordReset: true
+    },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+
+  const user = await User.findById(req.params.id);
+  user.password = password;
+  await user.save();
+
+  // await new Email().onCreateUser(user.email, password, user.firstName);
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: updatedUser
+    }
+  });
+});
+
+exports.changeUserRole = catchAsync(async (req, res, next) => {
+  const role = req.body.role;
+  if (role === 'super-admin') {
+    return next(new AppError(`You can't create new super admins`, 400));
+  }
+  const allowedRoles = ['admin', 'member'];
+  if (!allowedRoles.includes(role)) {
+    return next(new AppError(`You can only choose admin or member`, 400));
+  }
+  const user = await User.findByIdAndUpdate(req.body.id, {
+    role: req.body.role
+  });
+
+  console.log('passed');
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user
     }
   });
 });

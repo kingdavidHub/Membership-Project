@@ -14,9 +14,9 @@ const memberSchema = new mongoose.Schema({
     type: String,
     required: [true, 'User must have a last name']
   },
-  age: {
-    type: Number,
-    required: [true, 'User must have an age']
+  dob: {
+    type: Date,
+    required: [true, 'User must have a date of birth']
   },
   membershipId: {
     type: String,
@@ -27,7 +27,7 @@ const memberSchema = new mongoose.Schema({
     required: [true, 'User must have an entry year']
   },
   paymentStatus: {
-    tyoe: String,
+    type: String,
     enum: ['paid', 'unpaid', 'pending'],
     default: 'pending'
   },

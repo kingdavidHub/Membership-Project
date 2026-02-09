@@ -12,7 +12,7 @@ router.patch('/updateMyPassword', authController.updatePassword);
 
 router.get('/me', userController.getMe, userController.getUser);
 
-router.use(authController.restrictTo('admin'));
+router.use(authController.restrictTo('admin', 'super-admin'));
 
 router
   .route('/')
@@ -20,9 +20,14 @@ router
   .post(userController.createUser);
 
 router
-  .route('/:id')
+  .route('/admin/:id')
   .get(userController.getUser)
-  .patch(userController.updateUser)
+  .patch(userController.addMemberDetailsAdmin)
   .delete(userController.deleteUser);
+
+//  router.patch('/admin/member/:memberId', userController.);
+
+router.use(authController.restrictTo('super-admin'));
+router.post('/admin/change-user-role', userController.changeUserRole);
 
 module.exports = router;
