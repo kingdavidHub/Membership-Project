@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Member'
   },
+  enforcePasswordReset: Boolean,
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date

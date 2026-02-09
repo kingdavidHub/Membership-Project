@@ -6,6 +6,10 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const Email = require('./../utils/email');
 
+const generateTempPassword = () => {
+  return crypto.randomBytes(9).toString('base64');
+};
+
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
@@ -25,15 +29,22 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.createUser = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
+  const { email, name } = req.body.email;
+  const password = generateTempPassword();
+  const user = await User.create({
+    name: name,
+    email: email,
+    password: password
   });
 
-  // await new Email(newUser, url).sendWelcome();
+  await new Email().onCreateUser(email, name, password);
 
-  createSendToken(newUser, 201, req, res);
+  res.status(201).json({
+    status: 'success',
+    data: {
+      user
+    }
+  });
 });
 
 exports.seedSuperAdmin = async () => {
