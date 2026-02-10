@@ -4,16 +4,18 @@ import { getCookie, setCookie, removeCookie } from '@/lib/cookies'
 const ACCESS_TOKEN = 'membership_access_token'
 
 export enum UserRole {
-  SUPER_ADMIN = 'super_admin',
+  SUPER_ADMIN = 'super-admin',
   ADMIN = 'admin',
   USER = 'user'
 }
 
 export interface AuthUser {
-  accountNo: string
+  _id: string
+  name: string
   email: string
   role: UserRole
-  exp: number
+  active?: boolean
+  exp?: number
 }
 
 interface AuthState {

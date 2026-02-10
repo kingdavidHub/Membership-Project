@@ -56,9 +56,11 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
 
         // Mock successful authentication with expiry computed at success time
         const mockUser: AuthUser = {
-          accountNo: 'ACC001',
+          _id: 'mock-id',
+          name: 'Mock User',
           email: data.email,
           role: UserRole.SUPER_ADMIN,
+          active: true,
           exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours from now
         }
 

@@ -93,6 +93,9 @@ app.on('window-all-closed', () => {
       .finally(() => {
         if (process.platform !== 'darwin') app.quit()
       })
+  } else {
+    // In production, just quit the app without worrying about cookies
+    if (process.platform !== 'darwin') app.quit()
   }
 })
 
