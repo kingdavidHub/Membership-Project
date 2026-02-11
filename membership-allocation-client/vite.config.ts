@@ -21,6 +21,9 @@ export default defineConfig({
     tailwindcss()
   ],
   server: {
-    port: 3000
+    port: 3000,
+    proxy: {
+      '/api': 'https://membership-backend-production-f853.up.railway.app/api/v1'
+    }
   }
 })

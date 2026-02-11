@@ -1,10 +1,12 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { toast } from 'sonner'
 import { getCookie } from '@/lib/cookies'
+import { env } from '@/config/env'
 
 // Create axios instance with base configuration
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+  baseURL: env.API_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   },
