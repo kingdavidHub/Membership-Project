@@ -29,22 +29,46 @@ const app = express();
 // app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
-// Implement CORS
-app.use(cors());
-// Access-Control-Allow-Origin *
-// api.natours.com, front-end natours.com
-// app.use(cors({
-//   origin: 'https://www.natours.com'
-// }))
+// Implement CORS - must be before helmet
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (Electron, mobile apps, curl, Postman)
+    // Electron can send origin as null, undefined, or file://
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('file://') ||
+      origin.startsWith('http://localhost') ||
+      origin.startsWith('http://127.0.0.1')
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+  ],
+};
 
-app.options(/.*/, cors());
-// app.options('/api/v1/tours/:id', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable preflight for all routes
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Set security HTTP headers
-app.use(helmet());
+// Set security HTTP headers - configure to not interfere with CORS
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginOpenerPolicy: { policy: 'unsafe-none' },
+  }),
+);
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
@@ -55,7 +79,7 @@ if (process.env.NODE_ENV === 'development') {
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!'
+  message: 'Too many requests from this IP, please try again in an hour!',
 });
 app.use('/api', limiter);
 
@@ -72,9 +96,9 @@ app.use(
       'ratingsAverage',
       'maxGroupSize',
       'difficulty',
-      'price'
-    ]
-  })
+      'price',
+    ],
+  }),
 );
 
 // Test middleware
