@@ -6,6 +6,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 export default defineConfig({
   root: 'src/renderer',
+  envDir: process.cwd(),
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src/renderer/src'),
@@ -21,9 +22,6 @@ export default defineConfig({
     tailwindcss()
   ],
   server: {
-    port: 3000,
-    proxy: {
-      '/api': 'https://membership-backend-production-f853.up.railway.app/api/v1'
-    }
+    port: 3000
   }
 })

@@ -3,20 +3,12 @@
  * Centralized access to environment variables for easier debugging and type safety
  */
 
-interface ImportMetaEnv {
-  readonly API_URL: string
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
-
 /**
  * Environment configuration object
  * All environment variables are accessed through this object
  */
 export const env = {
-  API_URL: '/api'
+  API_URL: import.meta.env.VITE_API_URL
 } as const
 
 /**
@@ -24,7 +16,7 @@ export const env = {
  * Call this function at app startup for early error detection
  */
 export const validateEnv = (): void => {
-  const requiredVars: (keyof ImportMetaEnv)[] = ['API_URL']
+  const requiredVars: (keyof ImportMetaEnv)[] = ['VITE_API_URL']
 
   const missing = requiredVars.filter((key) => !import.meta.env[key])
 

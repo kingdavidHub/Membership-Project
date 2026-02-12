@@ -53,7 +53,6 @@
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.2.4",
     "electron-updater": "^6.3.9",
     "framer-motion": "^12.29.2",
     "input-otp": "^1.4.2",

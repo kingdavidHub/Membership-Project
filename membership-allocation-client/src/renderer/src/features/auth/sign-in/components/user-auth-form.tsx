@@ -72,7 +72,45 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
     }
   })
 
+  /**
+   * Mock login function - kept for testing/development purposes
+   * To use: replace onSubmit body with mockLogin(data)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function mockLogin(data: z.infer<typeof formSchema>) {
+    setIsLoading(true)
+
+    toast.promise(sleep(2000), {
+      loading: 'Signing in...',
+      success: () => {
+        setIsLoading(false)
+
+        // Mock successful authentication with expiry computed at success time
+        const mockUser: AuthUser = {
+          _id: 'mock-id',
+          name: 'Mock User',
+          email: data.email,
+          role: UserRole.SUPER_ADMIN,
+          active: true,
+          exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours from now
+        }
+
+        // Set user and access token
+        auth.setUser(mockUser)
+        auth.setAccessToken('mock-access-token')
+
+        // Redirect to the stored location or default to dashboard
+        const targetPath = redirectTo || '/'
+        navigate({ to: targetPath, replace: true })
+
+        return `Welcome back, ${data.email}!`
+      },
+      error: 'Error'
+    })
+  }
+
   function onSubmit(data: z.infer<typeof formSchema>) {
+    setIsLoading(true)
     loginMutation.mutate(data)
   }
 

@@ -12,7 +12,6 @@ import { UserAuthForm } from './components/user-auth-form'
 
 export function SignIn() {
   const { redirect } = useSearch({ from: '/(auth)/sign-in' })
-
   return (
     <AuthLayout>
       <Card className="gap-4">
