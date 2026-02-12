@@ -16,8 +16,7 @@ api/
 └── services/             # API service modules
     ├── index.ts          # Barrel export
     ├── auth.service.ts   # Authentication endpoints
-    ├── users.service.ts  # User management endpoints
-    └── tasks.service.ts  # Task management endpoints
+    └── users.service.ts  # User management endpoints
 ```
 
 ## Usage
