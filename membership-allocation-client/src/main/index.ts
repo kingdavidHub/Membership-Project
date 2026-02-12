@@ -67,22 +67,35 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  // * Only clearing cookies on dev mode to prevent issues with stale cookies during development
   if (isDev) {
-    session.defaultSession
-      .clearStorageData()
-      .then(() => {
-        if (process.platform !== 'darwin') {
-          app.quit()
-        }
-      })
-      .catch((error) => {
-        console.error('Error clearing storage data:', error)
-      })
-  }
+    const ses = session.defaultSession
 
-  if (process.platform !== 'darwin') {
-    app.quit()
+    // 1. First, find the cookie to make sure you have the right details
+    ses.cookies
+      .get({ name: 'membership_access_token' })
+      .then((cookies) => {
+        cookies.forEach((cookie) => {
+          // 2. Use the cookie's own domain/path to construct the removal URL
+          const protocol = cookie.secure ? 'https' : 'http'
+          const domain = cookie.domain
+            ? cookie.domain.startsWith('.')
+              ? cookie.domain.substring(1)
+              : cookie.domain
+            : 'localhost'
+          const removalUrl = `${protocol}://${domain}${cookie.path}`
+
+          ses.cookies
+            .remove(removalUrl, cookie.name)
+            .then(() => console.log(`Cleared: ${cookie.name}`))
+            .catch((e) => console.error(e))
+        })
+      })
+      .finally(() => {
+        if (process.platform !== 'darwin') app.quit()
+      })
+  } else {
+    // In production, just quit the app without worrying about cookies
+    if (process.platform !== 'darwin') app.quit()
   }
 })
 

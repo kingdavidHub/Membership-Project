@@ -18,6 +18,9 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import { useMutation } from '@tanstack/react-query'
+import { authService } from '@/api/services'
+import { debugEnv } from '@/config/env'
 
 const formSchema = z.object({
   email: z.email({
@@ -38,6 +41,8 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
   const navigate = useNavigate()
   const { auth } = useAuthStore()
 
+  debugEnv() // Log environment variables for debugging
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,7 +51,33 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
     }
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  const loginMutation = useMutation({
+    mutationFn: authService.login,
+    onSuccess: (data) => {
+      setIsLoading(false)
+
+      // Set user and access token
+      auth.setUser(data.data.user)
+      auth.setAccessToken(data.token)
+
+      // Redirect to the stored location or default to dashboard
+      const targetPath = redirectTo || '/'
+      navigate({ to: targetPath, replace: true })
+
+      toast.success(`Welcome back, ${data.data.user.name}!`)
+    },
+    onError: () => {
+      setIsLoading(false)
+      toast.error('Login failed. Please check your credentials and try again.')
+    }
+  })
+
+  /**
+   * Mock login function - kept for testing/development purposes
+   * To use: replace onSubmit body with mockLogin(data)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function mockLogin(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
 
     toast.promise(sleep(2000), {
@@ -56,9 +87,11 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
 
         // Mock successful authentication with expiry computed at success time
         const mockUser: AuthUser = {
-          accountNo: 'ACC001',
+          _id: 'mock-id',
+          name: 'Mock User',
           email: data.email,
           role: UserRole.SUPER_ADMIN,
+          active: true,
           exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours from now
         }
 
@@ -74,6 +107,11 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
       },
       error: 'Error'
     })
+  }
+
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    setIsLoading(true)
+    loginMutation.mutate(data)
   }
 
   return (
