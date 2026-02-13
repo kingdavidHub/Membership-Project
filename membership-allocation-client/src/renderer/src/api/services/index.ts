@@ -11,6 +11,25 @@ export { usersService } from './users.service'
 
 // Re-export common types for convenience
 export type * from '../types'
-export type * from '../types/auth.types'
-export type * from '../types/user.types'
-export type * from '../types/task.types'
+export type {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  UserProfile,
+  UpdateProfileRequest
+} from '../types/auth.types'
+export type {
+  User,
+  Member,
+  PaymentStatus,
+  MemberStatus,
+  CreateUserRequest,
+  UpdateUserRequest,
+  ChangeUserRoleRequest,
+  ChangePasswordRequest
+} from '../types/user.types'

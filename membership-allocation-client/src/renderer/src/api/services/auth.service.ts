@@ -12,7 +12,6 @@ import type {
   UserProfile,
   UpdateProfileRequest
 } from '../types/auth.types'
-import type { ApiResponse } from '../types'
 
 /**
  * Authentication Service

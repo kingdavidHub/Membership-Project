@@ -16,9 +16,7 @@ import {
   UserX,
   Users,
   ShieldCheck,
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd
+  Command
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 

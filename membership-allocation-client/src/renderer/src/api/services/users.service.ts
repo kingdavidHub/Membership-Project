@@ -8,7 +8,7 @@ import type {
   ChangePasswordRequest,
   UserProfile
 } from '../types/user.types'
-import type { ApiResponse, PaginatedResponse, PaginationParams } from '../types'
+import type { PaginatedResponse, PaginationParams } from '../types'
 
 /**
  * Users Service
