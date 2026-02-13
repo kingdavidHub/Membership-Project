@@ -47,74 +47,70 @@ export const authService = {
    * Refresh access token
    */
   refreshToken: async (refreshToken: string): Promise<{ accessToken: string }> => {
-    const { data } = await apiClient.post<ApiResponse<{ accessToken: string }>>(
+    const { data } = await apiClient.post<{ accessToken: string }>(
       API_ENDPOINTS.AUTH.REFRESH_TOKEN,
       { refreshToken }
     )
-    return data.data
+    return data
   },
 
   /**
    * Request password reset
    */
   forgotPassword: async (email: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
-    const { data } = await apiClient.post<ApiResponse<ForgotPasswordResponse>>(
+    const { data } = await apiClient.post<ForgotPasswordResponse>(
       API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
       email
     )
-    return data.data
+    return data
   },
 
   /**
    * Reset password with token
    */
   resetPassword: async (resetData: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
-    const { data } = await apiClient.post<ApiResponse<ResetPasswordResponse>>(
+    const { data } = await apiClient.post<ResetPasswordResponse>(
       API_ENDPOINTS.AUTH.RESET_PASSWORD,
       resetData
     )
-    return data.data
+    return data
   },
 
   /**
    * Verify email address
    */
   verifyEmail: async (token: string): Promise<{ message: string }> => {
-    const { data } = await apiClient.post<ApiResponse<{ message: string }>>(
-      API_ENDPOINTS.AUTH.VERIFY_EMAIL,
-      { token }
-    )
-    return data.data
+    const { data } = await apiClient.post<{ message: string }>(API_ENDPOINTS.AUTH.VERIFY_EMAIL, {
+      token
+    })
+    return data
   },
 
   /**
    * Resend verification email
    */
   resendVerification: async (email: string): Promise<{ message: string }> => {
-    const { data } = await apiClient.post<ApiResponse<{ message: string }>>(
+    const { data } = await apiClient.post<{ message: string }>(
       API_ENDPOINTS.AUTH.RESEND_VERIFICATION,
       { email }
     )
-    return data.data
+    return data
   },
 
   /**
    * Get current user profile
    */
   getProfile: async (): Promise<UserProfile> => {
-    const { data } = await apiClient.get<ApiResponse<UserProfile>>(API_ENDPOINTS.AUTH.PROFILE)
-    return data.data
+    const { data } = await apiClient.get<UserProfile>(API_ENDPOINTS.AUTH.PROFILE)
+    return data
   },
 
   /**
    * Update current user profile
    */
   updateProfile: async (profileData: UpdateProfileRequest): Promise<UserProfile> => {
-    const { data } = await apiClient.patch<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.AUTH.PROFILE,
-      profileData
-    )
-    return data.data
+    const { data } = await apiClient.patch<UserProfile>(API_ENDPOINTS.AUTH.PROFILE, profileData)
+    return data
   }
 }
 

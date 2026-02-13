@@ -31,19 +31,18 @@ export const sidebarData: SidebarData = {
   teams: [
     {
       name: 'Membership Allocation',
-      logo: Command,
-      plan: 'Vite + ShadcnUI'
-    },
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise'
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup'
+      logo: Command
     }
+    // {
+    //   name: 'Acme Inc',
+    //   logo: GalleryVerticalEnd,
+    //   plan: 'Enterprise'
+    // },
+    // {
+    //   name: 'Acme Corp.',
+    //   logo: AudioWaveform,
+    //   plan: 'Startup'
+    // }
   ],
   navGroups: [
     {

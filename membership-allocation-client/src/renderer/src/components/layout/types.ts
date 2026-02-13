@@ -3,7 +3,7 @@ import { type LinkProps } from '@tanstack/react-router'
 type Team = {
   name: string
   logo: React.ElementType
-  plan: string
+  plan?: string
 }
 
 type BaseNavItem = {

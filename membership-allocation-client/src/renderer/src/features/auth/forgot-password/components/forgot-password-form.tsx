@@ -16,6 +16,8 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useMutation } from '@tanstack/react-query'
+import { authService } from '@/api/services'
 
 const formSchema = z.object({
   email: z.email({
@@ -32,19 +34,27 @@ export function ForgotPasswordForm({ className, ...props }: React.HTMLAttributes
     defaultValues: { email: '' }
   })
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authService.forgotPassword,
+    onSuccess: (data) => {
+      setIsLoading(false)
+      // navigate({ to: '/otp' })
+      // toast.success('OTP sent to your email')
+
+      navigate({ to: '/sign-in' })
+      toast.success(data.message || `Temporary password sent to ${form.getValues('email')}`)
+      form.reset()
+    },
+    onError: (data) => {
+      setIsLoading(false)
+      toast.error(data.message || 'Failed to send Temporary password. Please try again.')
+      // toast.error('Failed to send Temporary password. Please try again.')
+    }
+  })
+
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
-
-    toast.promise(sleep(2000), {
-      loading: 'Sending email...',
-      success: () => {
-        setIsLoading(false)
-        form.reset()
-        navigate({ to: '/otp' })
-        return `Email sent to ${data.email}`
-      },
-      error: 'Error'
-    })
+    forgotPasswordMutation.mutate(data)
   }
 
   return (

@@ -23,6 +23,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { UserProfile } from '@/api/types/user.types'
 
 const profileFormSchema = z.object({
   username: z
@@ -50,7 +51,8 @@ const defaultValues: Partial<ProfileFormValues> = {
   urls: [{ value: 'https://shadcn.com' }, { value: 'http://twitter.com/shadcn' }]
 }
 
-export function ProfileForm() {
+export function ProfileForm({ userProfile }: { userProfile: UserProfile }) {
+  console.log('User Profile:', userProfile.name) // Log the user profile data to verify it's being passed correctly
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -70,9 +72,9 @@ export function ProfileForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder={userProfile._id} {...field} disabled />
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a pseudonym. You can

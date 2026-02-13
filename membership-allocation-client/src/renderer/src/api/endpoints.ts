@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
     REFRESH_TOKEN: '/auth/refresh-token',
-    FORGOT_PASSWORD: '/auth/forgot-password',
+    FORGOT_PASSWORD: '/auth/forgotPassword',
     RESET_PASSWORD: '/auth/reset-password',
     VERIFY_EMAIL: '/auth/verify-email',
     RESEND_VERIFICATION: '/auth/resend-verification',
@@ -24,7 +24,8 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `/users/${id}`,
     DELETE: (id: string) => `/users/${id}`,
     CHANGE_ROLE: (id: string) => `/users/${id}/role`,
-    CHANGE_PASSWORD: (id: string) => `/users/${id}/change-password`
+    CHANGE_PASSWORD: (id: string) => `/users/${id}/change-password`,
+    CURRENT_PROFILE: '/users/me'
   }
 } as const
 

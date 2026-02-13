@@ -5,7 +5,8 @@ import type {
   CreateUserRequest,
   UpdateUserRequest,
   ChangeUserRoleRequest,
-  ChangePasswordRequest
+  ChangePasswordRequest,
+  UserProfile
 } from '../types/user.types'
 import type { ApiResponse, PaginatedResponse, PaginationParams } from '../types'
 
@@ -19,38 +20,34 @@ export const usersService = {
    * Get paginated list of users
    */
   getUsers: async (params?: PaginationParams): Promise<PaginatedResponse<User>> => {
-    const { data } = await apiClient.get<ApiResponse<PaginatedResponse<User>>>(
-      API_ENDPOINTS.USERS.LIST,
-      { params }
-    )
-    return data.data
+    const { data } = await apiClient.get<PaginatedResponse<User>>(API_ENDPOINTS.USERS.LIST, {
+      params
+    })
+    return data
   },
 
   /**
    * Get user by ID
    */
   getUserById: async (id: string): Promise<User> => {
-    const { data } = await apiClient.get<ApiResponse<User>>(API_ENDPOINTS.USERS.DETAILS(id))
-    return data.data
+    const { data } = await apiClient.get<User>(API_ENDPOINTS.USERS.DETAILS(id))
+    return data
   },
 
   /**
    * Create new user
    */
   createUser: async (userData: CreateUserRequest): Promise<User> => {
-    const { data } = await apiClient.post<ApiResponse<User>>(API_ENDPOINTS.USERS.LIST, userData)
-    return data.data
+    const { data } = await apiClient.post<User>(API_ENDPOINTS.USERS.LIST, userData)
+    return data
   },
 
   /**
    * Update user
    */
   updateUser: async (id: string, userData: UpdateUserRequest): Promise<User> => {
-    const { data } = await apiClient.patch<ApiResponse<User>>(
-      API_ENDPOINTS.USERS.UPDATE(id),
-      userData
-    )
-    return data.data
+    const { data } = await apiClient.patch<User>(API_ENDPOINTS.USERS.UPDATE(id), userData)
+    return data
   },
 
   /**
@@ -64,11 +61,8 @@ export const usersService = {
    * Change user role
    */
   changeUserRole: async (id: string, roleData: ChangeUserRoleRequest): Promise<User> => {
-    const { data } = await apiClient.patch<ApiResponse<User>>(
-      API_ENDPOINTS.USERS.CHANGE_ROLE(id),
-      roleData
-    )
-    return data.data
+    const { data } = await apiClient.patch<User>(API_ENDPOINTS.USERS.CHANGE_ROLE(id), roleData)
+    return data
   },
 
   /**
@@ -76,6 +70,11 @@ export const usersService = {
    */
   changePassword: async (id: string, passwordData: ChangePasswordRequest): Promise<void> => {
     await apiClient.post(API_ENDPOINTS.USERS.CHANGE_PASSWORD(id), passwordData)
+  },
+
+  getCurrentUserProfile: async (): Promise<UserProfile> => {
+    const { data } = await apiClient.get<UserProfile>(API_ENDPOINTS.USERS.CURRENT_PROFILE)
+    return data
   }
 }
 
