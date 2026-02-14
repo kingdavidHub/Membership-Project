@@ -55,7 +55,7 @@ export function Chats() {
     return acc
   }, {})
 
-  const users = conversations.map(({ messages, ...user }) => user)
+  const users = conversations.map(({ messages: _messages, ...user }) => user)
 
   return (
     <>

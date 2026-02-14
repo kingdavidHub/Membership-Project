@@ -16,9 +16,8 @@ import {
   UserX,
   Users,
   ShieldCheck,
-  AudioWaveform,
   Command,
-  GalleryVerticalEnd
+  Flame
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 
@@ -31,19 +30,18 @@ export const sidebarData: SidebarData = {
   teams: [
     {
       name: 'Membership Allocation',
-      logo: Command,
-      plan: 'Vite + ShadcnUI'
-    },
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise'
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup'
+      logo: Command
     }
+    // {
+    //   name: 'Acme Inc',
+    //   logo: GalleryVerticalEnd,
+    //   plan: 'Enterprise'
+    // },
+    // {
+    //   name: 'Acme Corp.',
+    //   logo: AudioWaveform,
+    //   plan: 'Startup'
+    // }
   ],
   navGroups: [
     {
@@ -74,6 +72,11 @@ export const sidebarData: SidebarData = {
           title: 'Users',
           url: '/users',
           icon: Users
+        },
+        {
+          title: 'Members',
+          url: '/members',
+          icon: Flame
         }
         // {
         //   title: 'Secured by Clerk',

@@ -36,9 +36,9 @@ export const usersColumns: ColumnDef<User>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'username',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Username" />,
-    cell: ({ row }) => <LongText className="max-w-36 ps-3">{row.getValue('username')}</LongText>,
+    accessorKey: 'name',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    cell: ({ row }) => <LongText className="max-w-36 ps-3">{row.getValue('name')}</LongText>,
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
@@ -48,16 +48,6 @@ export const usersColumns: ColumnDef<User>[] = [
     enableHiding: false
   },
   {
-    id: 'fullName',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: ({ row }) => {
-      const { firstName, lastName } = row.original
-      const fullName = `${firstName} ${lastName}`
-      return <LongText className="max-w-36">{fullName}</LongText>
-    },
-    meta: { className: 'w-36' }
-  },
-  {
     accessorKey: 'email',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
     cell: ({ row }) => <div className="w-fit ps-2 text-nowrap">{row.getValue('email')}</div>
@@ -65,7 +55,7 @@ export const usersColumns: ColumnDef<User>[] = [
   {
     accessorKey: 'phoneNumber',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Phone Number" />,
-    cell: ({ row }) => <div>{row.getValue('phoneNumber')}</div>,
+    cell: ({ row }) => <div>{row.getValue('phoneNumber') || 'N/A'}</div>,
     enableSorting: false
   },
   {
@@ -73,11 +63,11 @@ export const usersColumns: ColumnDef<User>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => {
       const { status } = row.original
-      const badgeColor = callTypes.get(status)
+      const badgeColor = status ? callTypes.get(status) : ''
       return (
         <div className="flex space-x-2">
           <Badge variant="outline" className={cn('capitalize', badgeColor)}>
-            {row.getValue('status')}
+            {status || 'unknown'}
           </Badge>
         </div>
       )

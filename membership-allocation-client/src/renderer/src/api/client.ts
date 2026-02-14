@@ -33,7 +33,8 @@ apiClient.interceptors.request.use(
 // Response interceptor - Handle errors globally
 apiClient.interceptors.response.use(
   (response) => {
-    return response
+    // Extract data from axios response wrapper
+    return response.data
   },
   (error: AxiosError<{ message?: string; error?: string }>) => {
     // Handle different error status codes
@@ -43,10 +44,8 @@ apiClient.interceptors.response.use(
 
       switch (status) {
         case 401:
-          // Unauthorized - token expired or invalid
-          toast.error('Session expired. Please login again.')
-          // Clear auth state and redirect to login
-          window.location.href = '/login'
+          // 401 is handled in main.tsx queryCache for authenticated routes only
+          // Don't show toast or redirect here to avoid duplicate handling
           break
         case 403:
           toast.error('You do not have permission to perform this action.')

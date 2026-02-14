@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
     REFRESH_TOKEN: '/auth/refresh-token',
-    FORGOT_PASSWORD: '/auth/forgot-password',
+    FORGOT_PASSWORD: '/auth/forgotPassword',
     RESET_PASSWORD: '/auth/reset-password',
     VERIFY_EMAIL: '/auth/verify-email',
     RESEND_VERIFICATION: '/auth/resend-verification',
@@ -20,11 +20,36 @@ export const API_ENDPOINTS = {
   // Users
   USERS: {
     LIST: '/users',
+    PROFILE: '/users/me',
     DETAILS: (id: string) => `/users/${id}`,
     UPDATE: (id: string) => `/users/${id}`,
-    DELETE: (id: string) => `/users/${id}`,
+    DELETE: (id: string) => `/users/admin/${id}`,
     CHANGE_ROLE: (id: string) => `/users/${id}/role`,
-    CHANGE_PASSWORD: (id: string) => `/users/${id}/change-password`
+    CHANGE_PASSWORD: (id: string) => `/users/${id}/change-password`,
+    CURRENT_PROFILE: '/users/me'
+  },
+
+  // Members
+  MEMBERS: {
+    LIST: '/members',
+    DETAILS: (id: string) => `/members/${id}`,
+    UPDATE_MEMBER: (id: string) => `/members/${id}`,
+    UPDATE_MEMBER_STATUS_BULK: '/members/changeMemberStatus/bulk',
+    DELETE: (id: string) => `/members/${id}`,
+    CREATE: '/members',
+    MEMBERS_BIRTHDAY_MONTH: (month: number) => `/members/birthdays/${month}`
+  },
+
+  // Dependents
+  DEPENDENTS: {
+    LIST: (memberId: string) => `/members/${memberId}/dependents`,
+    DETAILS: (memberId: string, dependentId: string) =>
+      `/members/${memberId}/dependents/${dependentId}`,
+    CREATE: (memberId: string) => `/members/${memberId}/dependents`,
+    UPDATE: (memberId: string, dependentId: string) =>
+      `/members/${memberId}/dependents/${dependentId}`,
+    DELETE: (memberId: string, dependentId: string) =>
+      `/members/${memberId}/dependents/${dependentId}`
   }
 } as const
 
