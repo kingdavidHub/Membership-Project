@@ -8,24 +8,20 @@ const userStatusSchema = z.union([
 ])
 export type UserStatus = z.infer<typeof userStatusSchema>
 
-const userRoleSchema = z.union([
-  z.literal('superadmin'),
-  z.literal('admin'),
-  z.literal('cashier'),
-  z.literal('manager')
-])
+const userRoleSchema = z.union([z.literal('super-admin'), z.literal('admin'), z.literal('member')])
 
 const userSchema = z.object({
-  id: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
-  username: z.string(),
+  _id: z.string(),
+  name: z.string(),
   email: z.string(),
-  phoneNumber: z.string(),
-  status: userStatusSchema,
   role: userRoleSchema,
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date()
+  member: z.string().nullable().optional(),
+  passwordGenerateCount: z.number().optional(),
+  isGeneratedPassword: z.boolean().optional(),
+  passwordChangedAt: z.string().optional(),
+  // Frontend-only fields (not from API)
+  phoneNumber: z.string().optional(),
+  status: userStatusSchema.optional()
 })
 export type User = z.infer<typeof userSchema>
 

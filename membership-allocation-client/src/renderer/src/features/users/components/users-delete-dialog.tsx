@@ -2,7 +2,10 @@
 
 import { useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
+import { toast } from 'sonner'
+import { usersService } from '@/api/services/users.service'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,12 +20,25 @@ type UserDeleteDialogProps = {
 
 export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDeleteDialogProps) {
   const [value, setValue] = useState('')
+  const router = useRouter()
+
+  const deleteMutation = useMutation({
+    mutationFn: () => usersService.deleteUser(currentRow._id),
+    onSuccess: () => {
+      toast.success(`User "${currentRow.name}" has been deleted successfully.`)
+      onOpenChange(false)
+      setValue('')
+      // Invalidate and refetch users list
+      router.invalidate()
+    },
+    onError: () => {
+      toast.error('Failed to delete user. Please try again.')
+    }
+  })
 
   const handleDelete = () => {
-    if (value.trim() !== currentRow.username) return
-
-    onOpenChange(false)
-    showSubmittedData(currentRow, 'The following user has been deleted:')
+    if (value.trim() !== currentRow.name) return
+    deleteMutation.mutate()
   }
 
   return (
@@ -30,7 +46,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDelete
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.username}
+      disabled={value.trim() !== currentRow.name || deleteMutation.isPending}
       title={
         <span className="text-destructive">
           <AlertTriangle className="me-1 inline-block stroke-destructive" size={18} /> Delete User
@@ -39,7 +55,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDelete
       desc={
         <div className="space-y-4">
           <p className="mb-2">
-            Are you sure you want to delete <span className="font-bold">{currentRow.username}</span>
+            Are you sure you want to delete <span className="font-bold">{currentRow.name}</span>
             ?
             <br />
             This action will permanently remove the user with the role of{' '}
@@ -48,11 +64,11 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDelete
           </p>
 
           <Label className="my-2">
-            Username:
+            Name:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Enter username to confirm deletion."
+              placeholder="Enter user name to confirm deletion."
             />
           </Label>
 
@@ -64,7 +80,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDelete
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText={deleteMutation.isPending ? 'Deleting...' : 'Delete'}
       destructive
     />
   )

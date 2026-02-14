@@ -23,7 +23,7 @@ export const API_ENDPOINTS = {
     PROFILE: '/users/me',
     DETAILS: (id: string) => `/users/${id}`,
     UPDATE: (id: string) => `/users/${id}`,
-    DELETE: (id: string) => `/users/${id}`,
+    DELETE: (id: string) => `/users/admin/${id}`,
     CHANGE_ROLE: (id: string) => `/users/${id}/role`,
     CHANGE_PASSWORD: (id: string) => `/users/${id}/change-password`,
     CURRENT_PROFILE: '/users/me'

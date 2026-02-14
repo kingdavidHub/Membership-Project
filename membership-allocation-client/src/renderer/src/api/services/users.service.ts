@@ -6,9 +6,9 @@ import type {
   UpdateUserRequest,
   ChangeUserRoleRequest,
   ChangePasswordRequest,
-  UserProfile
+  UserProfile,
+  UsersListResponse
 } from '../types/user.types'
-import type { PaginatedResponse, PaginationParams } from '../types'
 
 /**
  * Users Service
@@ -19,8 +19,11 @@ export const usersService = {
   /**
    * Get paginated list of users
    */
-  getUsers: async (params?: PaginationParams): Promise<PaginatedResponse<User>> => {
-    return (await apiClient.get(API_ENDPOINTS.USERS.LIST, { params })) as PaginatedResponse<User>
+  getUsers: async (page = 1, limit = 10): Promise<UsersListResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.USERS.LIST, {
+      params: { page, limit }
+    })
+    return response as unknown as UsersListResponse
   },
 
   getUserProfile: async (): Promise<UserProfile> => {

@@ -7,7 +7,6 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
@@ -29,11 +28,12 @@ import { usersColumns as columns } from './users-columns'
 
 type DataTableProps = {
   data: User[]
+  totalCount: number
   search: Record<string, unknown>
   navigate: NavigateFn
 }
 
-export function UsersTable({ data, search, navigate }: DataTableProps) {
+export function UsersTable({ data, totalCount, search, navigate }: DataTableProps) {
   // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -56,8 +56,8 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: false },
     columnFilters: [
-      // username per-column text filter
-      { columnId: 'username', searchKey: 'username', type: 'string' },
+      // name per-column text filter
+      { columnId: 'name', searchKey: 'name', type: 'string' },
       { columnId: 'status', searchKey: 'status', type: 'array' },
       { columnId: 'role', searchKey: 'role', type: 'array' }
     ]
@@ -74,13 +74,15 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
       columnFilters,
       columnVisibility
     },
+    // Server-side pagination
+    manualPagination: true,
+    pageCount: Math.ceil(totalCount / pagination.pageSize),
     enableRowSelection: true,
     onPaginationChange,
     onColumnFiltersChange,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
-    getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -102,7 +104,7 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
       <DataTableToolbar
         table={table}
         searchPlaceholder="Filter users..."
-        searchKey="username"
+        searchKey="name"
         filters={[
           {
             columnId: 'status',

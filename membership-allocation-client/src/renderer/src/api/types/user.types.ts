@@ -64,3 +64,23 @@ export interface ChangePasswordRequest {
   newPassword: string
   confirmPassword: string
 }
+
+// API Response for users list
+export interface ApiUser {
+  _id: string
+  name: string
+  email: string
+  role: 'super-admin' | 'admin' | 'member'
+  member: string | null
+  passwordGenerateCount?: number
+  isGeneratedPassword?: boolean
+  passwordChangedAt?: string
+}
+
+export interface UsersListResponse {
+  status: string
+  results: number
+  data: {
+    users: ApiUser[]
+  }
+}
