@@ -24,9 +24,10 @@ export function MembersDeleteDialog({ open, onOpenChange, currentRow }: MemberDe
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      // TODO: Replace with actual members API call
+      // TODO: Replace with actual members API call, e.g.:
       // await membersService.deleteMember(currentRow._id)
-      return Promise.resolve()
+      // Until the API is available, explicitly fail to avoid a false success.
+      throw new Error('Member deletion is not implemented yet.')
     },
     onSuccess: () => {
       toast.success(`Member "${fullName}" has been deleted successfully.`)

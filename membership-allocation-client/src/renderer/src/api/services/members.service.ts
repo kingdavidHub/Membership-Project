@@ -25,7 +25,7 @@ export const membersService = {
    * Get paginated list of members
    */
   getMembers: async (page = 1, limit = 10): Promise<MembersListResponse> => {
-    const response = await apiClient.get(API_ENDPOINTS.Members.LIST, {
+    const response = await apiClient.get(API_ENDPOINTS.MEMBERS.LIST, {
       params: { page, limit }
     })
     return response as unknown as MembersListResponse
@@ -36,7 +36,7 @@ export const membersService = {
    */
   getMemberById: async (id: string): Promise<ApiMember> => {
     const response = (await apiClient.get(
-      API_ENDPOINTS.Members.DETAILS(id)
+      API_ENDPOINTS.MEMBERS.DETAILS(id)
     )) as MemberDetailResponse
     return response.data.member
   },
@@ -46,7 +46,7 @@ export const membersService = {
    */
   createMember: async (memberData: CreateMemberRequest): Promise<ApiMember> => {
     const response = (await apiClient.post(
-      API_ENDPOINTS.Members.CREATE,
+      API_ENDPOINTS.MEMBERS.CREATE,
       memberData
     )) as MemberDetailResponse
     return response.data.member
@@ -57,7 +57,7 @@ export const membersService = {
    */
   updateMember: async (id: string, memberData: UpdateMemberRequest): Promise<ApiMember> => {
     const response = (await apiClient.patch(
-      API_ENDPOINTS.Members.UPDATE_MEMBER(id),
+      API_ENDPOINTS.MEMBERS.UPDATE_MEMBER(id),
       memberData
     )) as MemberDetailResponse
     return response.data.member
@@ -67,21 +67,21 @@ export const membersService = {
    * Delete member
    */
   deleteMember: async (id: string): Promise<void> => {
-    await apiClient.delete(API_ENDPOINTS.Members.DELETE(id))
+    await apiClient.delete(API_ENDPOINTS.MEMBERS.DELETE(id))
   },
 
   /**
    * Update member status in bulk
    */
   updateMemberStatusBulk: async (data: UpdateMemberStatusBulkRequest): Promise<void> => {
-    await apiClient.patch(API_ENDPOINTS.Members.UPDATE_MEMBER_STATUS_BULK, data)
+    await apiClient.patch(API_ENDPOINTS.MEMBERS.UPDATE_MEMBER_STATUS_BULK, data)
   },
 
   /**
    * Get members with birthdays in a specific month
    */
   getMembersByBirthdayMonth: async (month: number): Promise<BirthdayMembersResponse> => {
-    const response = await apiClient.get(API_ENDPOINTS.Members.MEMBERS_BIRTHDAY_MONTH(month))
+    const response = await apiClient.get(API_ENDPOINTS.MEMBERS.MEMBERS_BIRTHDAY_MONTH(month))
     return response as unknown as BirthdayMembersResponse
   },
 
@@ -91,7 +91,7 @@ export const membersService = {
    * Get dependents for a member
    */
   getDependents: async (memberId: string): Promise<DependentsListResponse> => {
-    const response = await apiClient.get(API_ENDPOINTS.Dependents.LIST(memberId))
+    const response = await apiClient.get(API_ENDPOINTS.DEPENDENTS.LIST(memberId))
     return response as unknown as DependentsListResponse
   },
 
@@ -100,7 +100,7 @@ export const membersService = {
    */
   getDependentById: async (memberId: string, dependentId: string): Promise<Dependent> => {
     const response = (await apiClient.get(
-      API_ENDPOINTS.Dependents.DETAILS(memberId, dependentId)
+      API_ENDPOINTS.DEPENDENTS.DETAILS(memberId, dependentId)
     )) as DependentDetailResponse
     return response.data.dependent
   },
@@ -110,7 +110,7 @@ export const membersService = {
    */
   createDependent: async (memberId: string, data: CreateDependentRequest): Promise<Dependent> => {
     const response = (await apiClient.post(
-      API_ENDPOINTS.Dependents.CREATE(memberId),
+      API_ENDPOINTS.DEPENDENTS.CREATE(memberId),
       data
     )) as DependentDetailResponse
     return response.data.dependent
@@ -125,7 +125,7 @@ export const membersService = {
     data: UpdateDependentRequest
   ): Promise<Dependent> => {
     const response = (await apiClient.patch(
-      API_ENDPOINTS.Dependents.UPDATE(memberId, dependentId),
+      API_ENDPOINTS.DEPENDENTS.UPDATE(memberId, dependentId),
       data
     )) as DependentDetailResponse
     return response.data.dependent
@@ -135,6 +135,6 @@ export const membersService = {
    * Delete dependent
    */
   deleteDependent: async (memberId: string, dependentId: string): Promise<void> => {
-    await apiClient.delete(API_ENDPOINTS.Dependents.DELETE(memberId, dependentId))
+    await apiClient.delete(API_ENDPOINTS.DEPENDENTS.DELETE(memberId, dependentId))
   }
 }

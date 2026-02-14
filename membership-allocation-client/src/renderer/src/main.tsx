@@ -47,9 +47,9 @@ const queryClient = new QueryClient({
         if (error.response?.status === 401) {
           // Only handle 401 on authenticated routes
           const currentPath = router.history.location.pathname
-          const isAuthenticatedRoute =
-            currentPath.includes('/_authenticated') ||
-            !['/sign-in', '/sign-up', '/forgot-password', '/reset-password'].includes(currentPath)
+          const publicRoutes = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password']
+          const isPublicRoute = publicRoutes.some((route) => currentPath.startsWith(route))
+          const isAuthenticatedRoute = !isPublicRoute
 
           if (isAuthenticatedRoute) {
             toast.error('Session expired!')

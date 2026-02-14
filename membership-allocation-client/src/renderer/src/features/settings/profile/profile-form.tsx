@@ -52,7 +52,6 @@ const defaultValues: Partial<ProfileFormValues> = {
 }
 
 export function ProfileForm({ userProfile }: { userProfile: UserProfile }) {
-  console.log('User Profile:', userProfile.name) // Log the user profile data to verify it's being passed correctly
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -74,7 +73,7 @@ export function ProfileForm({ userProfile }: { userProfile: UserProfile }) {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder={userProfile._id} {...field} disabled />
+                <Input placeholder={userProfile.name ?? 'Your name'} {...field} disabled />
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a pseudonym. You can

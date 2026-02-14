@@ -53,7 +53,7 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
     mutationFn: authService.login,
     onSuccess: (data) => {
       setIsLoading(false)
-      console.log('Login successful:', data) // Debug log
+
 
       // Set user and access token
       auth.setUser(data.data.user)

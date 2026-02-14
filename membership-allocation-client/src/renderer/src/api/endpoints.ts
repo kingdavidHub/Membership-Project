@@ -29,8 +29,8 @@ export const API_ENDPOINTS = {
     CURRENT_PROFILE: '/users/me'
   },
 
-  //Members
-  Members: {
+  // Members
+  MEMBERS: {
     LIST: '/members',
     DETAILS: (id: string) => `/members/${id}`,
     UPDATE_MEMBER: (id: string) => `/members/${id}`,
@@ -41,7 +41,7 @@ export const API_ENDPOINTS = {
   },
 
   // Dependents
-  Dependents: {
+  DEPENDENTS: {
     LIST: (memberId: string) => `/members/${memberId}/dependents`,
     DETAILS: (memberId: string, dependentId: string) =>
       `/members/${memberId}/dependents/${dependentId}`,
