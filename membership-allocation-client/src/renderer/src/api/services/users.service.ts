@@ -20,39 +20,33 @@ export const usersService = {
    * Get paginated list of users
    */
   getUsers: async (params?: PaginationParams): Promise<PaginatedResponse<User>> => {
-    const { data } = await apiClient.get<PaginatedResponse<User>>(API_ENDPOINTS.USERS.LIST, {
-      params
-    })
-    return data
+    return (await apiClient.get(API_ENDPOINTS.USERS.LIST, { params })) as PaginatedResponse<User>
   },
 
   getUserProfile: async (): Promise<UserProfile> => {
-    const { data } = await apiClient.get<Omit<UserProfile, 'member'>>(API_ENDPOINTS.USERS.PROFILE)
-    return data
+    const response = await apiClient.get(API_ENDPOINTS.USERS.PROFILE)
+    return (response as { data: { user: UserProfile } }).data.user
   },
 
   /**
    * Get user by ID
    */
   getUserById: async (id: string): Promise<User> => {
-    const { data } = await apiClient.get<User>(API_ENDPOINTS.USERS.DETAILS(id))
-    return data
+    return (await apiClient.get(API_ENDPOINTS.USERS.DETAILS(id))) as User
   },
 
   /**
    * Create new user
    */
   createUser: async (userData: CreateUserRequest): Promise<User> => {
-    const { data } = await apiClient.post<User>(API_ENDPOINTS.USERS.LIST, userData)
-    return data
+    return (await apiClient.post(API_ENDPOINTS.USERS.LIST, userData)) as User
   },
 
   /**
    * Update user
    */
   updateUser: async (id: string, userData: UpdateUserRequest): Promise<User> => {
-    const { data } = await apiClient.patch<User>(API_ENDPOINTS.USERS.UPDATE(id), userData)
-    return data
+    return (await apiClient.patch(API_ENDPOINTS.USERS.UPDATE(id), userData)) as User
   },
 
   /**
@@ -66,8 +60,7 @@ export const usersService = {
    * Change user role
    */
   changeUserRole: async (id: string, roleData: ChangeUserRoleRequest): Promise<User> => {
-    const { data } = await apiClient.patch<User>(API_ENDPOINTS.USERS.CHANGE_ROLE(id), roleData)
-    return data
+    return (await apiClient.patch(API_ENDPOINTS.USERS.CHANGE_ROLE(id), roleData)) as User
   },
 
   /**
@@ -78,8 +71,7 @@ export const usersService = {
   },
 
   getCurrentUserProfile: async (): Promise<UserProfile> => {
-    const { data } = await apiClient.get<UserProfile>(API_ENDPOINTS.USERS.CURRENT_PROFILE)
-    return data
+    return (await apiClient.get(API_ENDPOINTS.USERS.CURRENT_PROFILE)) as UserProfile
   }
 }
 

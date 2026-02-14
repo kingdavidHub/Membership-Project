@@ -11,11 +11,14 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Analytics } from './components/analytics'
 import { Overview } from './components/overview'
 import { RecentSales } from './components/recent-sales'
-import { useAuthStore, UserRole } from '@/stores/auth-store'
+import { UserRole } from '@/stores/auth-store'
 import { IsUserOnline } from '@/components/is-user-online'
+import { getRouteApi } from '@tanstack/react-router'
+
+const routeApi = getRouteApi('/_authenticated/')
 
 export function Dashboard() {
-  const user = useAuthStore((state) => state.auth.user)
+  const { userProfile } = routeApi.useLoaderData()
   return (
     <>
       {/* ===== Top Heading ===== */}
@@ -120,7 +123,8 @@ export function Dashboard() {
               </Card>
             </div>
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
-              {user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN ? (
+              {userProfile?.role === UserRole.SUPER_ADMIN ||
+              userProfile?.role === UserRole.ADMIN ? (
                 <>
                   <Card className="col-span-1 lg:col-span-4">
                     <CardHeader>

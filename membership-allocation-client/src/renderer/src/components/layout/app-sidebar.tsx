@@ -11,15 +11,17 @@ import { sidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
-import { useAuthStore } from '@/stores/auth-store'
+import { getRouteApi } from '@tanstack/react-router'
+
+const routeApi = getRouteApi('/_authenticated/')
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
-  const user = useAuthStore((state) => state.auth.user)
+  const { userProfile } = routeApi.useLoaderData()
 
   const authenticatedUser = {
-    name: user ? user.email.split('@')[0] : 'Guest User',
-    email: user ? user.email : '',
+    name: userProfile?.name || 'Guest User',
+    email: userProfile?.email || '',
     avatar: '/avatars/shadcn.jpg'
   }
 

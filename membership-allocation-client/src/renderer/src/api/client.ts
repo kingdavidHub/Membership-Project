@@ -33,7 +33,8 @@ apiClient.interceptors.request.use(
 // Response interceptor - Handle errors globally
 apiClient.interceptors.response.use(
   (response) => {
-    return response
+    // Extract data from axios response wrapper
+    return response.data
   },
   (error: AxiosError<{ message?: string; error?: string }>) => {
     // Handle different error status codes
