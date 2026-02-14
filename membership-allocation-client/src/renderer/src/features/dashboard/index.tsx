@@ -15,7 +15,7 @@ import { UserRole } from '@/stores/auth-store'
 import { IsUserOnline } from '@/components/is-user-online'
 import { getRouteApi } from '@tanstack/react-router'
 
-const routeApi = getRouteApi('/_authenticated/')
+const routeApi = getRouteApi('/_authenticated')
 
 export function Dashboard() {
   const { userProfile } = routeApi.useLoaderData()

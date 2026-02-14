@@ -13,7 +13,7 @@ import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
 import { getRouteApi } from '@tanstack/react-router'
 
-const routeApi = getRouteApi('/_authenticated/')
+const routeApi = getRouteApi('/_authenticated')
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()

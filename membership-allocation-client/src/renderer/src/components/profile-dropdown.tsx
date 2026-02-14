@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SignOutDialog } from '@/components/sign-out-dialog'
 
-const routeApi = getRouteApi('/_authenticated/')
+const routeApi = getRouteApi('/_authenticated')
 
 export function ProfileDropdown() {
   const { userProfile } = routeApi.useLoaderData()
