@@ -5,6 +5,7 @@ import { usersService } from '@/api/services/users.service'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ location }) => {
+    // TODO: Remove this check since the header contains auth token we should check for that rather than cookies
     const accessToken = useAuthStore.getState().auth.accessToken
 
     if (!accessToken) {
