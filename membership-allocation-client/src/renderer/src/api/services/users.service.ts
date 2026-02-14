@@ -26,6 +26,11 @@ export const usersService = {
     return data
   },
 
+  getUserProfile: async (): Promise<UserProfile> => {
+    const { data } = await apiClient.get<Omit<UserProfile, 'member'>>(API_ENDPOINTS.USERS.PROFILE)
+    return data
+  },
+
   /**
    * Get user by ID
    */

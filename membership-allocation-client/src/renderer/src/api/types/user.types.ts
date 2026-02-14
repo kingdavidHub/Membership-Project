@@ -38,7 +38,7 @@ export interface UserProfile {
   name: string
   email: string
   role: UserRole
-  member: Member
+  member?: Member
 }
 
 export interface CreateUserRequest {
