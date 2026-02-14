@@ -1,0 +1,140 @@
+import { apiClient } from '../client'
+import { API_ENDPOINTS } from '../endpoints'
+import type {
+  ApiMember,
+  MembersListResponse,
+  MemberDetailResponse,
+  CreateMemberRequest,
+  UpdateMemberRequest,
+  UpdateMemberStatusBulkRequest,
+  BirthdayMembersResponse,
+  Dependent,
+  DependentsListResponse,
+  DependentDetailResponse,
+  CreateDependentRequest,
+  UpdateDependentRequest
+} from '../types/member.types'
+
+/**
+ * Members Service
+ * Handles all member management API calls
+ */
+
+export const membersService = {
+  /**
+   * Get paginated list of members
+   */
+  getMembers: async (page = 1, limit = 10): Promise<MembersListResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.Members.LIST, {
+      params: { page, limit }
+    })
+    return response as unknown as MembersListResponse
+  },
+
+  /**
+   * Get member by ID
+   */
+  getMemberById: async (id: string): Promise<ApiMember> => {
+    const response = (await apiClient.get(
+      API_ENDPOINTS.Members.DETAILS(id)
+    )) as MemberDetailResponse
+    return response.data.member
+  },
+
+  /**
+   * Create new member
+   */
+  createMember: async (memberData: CreateMemberRequest): Promise<ApiMember> => {
+    const response = (await apiClient.post(
+      API_ENDPOINTS.Members.CREATE,
+      memberData
+    )) as MemberDetailResponse
+    return response.data.member
+  },
+
+  /**
+   * Update member
+   */
+  updateMember: async (id: string, memberData: UpdateMemberRequest): Promise<ApiMember> => {
+    const response = (await apiClient.patch(
+      API_ENDPOINTS.Members.UPDATE_MEMBER(id),
+      memberData
+    )) as MemberDetailResponse
+    return response.data.member
+  },
+
+  /**
+   * Delete member
+   */
+  deleteMember: async (id: string): Promise<void> => {
+    await apiClient.delete(API_ENDPOINTS.Members.DELETE(id))
+  },
+
+  /**
+   * Update member status in bulk
+   */
+  updateMemberStatusBulk: async (data: UpdateMemberStatusBulkRequest): Promise<void> => {
+    await apiClient.patch(API_ENDPOINTS.Members.UPDATE_MEMBER_STATUS_BULK, data)
+  },
+
+  /**
+   * Get members with birthdays in a specific month
+   */
+  getMembersByBirthdayMonth: async (month: number): Promise<BirthdayMembersResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.Members.MEMBERS_BIRTHDAY_MONTH(month))
+    return response as unknown as BirthdayMembersResponse
+  },
+
+  // Dependents Operations
+
+  /**
+   * Get dependents for a member
+   */
+  getDependents: async (memberId: string): Promise<DependentsListResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.Dependents.LIST(memberId))
+    return response as unknown as DependentsListResponse
+  },
+
+  /**
+   * Get dependent by ID
+   */
+  getDependentById: async (memberId: string, dependentId: string): Promise<Dependent> => {
+    const response = (await apiClient.get(
+      API_ENDPOINTS.Dependents.DETAILS(memberId, dependentId)
+    )) as DependentDetailResponse
+    return response.data.dependent
+  },
+
+  /**
+   * Create new dependent
+   */
+  createDependent: async (memberId: string, data: CreateDependentRequest): Promise<Dependent> => {
+    const response = (await apiClient.post(
+      API_ENDPOINTS.Dependents.CREATE(memberId),
+      data
+    )) as DependentDetailResponse
+    return response.data.dependent
+  },
+
+  /**
+   * Update dependent
+   */
+  updateDependent: async (
+    memberId: string,
+    dependentId: string,
+    data: UpdateDependentRequest
+  ): Promise<Dependent> => {
+    const response = (await apiClient.patch(
+      API_ENDPOINTS.Dependents.UPDATE(memberId, dependentId),
+      data
+    )) as DependentDetailResponse
+    return response.data.dependent
+  },
+
+  /**
+   * Delete dependent
+   */
+  deleteDependent: async (memberId: string, dependentId: string): Promise<void> => {
+    await apiClient.delete(API_ENDPOINTS.Dependents.DELETE(memberId, dependentId))
+  }
+}

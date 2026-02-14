@@ -1,6 +1,7 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { Members } from '@/features/members'
+import { membersService } from '@/api/services'
 
 const membersSearchSchema = z.object({
   page: z.number().optional().catch(1),
@@ -8,12 +9,7 @@ const membersSearchSchema = z.object({
   // Facet filters
   paymentStatus: z
     .array(
-      z.union([
-        z.literal('pending'),
-        z.literal('paid'),
-        z.literal('overdue'),
-        z.literal('exempted')
-      ])
+      z.union([z.literal('unpaid'), z.literal('paid'), z.literal('overdue'), z.literal('exempted')])
     )
     .optional()
     .catch([]),
@@ -28,16 +24,8 @@ const membersSearchSchema = z.object({
 export const Route = createFileRoute('/_authenticated/members/')({
   validateSearch: membersSearchSchema,
   loaderDeps: ({ search }) => ({ page: search.page, pageSize: search.pageSize }),
-  loader: async () => {
-    // TODO: Replace with actual members API call
-    // Example: const membersResponse = await membersService.getMembers(deps.page, deps.pageSize)
-    const membersResponse = {
-      status: 'success',
-      results: 0,
-      data: {
-        members: []
-      }
-    }
+  loader: async ({ deps }) => {
+    const membersResponse = await membersService.getMembers(deps.page || 1, deps.pageSize || 10)
     return { membersResponse }
   },
   component: Members

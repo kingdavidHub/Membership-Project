@@ -9,41 +9,29 @@ import { MembersDialogs } from './components/members-dialogs'
 import { MembersPrimaryButtons } from './components/members-primary-buttons'
 import { MembersProvider } from './components/members-provider'
 import { MembersTable } from './components/members-table'
-import { type Member, type PaymentStatus, type MemberStatus } from './data/schema'
+import { type Member } from './data/schema'
+import { type ApiMember } from '@/api/types/member.types'
 
 const route = getRouteApi('/_authenticated/members/')
-
-// Generate random payment status for members (temporary until API supports it)
-const getRandomPaymentStatus = (): PaymentStatus => {
-  const statuses: PaymentStatus[] = ['pending', 'paid', 'overdue', 'exempted']
-  return statuses[Math.floor(Math.random() * statuses.length)]
-}
-
-// Generate random member status (temporary until API supports it)
-const getRandomMemberStatus = (): MemberStatus => {
-  const statuses: MemberStatus[] = ['active', 'inactive', 'suspended']
-  return statuses[Math.floor(Math.random() * statuses.length)]
-}
 
 export function Members() {
   const search = route.useSearch()
   const { membersResponse } = route.useLoaderData()
 
   // Transform API response to match frontend Member schema
-  const members: Member[] = (membersResponse?.data?.members || []).map(
-    (apiMember: Record<string, unknown>) => ({
-      _id: apiMember._id as string,
-      firstName: (apiMember.firstName as string) || '',
-      lastName: (apiMember.lastName as string) || '',
-      email: apiMember.email as string | undefined,
-      phoneNumber: apiMember.phoneNumber as string | undefined,
-      membershipId: (apiMember.membershipId as string) || '',
-      entryYear: (apiMember.entryYear as number) || new Date().getFullYear(),
-      dob: apiMember.dob as string | undefined,
-      paymentStatus: (apiMember.paymentStatus as PaymentStatus) || getRandomPaymentStatus(),
-      memberStatus: (apiMember.memberStatus as MemberStatus) || getRandomMemberStatus()
-    })
-  )
+  const members: Member[] = (membersResponse?.data?.members || []).map((apiMember: ApiMember) => ({
+    _id: apiMember._id,
+    user: apiMember.user,
+    firstName: apiMember.firstName,
+    lastName: apiMember.lastName,
+    dob: apiMember.dob,
+    membershipId: apiMember.membershipId,
+    entryYear: apiMember.entryYear,
+    paymentStatus: apiMember.paymentStatus,
+    memberStatus: apiMember.memberStatus,
+    dependents: apiMember.dependents?.map((d) => d._id),
+    createdAt: apiMember.createdAt
+  }))
 
   const totalResults = membersResponse?.results || 0
   const pageSize = search.pageSize || 10

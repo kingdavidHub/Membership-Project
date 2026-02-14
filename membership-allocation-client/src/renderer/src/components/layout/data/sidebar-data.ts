@@ -16,7 +16,8 @@ import {
   UserX,
   Users,
   ShieldCheck,
-  Command
+  Command,
+  Flame
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 
@@ -75,7 +76,7 @@ export const sidebarData: SidebarData = {
         {
           title: 'Members',
           url: '/members',
-          icon: Users
+          icon: Flame
         }
         // {
         //   title: 'Secured by Clerk',

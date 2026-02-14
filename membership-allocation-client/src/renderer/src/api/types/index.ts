@@ -36,3 +36,17 @@ export interface ApiErrorResponse {
   error?: string
   errors?: Record<string, string[]>
 }
+
+// Re-export member types
+export type {
+  ApiMember,
+  Dependent,
+  MembersListResponse,
+  MemberDetailResponse,
+  CreateMemberRequest,
+  UpdateMemberRequest,
+  UpdateMemberStatusBulkRequest,
+  BirthdayMembersResponse,
+  PaymentStatus as MemberPaymentStatus,
+  MemberStatus as MemberMemberStatus
+} from './member.types'

@@ -3,7 +3,7 @@ import { type PaymentStatus, type MemberStatus } from './schema'
 
 export const paymentStatusTypes = new Map<PaymentStatus, string>([
   ['paid', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
-  ['pending', 'bg-amber-100/30 text-amber-900 dark:text-amber-200 border-amber-200'],
+  ['unpaid', 'bg-amber-100/30 text-amber-900 dark:text-amber-200 border-amber-200'],
   [
     'overdue',
     'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10'
@@ -27,8 +27,8 @@ export const paymentStatuses = [
     icon: CheckCircle
   },
   {
-    label: 'Pending',
-    value: 'pending',
+    label: 'Unpaid',
+    value: 'unpaid',
     icon: Clock
   },
   {

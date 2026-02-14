@@ -1,7 +1,10 @@
 'use client'
 
+import { Link } from '@tanstack/react-router'
 import { ColumnDef } from '@tanstack/react-table'
+import { Users } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
 import { LongText } from '@/components/long-text'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { DataTableRowActions } from './data-table-row-actions'
@@ -104,6 +107,23 @@ export const columns: ColumnDef<Member>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     }
+  },
+  {
+    id: 'dependents',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Dependents" />,
+    cell: ({ row }) => {
+      const dependentsCount = row.original.dependents?.length || 0
+
+      return (
+        <Link to="/members/dependents">
+          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+            <Users className="h-4 w-4" />
+            <span>{dependentsCount}</span>
+          </Button>
+        </Link>
+      )
+    },
+    enableSorting: false
   },
   {
     id: 'actions',

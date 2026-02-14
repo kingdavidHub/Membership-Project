@@ -27,6 +27,29 @@ export const API_ENDPOINTS = {
     CHANGE_ROLE: (id: string) => `/users/${id}/role`,
     CHANGE_PASSWORD: (id: string) => `/users/${id}/change-password`,
     CURRENT_PROFILE: '/users/me'
+  },
+
+  //Members
+  Members: {
+    LIST: '/members',
+    DETAILS: (id: string) => `/members/${id}`,
+    UPDATE_MEMBER: (id: string) => `/members/${id}`,
+    UPDATE_MEMBER_STATUS_BULK: '/members/changeMemberStatus/bulk',
+    DELETE: (id: string) => `/members/${id}`,
+    CREATE: '/members',
+    MEMBERS_BIRTHDAY_MONTH: (month: number) => `/members/birthdays/${month}`
+  },
+
+  // Dependents
+  Dependents: {
+    LIST: (memberId: string) => `/members/${memberId}/dependents`,
+    DETAILS: (memberId: string, dependentId: string) =>
+      `/members/${memberId}/dependents/${dependentId}`,
+    CREATE: (memberId: string) => `/members/${memberId}/dependents`,
+    UPDATE: (memberId: string, dependentId: string) =>
+      `/members/${memberId}/dependents/${dependentId}`,
+    DELETE: (memberId: string, dependentId: string) =>
+      `/members/${memberId}/dependents/${dependentId}`
   }
 } as const
 

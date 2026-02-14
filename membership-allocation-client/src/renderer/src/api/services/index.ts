@@ -8,6 +8,7 @@
 
 export { authService } from './auth.service'
 export { usersService } from './users.service'
+export { membersService } from './members.service'
 
 // Re-export common types for convenience
 export type * from '../types'
@@ -33,3 +34,15 @@ export type {
   ChangeUserRoleRequest,
   ChangePasswordRequest
 } from '../types/user.types'
+export type {
+  ApiMember,
+  Dependent,
+  MembersListResponse,
+  MemberDetailResponse,
+  CreateMemberRequest,
+  UpdateMemberRequest,
+  UpdateMemberStatusBulkRequest,
+  BirthdayMembersResponse,
+  PaymentStatus as MemberPaymentStatus,
+  MemberStatus as MemberMemberStatus
+} from '../types/member.types'
