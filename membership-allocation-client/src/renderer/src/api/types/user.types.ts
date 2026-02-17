@@ -56,6 +56,7 @@ export interface UpdateUserRequest {
 }
 
 export interface ChangeUserRoleRequest {
+  id: string
   role: UserRole
 }
 

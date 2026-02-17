@@ -54,7 +54,6 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
     onSuccess: (data) => {
       setIsLoading(false)
 
-
       // Set user and access token
       auth.setUser(data.data.user)
       auth.setAccessToken(data.token)

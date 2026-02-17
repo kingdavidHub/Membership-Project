@@ -62,8 +62,8 @@ export const usersService = {
   /**
    * Change user role
    */
-  changeUserRole: async (id: string, roleData: ChangeUserRoleRequest): Promise<User> => {
-    return (await apiClient.patch(API_ENDPOINTS.USERS.CHANGE_ROLE(id), roleData)) as User
+  changeUserRole: async (roleData: ChangeUserRoleRequest): Promise<User> => {
+    return (await apiClient.post(API_ENDPOINTS.USERS.CHANGE_ROLE(), roleData)) as User
   },
 
   /**

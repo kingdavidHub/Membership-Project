@@ -25,10 +25,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
 const formSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: 'Please enter an email to invite.' })
-    .email(),
+  email: z.string().min(1, { message: 'Please enter an email to invite.' }).email(),
   desc: z.string().optional()
 })
 
