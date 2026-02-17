@@ -42,14 +42,10 @@ export const API_ENDPOINTS = {
 
   // Dependents
   DEPENDENTS: {
-    LIST: (memberId: string) => `/members/${memberId}/dependents`,
-    DETAILS: (memberId: string, dependentId: string) =>
-      `/members/${memberId}/dependents/${dependentId}`,
     CREATE: (memberId: string) => `/members/${memberId}/dependents`,
     UPDATE: (memberId: string, dependentId: string) =>
       `/members/${memberId}/dependents/${dependentId}`,
-    DELETE: (memberId: string, dependentId: string) =>
-      `/members/${memberId}/dependents/${dependentId}`
+    DELETE: (memberId: string) => `/members/${memberId}/dependents`
   }
 } as const
 

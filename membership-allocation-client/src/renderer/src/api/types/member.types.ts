@@ -4,12 +4,33 @@
 
 export type PaymentStatus = 'unpaid' | 'paid' | 'overdue' | 'exempted'
 export type MemberStatus = 'active' | 'inactive' | 'suspended'
-
+export type DependentRelations =
+  | 'child'
+  | 'spouse'
+  | 'parent'
+  | 'sibling'
+  | 'grandchild'
+  | 'grandparent'
+  | 'uncle'
+  | 'aunt'
+  | 'nephew'
+  | 'niece'
+  | 'cousin'
+  | 'guardian'
+  | 'ward'
+  | 'father'
+  | 'mother'
+  | 'son'
+  | 'daughter'
+  | 'brother'
+  | 'sister'
+  | 'other'
 export interface Dependent {
   _id: string
   firstName: string
   lastName: string
   member: string
+  relation: DependentRelations
   createdAt: string
   __v?: number
 }
@@ -97,9 +118,11 @@ export interface DependentDetailResponse {
 export interface CreateDependentRequest {
   firstName: string
   lastName: string
+  relationship: DependentRelations
 }
 
 export interface UpdateDependentRequest {
   firstName?: string
   lastName?: string
+  relationship?: DependentRelations
 }

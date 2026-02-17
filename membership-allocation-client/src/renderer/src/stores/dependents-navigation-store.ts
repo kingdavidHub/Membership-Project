@@ -5,6 +5,7 @@ interface DependentData {
   firstName: string
   lastName: string
   member?: string
+  relation?: string
   createdAt?: string
 }
 

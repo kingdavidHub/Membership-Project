@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Dependent } from '../data/schema'
 
-type DependentsDialogType = 'add' | 'edit' | 'delete'
+type DependentsDialogType = 'add' | 'edit' | 'delete' | 'bulk-delete'
 
 type DependentsContextType = {
   open: DependentsDialogType | null
@@ -10,6 +10,8 @@ type DependentsContextType = {
   currentRow: Dependent | null
   setCurrentRow: React.Dispatch<React.SetStateAction<Dependent | null>>
   memberId: string
+  selectedRows: Dependent[]
+  setSelectedRows: React.Dispatch<React.SetStateAction<Dependent[]>>
 }
 
 const DependentsContext = React.createContext<DependentsContextType | null>(null)
@@ -22,9 +24,12 @@ type DependentsProviderProps = {
 export function DependentsProvider({ children, memberId }: DependentsProviderProps) {
   const [open, setOpen] = useDialogState<DependentsDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Dependent | null>(null)
+  const [selectedRows, setSelectedRows] = useState<Dependent[]>([])
 
   return (
-    <DependentsContext value={{ open, setOpen, currentRow, setCurrentRow, memberId }}>
+    <DependentsContext
+      value={{ open, setOpen, currentRow, setCurrentRow, memberId, selectedRows, setSelectedRows }}
+    >
       {children}
     </DependentsContext>
   )

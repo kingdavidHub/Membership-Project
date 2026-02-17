@@ -9,7 +9,6 @@ import type {
   UpdateMemberStatusBulkRequest,
   BirthdayMembersResponse,
   Dependent,
-  DependentsListResponse,
   DependentDetailResponse,
   CreateDependentRequest,
   UpdateDependentRequest
@@ -86,25 +85,6 @@ export const membersService = {
   },
 
   // Dependents Operations
-
-  /**
-   * Get dependents for a member
-   */
-  getDependents: async (memberId: string): Promise<DependentsListResponse> => {
-    const response = await apiClient.get(API_ENDPOINTS.DEPENDENTS.LIST(memberId))
-    return response as unknown as DependentsListResponse
-  },
-
-  /**
-   * Get dependent by ID
-   */
-  getDependentById: async (memberId: string, dependentId: string): Promise<Dependent> => {
-    const response = (await apiClient.get(
-      API_ENDPOINTS.DEPENDENTS.DETAILS(memberId, dependentId)
-    )) as DependentDetailResponse
-    return response.data.dependent
-  },
-
   /**
    * Create new dependent
    */
@@ -132,9 +112,11 @@ export const membersService = {
   },
 
   /**
-   * Delete dependent
+   * Delete dependent(s) - accepts an array of dependent IDs
    */
-  deleteDependent: async (memberId: string, dependentId: string): Promise<void> => {
-    await apiClient.delete(API_ENDPOINTS.DEPENDENTS.DELETE(memberId, dependentId))
+  deleteDependents: async (memberId: string, dependentIds: string[]): Promise<void> => {
+    await apiClient.delete(API_ENDPOINTS.DEPENDENTS.DELETE(memberId), {
+      data: dependentIds
+    })
   }
 }

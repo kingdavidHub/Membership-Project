@@ -33,6 +33,7 @@ const memberSchema = z.object({
         firstName: z.string(),
         lastName: z.string(),
         member: z.string().optional(),
+        relation: z.string().optional(),
         createdAt: z.string().optional()
       })
     )

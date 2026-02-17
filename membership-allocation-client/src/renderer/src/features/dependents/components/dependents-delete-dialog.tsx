@@ -31,7 +31,7 @@ export function DependentsDeleteDialog({
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      await membersService.deleteDependent(memberId, currentRow._id)
+      await membersService.deleteDependents(memberId, [currentRow._id])
     },
     onSuccess: () => {
       toast.success(`Dependent "${fullName}" has been deleted successfully.`)

@@ -1,9 +1,10 @@
 import { DependentsActionDialog } from './dependents-action-dialog'
+import { DependentsBulkDeleteDialog } from './dependents-bulk-delete-dialog'
 import { DependentsDeleteDialog } from './dependents-delete-dialog'
 import { useDependents } from './dependents-provider'
 
 export function DependentsDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useDependents()
+  const { open, setOpen, currentRow, setCurrentRow, selectedRows } = useDependents()
 
   return (
     <>
@@ -40,6 +41,15 @@ export function DependentsDialogs() {
             currentRow={currentRow}
           />
         </>
+      )}
+
+      {/* Bulk delete dialog */}
+      {selectedRows.length > 0 && (
+        <DependentsBulkDeleteDialog
+          open={open === 'bulk-delete'}
+          onOpenChange={() => setOpen('bulk-delete')}
+          selectedRows={selectedRows}
+        />
       )}
     </>
   )
