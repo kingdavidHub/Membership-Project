@@ -1,5 +1,7 @@
-import { Link, getRouteApi } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import useDialogState from '@/hooks/use-dialog-state'
+import { useUserProfile } from '@/hooks/use-user-profile'
+import { ProfileDropdownSkeleton } from '@/components/skeletons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,11 +16,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SignOutDialog } from '@/components/sign-out-dialog'
 
-const routeApi = getRouteApi('/_authenticated')
-
 export function ProfileDropdown() {
-  const { userProfile } = routeApi.useLoaderData()
+  const { userProfile, isLoading } = useUserProfile()
   const [open, setOpen] = useDialogState()
+
+  if (isLoading) {
+    return <ProfileDropdownSkeleton />
+  }
 
   return (
     <>

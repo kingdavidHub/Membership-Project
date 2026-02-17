@@ -1,6 +1,7 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { Dependents } from '@/features/dependents'
+import { DependentsPendingSkeleton } from '@/features/dependents/components/dependents-pending-skeleton'
 import { membersService } from '@/api/services'
 
 const dependentsSearchSchema = z.object({
@@ -16,5 +17,6 @@ export const Route = createFileRoute('/_authenticated/members/dependents/')({
     const membersResponse = await membersService.getMembers(deps.page || 1, deps.pageSize || 50)
     return { membersResponse }
   },
-  component: Dependents
+  component: Dependents,
+  pendingComponent: DependentsPendingSkeleton
 })

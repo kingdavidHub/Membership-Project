@@ -3,7 +3,12 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import { showSubmittedData } from '@/lib/show-submitted-data'
+import { usersService } from '@/api/services'
+import { type UserRole } from '@/stores/auth-store'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -101,6 +106,28 @@ type UserActionDialogProps = {
 
 export function UsersActionDialog({ currentRow, open, onOpenChange }: UserActionDialogProps) {
   const isEdit = !!currentRow
+  const router = useRouter()
+
+  const changeRoleMutation = useMutation({
+    mutationFn: (role: string) => {
+      if (!currentRow) {
+        return Promise.reject(new Error('No user selected for role change.'))
+      }
+
+      return usersService.changeUserRole({
+        id: currentRow._id,
+        role: role as UserRole
+      })
+    },
+    onSuccess: () => {
+      toast.success('User role updated successfully.')
+      router.invalidate()
+    },
+    onError: () => {
+      toast.error('Failed to change user role. Please try again.')
+    }
+  })
+
   const form = useForm<UserForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
@@ -232,22 +259,39 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
               <FormField
                 control={form.control}
                 name="role"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
-                    <FormLabel className="col-span-2 text-end">Role</FormLabel>
-                    <SelectDropdown
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                      placeholder="Select a role"
-                      className="col-span-4"
-                      items={roles.map(({ label, value }) => ({
-                        label,
-                        value
-                      }))}
-                    />
-                    <FormMessage className="col-span-4 col-start-3" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const isRoleChanged = isEdit && field.value !== currentRow!.role
+                  return (
+                    <FormItem className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
+                      <FormLabel className="col-span-2 text-end">Role</FormLabel>
+                      <div className={isEdit ? 'col-span-3 flex items-center gap-2' : 'col-span-4'}>
+                        <SelectDropdown
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                          placeholder="Select a role"
+                          className="w-full"
+                          items={roles.map(({ label, value }) => ({
+                            label,
+                            value
+                          }))}
+                        />
+                      </div>
+                      {isEdit && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="col-span-1"
+                          disabled={!isRoleChanged || changeRoleMutation.isPending}
+                          onClick={() => changeRoleMutation.mutate(field.value)}
+                        >
+                          {changeRoleMutation.isPending ? 'Saving...' : 'Update'}
+                        </Button>
+                      )}
+                      <FormMessage className="col-span-4 col-start-3" />
+                    </FormItem>
+                  )
+                }}
               />
               <FormField
                 control={form.control}

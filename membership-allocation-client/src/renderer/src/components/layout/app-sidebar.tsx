@@ -11,13 +11,12 @@ import { sidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
-import { getRouteApi } from '@tanstack/react-router'
-
-const routeApi = getRouteApi('/_authenticated')
+import { useUserProfile } from '@/hooks/use-user-profile'
+import { SidebarUserSkeleton } from '@/components/skeletons'
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
-  const { userProfile } = routeApi.useLoaderData()
+  const { userProfile, isLoading } = useUserProfile()
 
   const authenticatedUser = {
     name: userProfile?.name || 'Guest User',
@@ -40,7 +39,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={authenticatedUser} />
+        {isLoading ? <SidebarUserSkeleton /> : <NavUser user={authenticatedUser} />}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
