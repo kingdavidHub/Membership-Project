@@ -1,6 +1,7 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { Members } from '@/features/members'
+import { MembersPendingSkeleton } from '@/features/members/components/members-pending-skeleton'
 import { membersService } from '@/api/services'
 
 const membersSearchSchema = z.object({
@@ -28,5 +29,6 @@ export const Route = createFileRoute('/_authenticated/members/')({
     const membersResponse = await membersService.getMembers(deps.page || 1, deps.pageSize || 10)
     return { membersResponse }
   },
-  component: Members
+  component: Members,
+  pendingComponent: MembersPendingSkeleton
 })

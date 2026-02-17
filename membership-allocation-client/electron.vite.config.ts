@@ -8,7 +8,6 @@ export default defineConfig({
   main: {},
   preload: {},
   renderer: {
-    // envDir: process.cwd(),
     resolve: {
       alias: {
         '@': resolve('src/renderer/src'),

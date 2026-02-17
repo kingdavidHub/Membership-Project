@@ -1,6 +1,7 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { Users } from '@/features/users'
+import { UsersPendingSkeleton } from '@/features/users/components/users-pending-skeleton'
 import { roles } from '@/features/users/data/data'
 import { usersService } from '@/api/services/users.service'
 
@@ -38,5 +39,6 @@ export const Route = createFileRoute('/_authenticated/users/')({
     const usersResponse = await usersService.getUsers(page, limit)
     return { usersResponse }
   },
-  component: Users
+  component: Users,
+  pendingComponent: UsersPendingSkeleton
 })

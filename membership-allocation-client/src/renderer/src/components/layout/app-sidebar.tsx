@@ -12,10 +12,11 @@ import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
 import { useUserProfile } from '@/hooks/use-user-profile'
+import { SidebarUserSkeleton } from '@/components/skeletons'
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
-  const { userProfile } = useUserProfile()
+  const { userProfile, isLoading } = useUserProfile()
 
   const authenticatedUser = {
     name: userProfile?.name || 'Guest User',
@@ -38,7 +39,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={authenticatedUser} />
+        {isLoading ? <SidebarUserSkeleton /> : <NavUser user={authenticatedUser} />}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

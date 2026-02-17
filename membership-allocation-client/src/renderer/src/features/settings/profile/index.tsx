@@ -1,4 +1,5 @@
 import { useUserProfile } from '@/hooks/use-user-profile'
+import { ProfileFormSkeleton } from '@/components/skeletons'
 import { ContentSection } from '../components/content-section'
 import { ProfileForm } from './profile-form'
 
@@ -8,7 +9,7 @@ export function SettingsProfile() {
   if (isLoading || !userProfile) {
     return (
       <ContentSection title="Profile" desc="This is how others will see you on the site.">
-        <div className="text-muted-foreground text-sm">Loading profile...</div>
+        <ProfileFormSkeleton />
       </ContentSection>
     )
   }

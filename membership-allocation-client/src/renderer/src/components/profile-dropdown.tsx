@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import useDialogState from '@/hooks/use-dialog-state'
 import { useUserProfile } from '@/hooks/use-user-profile'
+import { ProfileDropdownSkeleton } from '@/components/skeletons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,8 +17,12 @@ import {
 import { SignOutDialog } from '@/components/sign-out-dialog'
 
 export function ProfileDropdown() {
-  const { userProfile } = useUserProfile()
+  const { userProfile, isLoading } = useUserProfile()
   const [open, setOpen] = useDialogState()
+
+  if (isLoading) {
+    return <ProfileDropdownSkeleton />
+  }
 
   return (
     <>
