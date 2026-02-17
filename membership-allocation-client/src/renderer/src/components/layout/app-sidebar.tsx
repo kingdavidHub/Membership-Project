@@ -11,13 +11,11 @@ import { sidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
-import { getRouteApi } from '@tanstack/react-router'
-
-const routeApi = getRouteApi('/_authenticated')
+import { useUserProfile } from '@/hooks/use-user-profile'
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
-  const { userProfile } = routeApi.useLoaderData()
+  const { userProfile } = useUserProfile()
 
   const authenticatedUser = {
     name: userProfile?.name || 'Guest User',
