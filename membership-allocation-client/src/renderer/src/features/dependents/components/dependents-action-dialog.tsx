@@ -26,6 +26,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { membersService } from '@/api/services'
 import { type Dependent } from '../data/schema'
+import { useDependents } from './dependents-provider'
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First Name is required.'),
@@ -47,8 +48,7 @@ export function DependentsActionDialog({
 }: DependentActionDialogProps) {
   const isEdit = !!currentRow
   const router = useRouter()
-  // Use the member ID from the current row (dependent's member reference)
-  const memberId = currentRow?.member || ''
+  const { memberId } = useDependents()
 
   const form = useForm<DependentForm>({
     resolver: zodResolver(formSchema),

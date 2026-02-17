@@ -29,7 +29,7 @@ export function Members() {
     entryYear: apiMember.entryYear,
     paymentStatus: apiMember.paymentStatus,
     memberStatus: apiMember.memberStatus,
-    dependents: apiMember.dependents?.map((d) => d._id),
+    dependents: apiMember.dependents || [],
     createdAt: apiMember.createdAt
   }))
 

@@ -1,5 +1,6 @@
-import { Link, getRouteApi } from '@tanstack/react-router'
+import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
+import { useEffect } from 'react'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
@@ -8,31 +9,44 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Button } from '@/components/ui/button'
 import { columns } from './components/dependents-columns'
 import { DependentsDialogs } from './components/dependents-dialogs'
+import { DependentsPrimaryButtons } from './components/dependents-primary-buttons'
 import { DependentsProvider } from './components/dependents-provider'
 import { DependentsTable } from './components/dependents-table'
 import { type Dependent } from './data/schema'
-import { type ApiMember } from '@/api/types/member.types'
+import { useDependentsNavigationStore } from '@/stores/dependents-navigation-store'
 
-const route = getRouteApi('/_authenticated/members/dependents/')
+const route = getRouteApi('/_authenticated/members/$memberId/dependents')
 
 export function Dependents() {
-  const { membersResponse } = route.useLoaderData()
+  const { memberId } = route.useParams()
+  const navigate = useNavigate()
+  const storeData = useDependentsNavigationStore((s) => s.data)
 
-  // Flatten all dependents from all members with member name enrichment
-  const dependents: Dependent[] = (membersResponse?.data?.members || []).flatMap(
-    (member: ApiMember) =>
-      (member.dependents || []).map((dep) => ({
-        _id: dep._id,
-        firstName: dep.firstName,
-        lastName: dep.lastName,
-        member: member._id,
-        memberName: `${member.firstName} ${member.lastName}`,
-        createdAt: dep.createdAt
-      }))
-  )
+  // If the store has no data (e.g. direct URL access), redirect back to members
+  useEffect(() => {
+    if (!storeData || storeData.memberId !== memberId) {
+      navigate({ to: '/members' })
+    }
+  }, [storeData, memberId, navigate])
+
+  if (!storeData || storeData.memberId !== memberId) {
+    return null
+  }
+
+  const { memberName, dependents: rawDependents } = storeData
+
+  // Map to the frontend Dependent schema
+  const dependents: Dependent[] = rawDependents.map((dep) => ({
+    _id: dep._id,
+    firstName: dep.firstName,
+    lastName: dep.lastName,
+    member: memberId,
+    memberName,
+    createdAt: dep.createdAt
+  }))
 
   return (
-    <DependentsProvider>
+    <DependentsProvider memberId={memberId}>
       <Header fixed>
         <Search />
         <div className="ml-auto flex items-center space-x-4">
@@ -52,9 +66,10 @@ export function Dependents() {
                 </Link>
               </Button>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight">Dependents</h2>
-            <p className="text-muted-foreground">View all dependents across all members.</p>
+            <h2 className="text-2xl font-bold tracking-tight">Dependents of {memberName}</h2>
+            <p className="text-muted-foreground">Manage dependents for this member.</p>
           </div>
+          <DependentsPrimaryButtons />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
           <DependentsTable data={dependents} columns={columns} />

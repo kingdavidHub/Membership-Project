@@ -2,27 +2,29 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Dependent } from '../data/schema'
 
-type DependentsDialogType = 'edit' | 'delete'
+type DependentsDialogType = 'add' | 'edit' | 'delete'
 
 type DependentsContextType = {
   open: DependentsDialogType | null
   setOpen: (str: DependentsDialogType | null) => void
   currentRow: Dependent | null
   setCurrentRow: React.Dispatch<React.SetStateAction<Dependent | null>>
+  memberId: string
 }
 
 const DependentsContext = React.createContext<DependentsContextType | null>(null)
 
 type DependentsProviderProps = {
   children: React.ReactNode
+  memberId: string
 }
 
-export function DependentsProvider({ children }: DependentsProviderProps) {
+export function DependentsProvider({ children, memberId }: DependentsProviderProps) {
   const [open, setOpen] = useDialogState<DependentsDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Dependent | null>(null)
 
   return (
-    <DependentsContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <DependentsContext value={{ open, setOpen, currentRow, setCurrentRow, memberId }}>
       {children}
     </DependentsContext>
   )

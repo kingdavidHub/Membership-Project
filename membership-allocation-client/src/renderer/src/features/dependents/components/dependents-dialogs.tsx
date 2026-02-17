@@ -7,6 +7,13 @@ export function DependentsDialogs() {
 
   return (
     <>
+      {/* Add dialog (no currentRow needed) */}
+      <DependentsActionDialog
+        key="dependent-add"
+        open={open === 'add'}
+        onOpenChange={() => setOpen('add')}
+      />
+
       {currentRow && (
         <>
           <DependentsActionDialog

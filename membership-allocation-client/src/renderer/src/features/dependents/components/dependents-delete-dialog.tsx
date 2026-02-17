@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { membersService } from '@/api/services'
 import { type Dependent } from '../data/schema'
+import { useDependents } from './dependents-provider'
 
 type DependentDeleteDialogProps = {
   open: boolean
@@ -25,8 +26,7 @@ export function DependentsDeleteDialog({
 }: DependentDeleteDialogProps) {
   const [value, setValue] = useState('')
   const router = useRouter()
-  // Use the member ID from the current row (dependent's member reference)
-  const memberId = currentRow.member
+  const { memberId } = useDependents()
   const fullName = `${currentRow.firstName} ${currentRow.lastName}`
 
   const deleteMutation = useMutation({
