@@ -36,13 +36,13 @@ export const columns: ColumnDef<Member>[] = [
     enableSorting: false,
     enableHiding: false
   },
-  {
-    accessorKey: 'membershipId',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Member ID" />,
-    cell: ({ row }) => <div className="w-20">{row.getValue('membershipId')}</div>,
-    enableSorting: false,
-    enableHiding: false
-  },
+  // {
+  //   accessorKey: 'membershipId',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Member ID" />,
+  //   cell: ({ row }) => <div className="w-20">{row.getValue('membershipId')}</div>,
+  //   enableSorting: false,
+  //   enableHiding: false
+  // },
   {
     id: 'name',
     accessorFn: (row) => `${row.firstName} ${row.lastName}`,
@@ -50,16 +50,16 @@ export const columns: ColumnDef<Member>[] = [
     cell: ({ row }) => <LongText className="max-w-36">{row.getValue('name')}</LongText>,
     enableHiding: false
   },
-  {
-    accessorKey: 'email',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
-    cell: ({ row }) => <div className="w-45">{row.getValue('email') || '-'}</div>
-  },
-  {
-    accessorKey: 'phoneNumber',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Phone Number" />,
-    cell: ({ row }) => <div>{row.getValue('phoneNumber') || '-'}</div>
-  },
+  // {
+  //   accessorKey: 'email',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
+  //   cell: ({ row }) => <div className="w-45">{row.getValue('email') || '-'}</div>
+  // },
+  // {
+  //   accessorKey: 'phoneNumber',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Phone Number" />,
+  //   cell: ({ row }) => <div>{row.getValue('phoneNumber') || '-'}</div>
+  // },
   {
     accessorKey: 'entryYear',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Entry Year" />,

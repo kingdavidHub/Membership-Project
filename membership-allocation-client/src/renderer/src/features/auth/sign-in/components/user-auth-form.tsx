@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/api/services'
-import { debugEnv } from '@/config/env'
 
 const formSchema = z.object({
   email: z.email({

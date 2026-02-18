@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Member } from '../data/schema'
 
-type MembersDialogType = 'invite' | 'add' | 'edit' | 'delete'
+type MembersDialogType = 'invite' | 'add' | 'edit' | 'delete' | 'send-message'
 
 type MembersContextType = {
   open: MembersDialogType | null
   setOpen: (str: MembersDialogType | null) => void
   currentRow: Member | null
   setCurrentRow: React.Dispatch<React.SetStateAction<Member | null>>
+  selectedRows: Member[]
+  setSelectedRows: React.Dispatch<React.SetStateAction<Member[]>>
 }
 
 const MembersContext = React.createContext<MembersContextType | null>(null)
@@ -16,9 +18,14 @@ const MembersContext = React.createContext<MembersContextType | null>(null)
 export function MembersProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useDialogState<MembersDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Member | null>(null)
+  const [selectedRows, setSelectedRows] = useState<Member[]>([])
 
   return (
-    <MembersContext value={{ open, setOpen, currentRow, setCurrentRow }}>{children}</MembersContext>
+    <MembersContext
+      value={{ open, setOpen, currentRow, setCurrentRow, selectedRows, setSelectedRows }}
+    >
+      {children}
+    </MembersContext>
   )
 }
 

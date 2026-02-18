@@ -46,6 +46,11 @@ export const API_ENDPOINTS = {
     UPDATE: (memberId: string, dependentId: string) =>
       `/members/${memberId}/dependents/${dependentId}`,
     DELETE: (memberId: string) => `/members/${memberId}/dependents`
+  },
+
+  // Reports
+  REPORTS: {
+    SEND_MEMBERS_MESSAGE: '/reports/sendMembersMessage'
   }
 } as const
 

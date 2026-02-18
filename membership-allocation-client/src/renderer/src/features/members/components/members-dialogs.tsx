@@ -1,10 +1,11 @@
 import { MembersActionDialog } from './members-action-dialog'
 import { MembersDeleteDialog } from './members-delete-dialog'
 import { MembersInviteDialog } from './members-invite-dialog'
+import { SendMessageDialog } from './send-message-dialog'
 import { useMembers } from './members-provider'
 
 export function MembersDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useMembers()
+  const { open, setOpen, currentRow, setCurrentRow, selectedRows } = useMembers()
   return (
     <>
       <MembersActionDialog
@@ -18,6 +19,16 @@ export function MembersDialogs() {
         open={open === 'invite'}
         onOpenChange={() => setOpen('invite')}
       />
+
+      {/* Send Message dialog */}
+      {selectedRows.length > 0 && (
+        <SendMessageDialog
+          key="member-send-message"
+          open={open === 'send-message'}
+          onOpenChange={() => setOpen('send-message')}
+          selectedMembers={selectedRows}
+        />
+      )}
 
       {currentRow && (
         <>

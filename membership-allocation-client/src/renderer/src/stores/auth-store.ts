@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthState>()((set) => {
       accessToken: initToken,
       setAccessToken: (accessToken) =>
         set((state) => {
-          setCookie(ACCESS_TOKEN, JSON.stringify(accessToken))
+          setCookie(ACCESS_TOKEN, JSON.stringify(accessToken), )
           return { ...state, auth: { ...state.auth, accessToken } }
         }),
       resetAccessToken: () =>
