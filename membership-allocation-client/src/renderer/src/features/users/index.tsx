@@ -10,6 +10,7 @@ import { UsersPrimaryButtons } from './components/users-primary-buttons'
 import { UsersProvider } from './components/users-provider'
 import { UsersTable } from './components/users-table'
 import { type User, type UserStatus } from './data/schema'
+import { IsUserOnline } from '@/components/is-user-online'
 
 const route = getRouteApi('/_authenticated/users/')
 
@@ -53,6 +54,7 @@ export function Users() {
         <div className="ms-auto flex items-center space-x-4">
           <ThemeSwitch />
           <ConfigDrawer />
+          <IsUserOnline />
           <ProfileDropdown />
         </div>
       </Header>

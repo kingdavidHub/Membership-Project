@@ -86,13 +86,12 @@ export const membersService = {
 
   // Dependents Operations
   /**
-   * Create new dependent
+   * Create new dependent - API expects an array of dependents
    */
   createDependent: async (memberId: string, data: CreateDependentRequest): Promise<Dependent> => {
-    const response = (await apiClient.post(
-      API_ENDPOINTS.DEPENDENTS.CREATE(memberId),
+    const response = (await apiClient.post(API_ENDPOINTS.DEPENDENTS.CREATE(memberId), [
       data
-    )) as DependentDetailResponse
+    ])) as DependentDetailResponse
     return response.data.dependent
   },
 
