@@ -7,6 +7,10 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 export default defineConfig({
   root: 'src/renderer',
   envDir: process.cwd(),
+  build: {
+    outDir: resolve(__dirname, 'dist'),
+    emptyOutDir: true
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src/renderer/src'),
