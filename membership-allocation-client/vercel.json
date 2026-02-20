@@ -1,0 +1,7 @@
+{
+  "buildCommand": "yarn build:vite",
+  "outputDirectory": "dist",
+  "devCommand": "yarn dev:renderer",
+  "installCommand": "yarn install",
+  "framework": null
+}

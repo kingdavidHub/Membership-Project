@@ -3,12 +3,23 @@
  * Centralized access to environment variables for easier debugging and type safety
  */
 
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string
+  readonly MODE: string
+  readonly DEV: boolean
+  readonly PROD: boolean
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
 /**
  * Environment configuration object
  * All environment variables are accessed through this object
  */
 export const env = {
-  API_URL: import.meta.env.VITE_API_URL
+  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
 } as const
 
 /**

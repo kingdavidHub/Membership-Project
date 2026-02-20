@@ -16,7 +16,7 @@
     "dev": "electron-vite dev",
     "dev:renderer": "vite dev",
     "build": "npm run typecheck && electron-vite build",
-    "build:vite":"npm run typecheck && vite build",
+    "build:vite": "npm run typecheck:web && vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
