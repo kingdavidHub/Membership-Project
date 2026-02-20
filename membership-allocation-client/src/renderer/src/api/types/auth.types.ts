@@ -83,3 +83,14 @@ export interface UpdateProfileRequest {
   email?: string
   avatar?: string
 }
+
+// Update Password
+export interface UpdatePasswordRequest {
+  oldPassword: string
+  newPassword: string
+}
+
+export interface UpdatePasswordResponse {
+  status: string
+  message: string
+}

@@ -14,7 +14,8 @@ export const API_ENDPOINTS = {
     RESET_PASSWORD: '/auth/reset-password',
     VERIFY_EMAIL: '/auth/verify-email',
     RESEND_VERIFICATION: '/auth/resend-verification',
-    PROFILE: '/auth/profile'
+    PROFILE: '/auth/profile',
+    UPDATE_PASSWORD: '/auth/updatePassword'
   },
 
   // Users
@@ -42,14 +43,15 @@ export const API_ENDPOINTS = {
 
   // Dependents
   DEPENDENTS: {
-    LIST: (memberId: string) => `/members/${memberId}/dependents`,
-    DETAILS: (memberId: string, dependentId: string) =>
-      `/members/${memberId}/dependents/${dependentId}`,
     CREATE: (memberId: string) => `/members/${memberId}/dependents`,
     UPDATE: (memberId: string, dependentId: string) =>
       `/members/${memberId}/dependents/${dependentId}`,
-    DELETE: (memberId: string, dependentId: string) =>
-      `/members/${memberId}/dependents/${dependentId}`
+    DELETE: (memberId: string) => `/members/${memberId}/dependents`
+  },
+
+  // Reports
+  REPORTS: {
+    SEND_MEMBERS_MESSAGE: '/reports/sendMembersMessage'
   }
 } as const
 

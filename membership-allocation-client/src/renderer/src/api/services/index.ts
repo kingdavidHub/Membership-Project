@@ -9,6 +9,7 @@
 export { authService } from './auth.service'
 export { usersService } from './users.service'
 export { membersService } from './members.service'
+export { reportsService } from './reports.service'
 
 // Re-export common types for convenience
 export type * from '../types'

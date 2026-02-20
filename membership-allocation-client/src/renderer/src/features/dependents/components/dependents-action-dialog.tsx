@@ -24,12 +24,23 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { membersService } from '@/api/services'
+import { type DependentRelations } from '@/api/types/member.types'
 import { type Dependent } from '../data/schema'
+import { dependentRelationOptions } from '../data/dependent-relations'
+import { useDependents } from './dependents-provider'
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First Name is required.'),
-  lastName: z.string().min(1, 'Last Name is required.')
+  lastName: z.string().min(1, 'Last Name is required.'),
+  relationship: z.string().min(1, 'Relationship is required.')
 })
 
 type DependentForm = z.infer<typeof formSchema>
@@ -47,24 +58,30 @@ export function DependentsActionDialog({
 }: DependentActionDialogProps) {
   const isEdit = !!currentRow
   const router = useRouter()
-  // Use the member ID from the current row (dependent's member reference)
-  const memberId = currentRow?.member || ''
+  const { memberId } = useDependents()
 
   const form = useForm<DependentForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
           firstName: currentRow.firstName,
-          lastName: currentRow.lastName
+          lastName: currentRow.lastName,
+          relationship: currentRow.relation || ''
         }
       : {
           firstName: '',
-          lastName: ''
+          lastName: '',
+          relationship: ''
         }
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: DependentForm) => membersService.createDependent(memberId, data),
+    mutationFn: ({ firstName, lastName, relationship }: DependentForm) =>
+      membersService.createDependent(memberId, {
+        firstName,
+        lastName,
+        relationship: relationship as DependentRelations
+      }),
     onSuccess: () => {
       toast.success('Dependent created successfully.')
       form.reset()
@@ -77,8 +94,12 @@ export function DependentsActionDialog({
   })
 
   const updateMutation = useMutation({
-    mutationFn: (data: DependentForm) =>
-      membersService.updateDependent(memberId, currentRow!._id, data),
+    mutationFn: ({ firstName, lastName, relationship }: DependentForm) =>
+      membersService.updateDependent(memberId, currentRow!._id, {
+        firstName,
+        lastName,
+        relationship: relationship as DependentRelations
+      }),
     onSuccess: () => {
       toast.success('Dependent updated successfully.')
       form.reset()
@@ -144,6 +165,30 @@ export function DependentsActionDialog({
                   <FormControl>
                     <Input placeholder="Doe" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="relationship"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Relationship</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select relationship" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {dependentRelationOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

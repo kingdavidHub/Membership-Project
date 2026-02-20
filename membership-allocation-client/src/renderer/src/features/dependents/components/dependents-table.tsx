@@ -15,6 +15,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import { Trash2 } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -23,8 +24,10 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { type Dependent } from '../data/schema'
+import { useDependents } from './dependents-provider'
 
 type DependentsTableProps = {
   columns: ColumnDef<Dependent>[]
@@ -36,6 +39,7 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const { setOpen, setSelectedRows } = useDependents()
 
   const table = useReactTable({
     data,
@@ -59,14 +63,38 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
     getFacetedUniqueValues: getFacetedUniqueValues()
   })
 
+  const selectedRowsData = table.getFilteredSelectedRowModel().rows
+
   return (
     <div className="space-y-4">
-      <DataTableToolbar
-        table={table}
-        filters={[]}
-        searchKey="firstName"
-        searchPlaceholder="Filter dependents..."
-      />
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <DataTableToolbar
+            table={table}
+            filters={[]}
+            searchKey="firstName"
+            searchPlaceholder="Filter dependents..."
+          />
+        </div>
+        {selectedRowsData.length > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              {selectedRowsData.length} selected
+            </span>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                setSelectedRows(selectedRowsData.map((r) => r.original))
+                setOpen('bulk-delete')
+              }}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete {selectedRowsData.length > 1 ? `(${selectedRowsData.length})` : ''}
+            </Button>
+          </div>
+        )}
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

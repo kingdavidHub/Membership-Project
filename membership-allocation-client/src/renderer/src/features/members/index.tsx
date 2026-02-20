@@ -11,6 +11,8 @@ import { MembersProvider } from './components/members-provider'
 import { MembersTable } from './components/members-table'
 import { type Member } from './data/schema'
 import { type ApiMember } from '@/api/types/member.types'
+import { IsUserOnline } from '@/components/is-user-online'
+import { ConfigDrawer } from '@/components/config-drawer'
 
 const route = getRouteApi('/_authenticated/members/')
 
@@ -29,7 +31,7 @@ export function Members() {
     entryYear: apiMember.entryYear,
     paymentStatus: apiMember.paymentStatus,
     memberStatus: apiMember.memberStatus,
-    dependents: apiMember.dependents?.map((d) => d._id),
+    dependents: apiMember.dependents || [],
     createdAt: apiMember.createdAt
   }))
 
@@ -41,8 +43,10 @@ export function Members() {
     <MembersProvider>
       <Header fixed>
         <Search />
-        <div className="ml-auto flex items-center space-x-4">
+        <div className="ms-auto flex items-center space-x-4">
           <ThemeSwitch />
+          <ConfigDrawer />
+          <IsUserOnline />
           <ProfileDropdown />
         </div>
       </Header>

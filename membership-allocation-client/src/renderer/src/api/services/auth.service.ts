@@ -10,7 +10,9 @@ import type {
   ResetPasswordRequest,
   ResetPasswordResponse,
   UserProfile,
-  UpdateProfileRequest
+  UpdateProfileRequest,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse
 } from '../types/auth.types'
 
 /**
@@ -97,6 +99,16 @@ export const authService = {
    */
   updateProfile: async (profileData: UpdateProfileRequest): Promise<UserProfile> => {
     return (await apiClient.patch(API_ENDPOINTS.AUTH.PROFILE, profileData)) as UserProfile
+  },
+
+  /**
+   * Update password
+   */
+  updatePassword: async (data: UpdatePasswordRequest): Promise<UpdatePasswordResponse> => {
+    return (await apiClient.post(
+      API_ENDPOINTS.AUTH.UPDATE_PASSWORD,
+      data
+    )) as UpdatePasswordResponse
   }
 }
 

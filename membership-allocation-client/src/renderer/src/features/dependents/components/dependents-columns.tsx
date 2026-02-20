@@ -3,6 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
@@ -14,6 +15,7 @@ import {
 import { DataTableColumnHeader } from '@/components/data-table'
 import { type Dependent } from '../data/schema'
 import { useDependents } from './dependents-provider'
+import { dependentRelationLabels } from '../data/dependent-relations'
 
 export const columns: ColumnDef<Dependent>[] = [
   {
@@ -25,7 +27,7 @@ export const columns: ColumnDef<Dependent>[] = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="translate-y-[2px]"
+        className="translate-y-0.5"
       />
     ),
     cell: ({ row }) => (
@@ -33,7 +35,7 @@ export const columns: ColumnDef<Dependent>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        className="translate-y-[2px]"
+        className="translate-y-0.5"
       />
     ),
     enableSorting: false,
@@ -48,6 +50,15 @@ export const columns: ColumnDef<Dependent>[] = [
     accessorKey: 'lastName',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Last Name" />,
     cell: ({ row }) => <div>{row.getValue('lastName')}</div>
+  },
+  {
+    accessorKey: 'relation',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Relationship" />,
+    cell: ({ row }) => {
+      const relation = row.getValue('relation') as string | undefined
+      if (!relation) return <div className="text-muted-foreground">-</div>
+      return <Badge variant="outline">{dependentRelationLabels[relation] || relation}</Badge>
+    }
   },
   {
     accessorKey: 'memberName',

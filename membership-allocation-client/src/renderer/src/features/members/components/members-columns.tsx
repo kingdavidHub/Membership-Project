@@ -10,6 +10,7 @@ import { DataTableColumnHeader } from '@/components/data-table'
 import { DataTableRowActions } from './data-table-row-actions'
 import { paymentStatuses, memberStatuses } from '../data/data'
 import { type Member } from '../data/schema'
+import { useDependentsNavigationStore } from '@/stores/dependents-navigation-store'
 
 export const columns: ColumnDef<Member>[] = [
   {
@@ -35,13 +36,13 @@ export const columns: ColumnDef<Member>[] = [
     enableSorting: false,
     enableHiding: false
   },
-  {
-    accessorKey: 'membershipId',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Member ID" />,
-    cell: ({ row }) => <div className="w-20">{row.getValue('membershipId')}</div>,
-    enableSorting: false,
-    enableHiding: false
-  },
+  // {
+  //   accessorKey: 'membershipId',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Member ID" />,
+  //   cell: ({ row }) => <div className="w-20">{row.getValue('membershipId')}</div>,
+  //   enableSorting: false,
+  //   enableHiding: false
+  // },
   {
     id: 'name',
     accessorFn: (row) => `${row.firstName} ${row.lastName}`,
@@ -49,16 +50,16 @@ export const columns: ColumnDef<Member>[] = [
     cell: ({ row }) => <LongText className="max-w-36">{row.getValue('name')}</LongText>,
     enableHiding: false
   },
-  {
-    accessorKey: 'email',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
-    cell: ({ row }) => <div className="w-45">{row.getValue('email') || '-'}</div>
-  },
-  {
-    accessorKey: 'phoneNumber',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Phone Number" />,
-    cell: ({ row }) => <div>{row.getValue('phoneNumber') || '-'}</div>
-  },
+  // {
+  //   accessorKey: 'email',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
+  //   cell: ({ row }) => <div className="w-45">{row.getValue('email') || '-'}</div>
+  // },
+  // {
+  //   accessorKey: 'phoneNumber',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Phone Number" />,
+  //   cell: ({ row }) => <div>{row.getValue('phoneNumber') || '-'}</div>
+  // },
   {
     accessorKey: 'entryYear',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Entry Year" />,
@@ -115,7 +116,17 @@ export const columns: ColumnDef<Member>[] = [
       const dependentsCount = row.original.dependents?.length || 0
 
       return (
-        <Link to="/members/dependents">
+        <Link
+          to="/members/$memberId/dependents"
+          params={{ memberId: row.original._id }}
+          onClick={() => {
+            useDependentsNavigationStore.getState().setData({
+              memberId: row.original._id,
+              memberName: `${row.original.firstName} ${row.original.lastName}`,
+              dependents: row.original.dependents || []
+            })
+          }}
+        >
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
             <Users className="h-4 w-4" />
             <span>{dependentsCount}</span>

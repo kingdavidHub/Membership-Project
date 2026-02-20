@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { DataTableBulkActions } from './data-table-bulk-actions'
+import { useMembers } from './members-provider'
 import { paymentStatuses, memberStatuses } from '../data/data'
 import { type Member } from '../data/schema'
 
@@ -39,6 +40,7 @@ export function MembersTable({ columns, data, pageCount }: MembersTableProps) {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const { setSelectedRows } = useMembers()
 
   const table = useReactTable({
     data,
@@ -63,6 +65,12 @@ export function MembersTable({ columns, data, pageCount }: MembersTableProps) {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues()
   })
+
+  // Sync table row selection to the provider so it can be used by the Send Message button
+  const selectedRowsData = table.getFilteredSelectedRowModel().rows
+  React.useEffect(() => {
+    setSelectedRows(selectedRowsData.map((r) => r.original))
+  }, [selectedRowsData, setSelectedRows])
 
   const filters = [
     {

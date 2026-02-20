@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
-import { AuthUser, useAuthStore, UserRole } from '@/stores/auth-store'
-import { sleep, cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores/auth-store'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/api/services'
-import { debugEnv } from '@/config/env'
 
 const formSchema = z.object({
   email: z.email({
@@ -74,38 +73,37 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
    * Mock login function - kept for testing/development purposes
    * To use: replace onSubmit body with mockLogin(data)
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function mockLogin(data: z.infer<typeof formSchema>) {
-    setIsLoading(true)
+  // function mockLogin(data: z.infer<typeof formSchema>) {
+  //   setIsLoading(true)
 
-    toast.promise(sleep(2000), {
-      loading: 'Signing in...',
-      success: () => {
-        setIsLoading(false)
+  //   toast.promise(sleep(2000), {
+  //     loading: 'Signing in...',
+  //     success: () => {
+  //       setIsLoading(false)
 
-        // Mock successful authentication with expiry computed at success time
-        const mockUser: AuthUser = {
-          _id: 'mock-id',
-          name: 'Mock User',
-          email: data.email,
-          role: UserRole.SUPER_ADMIN,
-          active: true,
-          exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours from now
-        }
+  //       // Mock successful authentication with expiry computed at success time
+  //       const mockUser: AuthUser = {
+  //         _id: 'mock-id',
+  //         name: 'Mock User',
+  //         email: data.email,
+  //         role: UserRole.SUPER_ADMIN,
+  //         active: true,
+  //         exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours from now
+  //       }
 
-        // Set user and access token
-        auth.setUser(mockUser)
-        auth.setAccessToken('mock-access-token')
+  //       // Set user and access token
+  //       auth.setUser(mockUser)
+  //       auth.setAccessToken('mock-access-token')
 
-        // Redirect to the stored location or default to dashboard
-        const targetPath = redirectTo || '/'
-        navigate({ to: targetPath, replace: true })
+  //       // Redirect to the stored location or default to dashboard
+  //       const targetPath = redirectTo || '/'
+  //       navigate({ to: targetPath, replace: true })
 
-        return `Welcome back, ${data.email}!`
-      },
-      error: 'Error'
-    })
-  }
+  //       return `Welcome back, ${data.email}!`
+  //     },
+  //     error: 'Error'
+  //   })
+  // }
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)

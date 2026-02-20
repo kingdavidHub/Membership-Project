@@ -26,7 +26,18 @@ const memberSchema = z.object({
   entryYear: z.number(),
   paymentStatus: paymentStatusSchema,
   memberStatus: memberStatusSchema,
-  dependents: z.array(z.string()).optional(),
+  dependents: z
+    .array(
+      z.object({
+        _id: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
+        member: z.string().optional(),
+        relation: z.string().optional(),
+        createdAt: z.string().optional()
+      })
+    )
+    .optional(),
   createdAt: z.string().optional(),
   // Frontend-only fields (not from API)
   phoneNumber: z.string().optional()
