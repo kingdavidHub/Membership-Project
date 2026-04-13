@@ -2,7 +2,8 @@
 
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { type Row } from '@tanstack/react-table'
-import { Trash2, UserPen } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
+import { ReceiptText, Trash2, UserPen, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,6 +15,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useMembers } from './members-provider'
 import { type Member } from '../data/schema'
+import { useDependentsNavigationStore } from '@/stores/dependents-navigation-store'
+import { usePaymentsNavigationStore } from '@/stores/payments-navigation-store'
 
 type DataTableRowActionsProps = {
   row: Row<Member>
@@ -21,6 +24,7 @@ type DataTableRowActionsProps = {
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useMembers()
+  const navigate = useNavigate()
 
   return (
     <DropdownMenu modal={false}>
@@ -30,7 +34,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
+      <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem
           onClick={() => {
             setCurrentRow(row.original)
@@ -40,6 +44,41 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           Edit
           <DropdownMenuShortcut>
             <UserPen size={16} />
+          </DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            usePaymentsNavigationStore.getState().setData({
+              memberId: row.original._id,
+              memberName: `${row.original.firstName} ${row.original.lastName}`
+            })
+            navigate({
+              to: '/members/$memberId/payments',
+              params: { memberId: row.original._id }
+            })
+          }}
+        >
+          Payment summary
+          <DropdownMenuShortcut>
+            <ReceiptText size={16} />
+          </DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            useDependentsNavigationStore.getState().setData({
+              memberId: row.original._id,
+              memberName: `${row.original.firstName} ${row.original.lastName}`,
+              dependents: row.original.dependents || []
+            })
+            navigate({
+              to: '/members/$memberId/dependents',
+              params: { memberId: row.original._id }
+            })
+          }}
+        >
+          View Dependents
+          <DropdownMenuShortcut>
+            <Users size={16} />
           </DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

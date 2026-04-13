@@ -49,6 +49,12 @@ export const API_ENDPOINTS = {
     DELETE: (memberId: string) => `/members/${memberId}/dependents`
   },
 
+  // Payments
+  PAYMENTS: {
+    LIST: (memberId: string) => `/members/${memberId}/payments`,
+    CREATE: (memberId: string) => `/members/${memberId}/payments`
+  },
+
   // Reports
   REPORTS: {
     SEND_MEMBERS_MESSAGE: '/reports/sendMembersMessage'

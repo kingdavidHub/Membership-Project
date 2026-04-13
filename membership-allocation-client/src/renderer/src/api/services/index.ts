@@ -44,6 +44,10 @@ export type {
   UpdateMemberRequest,
   UpdateMemberStatusBulkRequest,
   BirthdayMembersResponse,
+  MemberPayment,
+  MemberPaymentsResponse,
+  CreatePaymentRequest,
+  PaymentDetailResponse,
   PaymentStatus as MemberPaymentStatus,
   MemberStatus as MemberMemberStatus
 } from '../types/member.types'

@@ -11,7 +11,11 @@ import type {
   Dependent,
   DependentDetailResponse,
   CreateDependentRequest,
-  UpdateDependentRequest
+  UpdateDependentRequest,
+  MemberPayment,
+  MemberPaymentsResponse,
+  CreatePaymentRequest,
+  PaymentDetailResponse
 } from '../types/member.types'
 
 /**
@@ -82,6 +86,35 @@ export const membersService = {
   getMembersByBirthdayMonth: async (month: number): Promise<BirthdayMembersResponse> => {
     const response = await apiClient.get(API_ENDPOINTS.MEMBERS.MEMBERS_BIRTHDAY_MONTH(month))
     return response as unknown as BirthdayMembersResponse
+  },
+
+  /**
+   * Get member payments
+   */
+  getMemberPayments: async (
+    memberId: string,
+    page = 1,
+    limit = 10
+  ): Promise<MemberPaymentsResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.PAYMENTS.LIST(memberId), {
+      params: { page, limit }
+    })
+    return response as unknown as MemberPaymentsResponse
+  },
+
+  /**
+   * Create member payment
+   */
+  createMemberPayment: async (
+    memberId: string,
+    paymentData: CreatePaymentRequest
+  ): Promise<MemberPayment> => {
+    const response = (await apiClient.post(
+      API_ENDPOINTS.PAYMENTS.CREATE(memberId),
+      paymentData
+    )) as PaymentDetailResponse
+
+    return response.data.payment
   },
 
   // Dependents Operations

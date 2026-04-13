@@ -35,6 +35,7 @@ import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AuthenticatedMembersMemberIdPaymentsRouteImport } from './routes/_authenticated/members/$memberId/payments'
 import { Route as AuthenticatedMembersMemberIdDependentsRouteImport } from './routes/_authenticated/members/$memberId/dependents'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -176,6 +177,12 @@ const AuthenticatedErrorsErrorRoute =
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMembersMemberIdPaymentsRoute =
+  AuthenticatedMembersMemberIdPaymentsRouteImport.update({
+    id: '/members/$memberId/payments',
+    path: '/members/$memberId/payments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMembersMemberIdDependentsRoute =
   AuthenticatedMembersMemberIdDependentsRouteImport.update({
     id: '/members/$memberId/dependents',
@@ -210,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/tasks/': typeof AuthenticatedTasksIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
   '/members/$memberId/dependents': typeof AuthenticatedMembersMemberIdDependentsRoute
+  '/members/$memberId/payments': typeof AuthenticatedMembersMemberIdPaymentsRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof authForgotPasswordRoute
@@ -237,6 +245,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
   '/members/$memberId/dependents': typeof AuthenticatedMembersMemberIdDependentsRoute
+  '/members/$memberId/payments': typeof AuthenticatedMembersMemberIdPaymentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -267,6 +276,7 @@ export interface FileRoutesById {
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
   '/_authenticated/members/$memberId/dependents': typeof AuthenticatedMembersMemberIdDependentsRoute
+  '/_authenticated/members/$memberId/payments': typeof AuthenticatedMembersMemberIdPaymentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -297,6 +307,7 @@ export interface FileRouteTypes {
     | '/tasks/'
     | '/users/'
     | '/members/$memberId/dependents'
+    | '/members/$memberId/payments'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/users'
     | '/members/$memberId/dependents'
+    | '/members/$memberId/payments'
   id:
     | '__root__'
     | '/_authenticated'
@@ -353,6 +365,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
     | '/_authenticated/members/$memberId/dependents'
+    | '/_authenticated/members/$memberId/payments'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -553,6 +566,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/members/$memberId/payments': {
+      id: '/_authenticated/members/$memberId/payments'
+      path: '/members/$memberId/payments'
+      fullPath: '/members/$memberId/payments'
+      preLoaderRoute: typeof AuthenticatedMembersMemberIdPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/members/$memberId/dependents': {
       id: '/_authenticated/members/$memberId/dependents'
       path: '/members/$memberId/dependents'
@@ -599,6 +619,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
   AuthenticatedMembersMemberIdDependentsRoute: typeof AuthenticatedMembersMemberIdDependentsRoute
+  AuthenticatedMembersMemberIdPaymentsRoute: typeof AuthenticatedMembersMemberIdPaymentsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -613,6 +634,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
   AuthenticatedMembersMemberIdDependentsRoute:
     AuthenticatedMembersMemberIdDependentsRoute,
+  AuthenticatedMembersMemberIdPaymentsRoute:
+    AuthenticatedMembersMemberIdPaymentsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

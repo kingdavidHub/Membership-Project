@@ -99,6 +99,36 @@ export interface BirthdayMembersResponse {
   }
 }
 
+export interface MemberPayment {
+  _id: string
+  amount: number
+  duration: number
+  member: string
+  createdAt: string
+}
+
+export interface MemberPaymentsResponse {
+  status: string
+  totalPages: number
+  currentPage: string
+  results: number
+  data: {
+    data: MemberPayment[]
+  }
+}
+
+export interface CreatePaymentRequest {
+  amount: number
+  duration: number
+}
+
+export interface PaymentDetailResponse {
+  status: string
+  data: {
+    payment: MemberPayment
+  }
+}
+
 // Dependents Types
 export interface DependentsListResponse {
   status: string
