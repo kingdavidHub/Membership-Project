@@ -1,5 +1,4 @@
 import { StrictMode } from 'react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import ReactDOM from 'react-dom/client'
 import { AxiosError } from 'axios'
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -103,8 +102,6 @@ if (!rootElement.innerHTML) {
           <FontProvider>
             {/* //* Direction: (ltr/rtl) */}
             <DirectionProvider>
-              {/* // * Vercel: Speed Insights (Performance Metric) */}
-              <SpeedInsights />
               {/* //* Router: (navigation) */}
               <RouterProvider router={router} />
             </DirectionProvider>
