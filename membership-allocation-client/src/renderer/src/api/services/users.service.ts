@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from '../endpoints'
 import type {
   User,
   CreateUserRequest,
+  CreateUserResponse,
   UpdateUserRequest,
   ChangeUserRoleRequest,
   ChangePasswordRequest,
@@ -42,7 +43,12 @@ export const usersService = {
    * Create new user
    */
   createUser: async (userData: CreateUserRequest): Promise<User> => {
-    return (await apiClient.post(API_ENDPOINTS.USERS.LIST, userData)) as User
+    const response = (await apiClient.post(
+      API_ENDPOINTS.AUTH_ADMIN.CREATE_USER,
+      userData
+    )) as CreateUserResponse
+
+    return response.data.user
   },
 
   /**

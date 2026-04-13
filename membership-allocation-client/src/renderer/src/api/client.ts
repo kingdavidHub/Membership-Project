@@ -37,6 +37,13 @@ apiClient.interceptors.response.use(
     return response.data
   },
   (error: AxiosError<{ message?: string; error?: string }>) => {
+    const requestUrl = error.config?.url ?? ''
+    const skipGlobalToast = requestUrl.includes('/auth/admin/create-user')
+
+    if (skipGlobalToast) {
+      return Promise.reject(error)
+    }
+
     // Handle different error status codes
     if (error.response) {
       const status = error.response.status

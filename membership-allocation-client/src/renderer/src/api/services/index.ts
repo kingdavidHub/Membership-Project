@@ -31,6 +31,7 @@ export type {
   PaymentStatus,
   MemberStatus,
   CreateUserRequest,
+  CreateUserResponse,
   UpdateUserRequest,
   ChangeUserRoleRequest,
   ChangePasswordRequest

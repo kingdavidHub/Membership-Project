@@ -53,4 +53,5 @@ export type {
   PaymentDetailResponse,
   PaymentStatus as MemberPaymentStatus,
   MemberStatus as MemberMemberStatus
+  CreateUserResponse,
 } from './member.types'

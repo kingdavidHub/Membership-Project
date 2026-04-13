@@ -30,6 +30,10 @@ export const API_ENDPOINTS = {
     CURRENT_PROFILE: '/users/me'
   },
 
+  AUTH_ADMIN: {
+    CREATE_USER: '/auth/admin/create-user'
+  },
+
   // Members
   MEMBERS: {
     LIST: '/members',

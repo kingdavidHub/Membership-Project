@@ -44,8 +44,13 @@ export interface UserProfile {
 export interface CreateUserRequest {
   name: string
   email: string
-  password: string
-  role?: UserRole
+}
+
+export interface CreateUserResponse {
+  status: string
+  data: {
+    user: User
+  }
 }
 
 export interface UpdateUserRequest {

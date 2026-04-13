@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
+import React, { useState } from 'react'
 import { type Member } from '../data/schema'
 
-type MembersDialogType = 'invite' | 'add' | 'edit' | 'delete' | 'send-message'
+type MembersDialogType = 'invite' | 'add' | 'edit' | 'delete' | 'send-message' | 'update-status'
 
 type MembersContextType = {
   open: MembersDialogType | null
