@@ -36,6 +36,14 @@
     @apply h-3 w-3 rounded-full bg-red-600;
   }
 
+  :is(.dark *) input[type='date'] {
+    color-scheme: dark;
+  }
+
+  :is(.dark *) input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
   /* Prevent focus zoom on mobile devices */
   @media screen and (max-width: 767px) {
     input,

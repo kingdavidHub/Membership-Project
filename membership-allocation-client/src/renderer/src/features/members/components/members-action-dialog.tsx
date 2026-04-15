@@ -3,6 +3,9 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import { showSubmittedData } from '@/lib/show-submitted-data'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,14 +26,18 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { SelectDropdown } from '@/components/select-dropdown'
+import { membersService } from '@/api/services'
+import {
+  type MemberStatus,
+  type PaymentStatus,
+  type UpdateMemberRequest
+} from '@/api/types/member.types'
 import { paymentStatuses, memberStatuses } from '../data/data'
 import { type Member } from '../data/schema'
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First Name is required.'),
   lastName: z.string().min(1, 'Last Name is required.'),
-  email: z.string().optional(),
-  phoneNumber: z.string().optional(),
   membershipId: z.string().min(1, 'Membership ID is required.'),
   entryYear: z.string().min(1, 'Entry year is required.'),
   dob: z.string().optional(),
@@ -49,40 +56,84 @@ type MemberActionDialogProps = {
 
 export function MembersActionDialog({ currentRow, open, onOpenChange }: MemberActionDialogProps) {
   const isEdit = !!currentRow
+  const router = useRouter()
+
+  const maskMembershipId = (value: string) => {
+    const trimmed = value.trim()
+    if (trimmed.length < 4) return trimmed
+    return `${trimmed.slice(0, 2)}*****${trimmed.slice(-2)}`
+  }
+
+  const normalizeDateInput = (value?: string) => {
+    if (!value) return ''
+    return value.split('T')[0] ?? value
+  }
+
   const form = useForm<MemberForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
-          firstName: currentRow.firstName,
-          lastName: currentRow.lastName,
-          email: currentRow.email || '',
-          phoneNumber: currentRow.phoneNumber || '',
-          membershipId: currentRow.membershipId,
-          entryYear: String(currentRow.entryYear),
-          dob: currentRow.dob || '',
-          paymentStatus: currentRow.paymentStatus,
-          memberStatus: currentRow.memberStatus,
-          isEdit
-        }
+        firstName: currentRow.firstName,
+        lastName: currentRow.lastName,
+        membershipId: currentRow.membershipId,
+        entryYear: String(currentRow.entryYear),
+        dob: normalizeDateInput(currentRow.dob),
+        paymentStatus: currentRow.paymentStatus,
+        memberStatus: currentRow.memberStatus,
+        isEdit
+      }
       : {
-          firstName: '',
-          lastName: '',
-          email: '',
-          phoneNumber: '',
-          membershipId: '',
-          entryYear: String(new Date().getFullYear()),
-          dob: '',
-          paymentStatus: '',
-          memberStatus: '',
-          isEdit
-        }
+        firstName: '',
+        lastName: '',
+        membershipId: '',
+        entryYear: String(new Date().getFullYear()),
+        dob: '',
+        paymentStatus: '',
+        memberStatus: '',
+        isEdit
+      }
+  })
+
+  const updateMemberMutation = useMutation({
+    mutationFn: (values: MemberForm) => {
+      if (!currentRow) {
+        return Promise.reject(new Error('No member selected for update.'))
+      }
+
+      const entryYear = Number(values.entryYear)
+      const payload: UpdateMemberRequest = {
+        firstName: values.firstName.trim(),
+        lastName: values.lastName.trim(),
+        dob: values.dob ? values.dob : undefined,
+        entryYear: Number.isFinite(entryYear) ? entryYear : undefined,
+        paymentStatus: values.paymentStatus as PaymentStatus,
+        memberStatus: values.memberStatus as MemberStatus
+      }
+
+      return membersService.updateMember(currentRow._id, payload)
+    },
+    onSuccess: () => {
+      toast.success('Member updated successfully.')
+      form.reset()
+      onOpenChange(false)
+      router.invalidate()
+    },
+    onError: () => {
+      toast.error('Failed to update member. Please try again.')
+    }
   })
 
   const onSubmit = (values: MemberForm) => {
+    if (isEdit) {
+      updateMemberMutation.mutate(values)
+      return
+    }
     form.reset()
     showSubmittedData(values)
     onOpenChange(false)
   }
+
+  const isPending = updateMemberMutation.isPending
 
   return (
     <Dialog
@@ -136,34 +187,6 @@ export function MembersActionDialog({ currentRow, open, onOpenChange }: MemberAc
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email (Optional)</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="john.doe@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+1-234-567-8900" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <div className="grid grid-cols-6 gap-4">
                 <FormField
                   control={form.control}
@@ -172,7 +195,12 @@ export function MembersActionDialog({ currentRow, open, onOpenChange }: MemberAc
                     <FormItem className="col-span-3">
                       <FormLabel>Membership ID</FormLabel>
                       <FormControl>
-                        <Input placeholder="MEM-001" {...field} />
+                        <Input
+                          placeholder="MEM-001"
+                          {...field}
+                          value={isEdit ? maskMembershipId(String(field.value ?? '')) : field.value}
+                          disabled={isEdit}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -245,8 +273,8 @@ export function MembersActionDialog({ currentRow, open, onOpenChange }: MemberAc
           </Form>
         </div>
         <DialogFooter>
-          <Button type="submit" form="member-form">
-            Save changes
+          <Button type="submit" form="member-form" disabled={isPending}>
+            {isPending ? 'Saving...' : 'Save changes'}
           </Button>
         </DialogFooter>
       </DialogContent>

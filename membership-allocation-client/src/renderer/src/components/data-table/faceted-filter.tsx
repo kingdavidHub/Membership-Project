@@ -24,15 +24,20 @@ type DataTableFacetedFilterProps<TData, TValue> = {
     value: string
     icon?: React.ComponentType<{ className?: string }>
   }[]
+  singleSelect?: boolean
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
-  options
+  options,
+  singleSelect = false
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues()
-  const selectedValues = new Set(column?.getFilterValue() as string[])
+  const rawValue = column?.getFilterValue()
+  const selectedValues = new Set(
+    Array.isArray(rawValue) ? rawValue : rawValue ? [rawValue as string] : []
+  )
 
   return (
     <Popover>
@@ -81,6 +86,11 @@ export function DataTableFacetedFilter<TData, TValue>({
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
+                      if (singleSelect) {
+                        column?.setFilterValue(isSelected ? undefined : [option.value])
+                        return
+                      }
+
                       if (isSelected) {
                         selectedValues.delete(option.value)
                       } else {

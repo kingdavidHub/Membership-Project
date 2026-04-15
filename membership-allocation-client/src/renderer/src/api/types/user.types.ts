@@ -15,8 +15,8 @@ export interface User {
   updatedAt?: string
 }
 
-export type PaymentStatus = 'pending' | 'paid' | 'overdue' | 'exempted'
-export type MemberStatus = 'active' | 'inactive' | 'suspended'
+export type PaymentStatus = 'pending' | 'paid'
+export type MemberStatus = 'active' | 'inactive' | 'deceased'
 
 export interface Member {
   _id: string

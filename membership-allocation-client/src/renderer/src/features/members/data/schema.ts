@@ -2,16 +2,14 @@ import { z } from 'zod'
 
 const paymentStatusSchema = z.union([
   z.literal('unpaid'),
-  z.literal('paid'),
-  z.literal('overdue'),
-  z.literal('exempted')
+  z.literal('paid')
 ])
 export type PaymentStatus = z.infer<typeof paymentStatusSchema>
 
 const memberStatusSchema = z.union([
   z.literal('active'),
   z.literal('inactive'),
-  z.literal('suspended')
+  z.literal('deceased')
 ])
 export type MemberStatus = z.infer<typeof memberStatusSchema>
 

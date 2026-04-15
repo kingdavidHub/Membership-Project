@@ -22,7 +22,7 @@ import { SelectDropdown } from '@/components/select-dropdown'
 import { memberStatuses } from '../data/data'
 import { type Member } from '../data/schema'
 
-const memberStatusValues = ['active', 'inactive', 'suspended'] as const
+const memberStatusValues = ['active', 'inactive', 'deceased'] as const
 
 const formSchema = z.object({
   memberStatus: z.enum(memberStatusValues)

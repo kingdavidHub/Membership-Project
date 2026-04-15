@@ -3,7 +3,6 @@
 import * as React from 'react'
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -11,10 +10,10 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
 import {
   Table,
   TableBody,
@@ -33,34 +32,56 @@ type MembersTableProps = {
   columns: ColumnDef<Member>[]
   data: Member[]
   pageCount: number
+  search: Record<string, unknown>
+  navigate: NavigateFn
 }
 
-export function MembersTable({ columns, data, pageCount }: MembersTableProps) {
+export function MembersTable({ columns, data, pageCount, search, navigate }: MembersTableProps) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
   const { setSelectedRows } = useMembers()
+
+  const {
+    columnFilters,
+    onColumnFiltersChange,
+    pagination,
+    onPaginationChange,
+    ensurePageInRange
+  } = useTableUrlState({
+    search,
+    navigate,
+    pagination: { defaultPage: 1, defaultPageSize: 10 },
+    globalFilter: { enabled: false },
+    columnFilters: [
+      { columnId: 'name', searchKey: 'name', type: 'string' },
+      { columnId: 'paymentStatus', searchKey: 'paymentStatus', type: 'array' },
+      { columnId: 'memberStatus', searchKey: 'memberStatus', type: 'array' }
+    ]
+  })
+
+  const safePageCount = Math.max(pageCount, 1)
 
   const table = useReactTable({
     data,
     columns,
-    pageCount,
     state: {
       sorting,
+      pagination,
       columnVisibility,
       rowSelection,
       columnFilters
     },
     enableRowSelection: true,
     manualPagination: true,
+    pageCount: safePageCount,
+    onPaginationChange,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues()
@@ -72,6 +93,10 @@ export function MembersTable({ columns, data, pageCount }: MembersTableProps) {
     setSelectedRows(selectedRowsData.map((r) => r.original))
   }, [selectedRowsData, setSelectedRows])
 
+  React.useEffect(() => {
+    ensurePageInRange(safePageCount)
+  }, [ensurePageInRange, safePageCount])
+
   const filters = [
     {
       columnId: 'paymentStatus',
@@ -81,6 +106,7 @@ export function MembersTable({ columns, data, pageCount }: MembersTableProps) {
     {
       columnId: 'memberStatus',
       title: 'Status',
+      singleSelect: true,
       options: memberStatuses.map((s) => ({ label: s.label, value: s.value, icon: s.icon }))
     }
   ]

@@ -18,6 +18,7 @@ const route = getRouteApi('/_authenticated/members/')
 
 export function Members() {
   const search = route.useSearch()
+  const navigate = route.useNavigate()
   const { membersResponse } = route.useLoaderData()
 
   // Transform API response to match frontend Member schema
@@ -60,7 +61,13 @@ export function Members() {
           <MembersPrimaryButtons />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <MembersTable data={members} columns={columns} pageCount={pageCount} />
+          <MembersTable
+            data={members}
+            columns={columns}
+            pageCount={pageCount}
+            search={search}
+            navigate={navigate}
+          />
         </div>
       </Main>
 

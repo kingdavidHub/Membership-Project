@@ -1,23 +1,15 @@
-import { CreditCard, CheckCircle, Clock, XCircle, UserCheck, UserX, UserMinus } from 'lucide-react'
+import { CheckCircle, Clock, UserCheck, UserMinus, Skull } from 'lucide-react'
 import { type PaymentStatus, type MemberStatus } from './schema'
 
 export const paymentStatusTypes = new Map<PaymentStatus, string>([
   ['paid', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
-  ['unpaid', 'bg-amber-100/30 text-amber-900 dark:text-amber-200 border-amber-200'],
-  [
-    'overdue',
-    'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10'
-  ],
-  ['exempted', 'bg-sky-200/40 text-sky-900 dark:text-sky-100 border-sky-300']
+  ['unpaid', 'bg-amber-100/30 text-amber-900 dark:text-amber-200 border-amber-200']
 ])
 
 export const memberStatusTypes = new Map<MemberStatus, string>([
   ['active', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
   ['inactive', 'bg-neutral-300/40 border-neutral-300'],
-  [
-    'suspended',
-    'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10'
-  ]
+  ['deceased', 'bg-slate-300/40 text-slate-900 dark:text-slate-200 border-slate-300']
 ])
 
 export const paymentStatuses = [
@@ -30,16 +22,6 @@ export const paymentStatuses = [
     label: 'Unpaid',
     value: 'unpaid',
     icon: Clock
-  },
-  {
-    label: 'Overdue',
-    value: 'overdue',
-    icon: XCircle
-  },
-  {
-    label: 'Exempted',
-    value: 'exempted',
-    icon: CreditCard
   }
 ] as const
 
@@ -55,8 +37,8 @@ export const memberStatuses = [
     icon: UserMinus
   },
   {
-    label: 'Suspended',
-    value: 'suspended',
-    icon: UserX
+    label: 'Deceased',
+    value: 'deceased',
+    icon: Skull
   }
 ] as const

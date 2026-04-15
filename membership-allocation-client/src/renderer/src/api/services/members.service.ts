@@ -13,6 +13,7 @@ import type {
   CreateDependentRequest,
   UpdateDependentRequest,
   MemberPayment,
+  MemberStatus,
   MemberPaymentsResponse,
   CreatePaymentRequest,
   PaymentDetailResponse
@@ -23,14 +24,35 @@ import type {
  * Handles all member management API calls
  */
 
+const buildMembersListQuery = (
+  page: number,
+  limit: number,
+  memberStatuses: MemberStatus[] = []
+) => {
+  const params = new URLSearchParams()
+  params.set('page', String(page))
+  params.set('limit', String(limit))
+
+  if (memberStatuses.length > 0) {
+    for (const status of memberStatuses) {
+      params.append('memberStatus', status)
+    }
+  }
+
+  return params.toString()
+}
+
 export const membersService = {
   /**
    * Get paginated list of members
    */
-  getMembers: async (page = 1, limit = 10): Promise<MembersListResponse> => {
-    const response = await apiClient.get(API_ENDPOINTS.MEMBERS.LIST, {
-      params: { page, limit }
-    })
+  getMembers: async (
+    page = 1,
+    limit = 10,
+    memberStatuses: MemberStatus[] = []
+  ): Promise<MembersListResponse> => {
+    const query = buildMembersListQuery(page, limit, memberStatuses)
+    const response = await apiClient.get(`${API_ENDPOINTS.MEMBERS.LIST}?${query}`)
     return response as unknown as MembersListResponse
   },
 

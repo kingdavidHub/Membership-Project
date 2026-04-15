@@ -2,8 +2,8 @@
  * Member API Types
  */
 
-export type PaymentStatus = 'unpaid' | 'paid' | 'overdue' | 'exempted'
-export type MemberStatus = 'active' | 'inactive' | 'suspended'
+export type PaymentStatus = 'unpaid' | 'paid'
+export type MemberStatus = 'active' | 'inactive' | 'deceased'
 export type DependentRelations =
   | 'child'
   | 'spouse'

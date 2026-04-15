@@ -10,12 +10,18 @@ const membersSearchSchema = z.object({
   // Facet filters
   paymentStatus: z
     .array(
-      z.union([z.literal('unpaid'), z.literal('paid'), z.literal('overdue'), z.literal('exempted')])
+      z.union([z.literal('unpaid'), z.literal('paid')])
     )
     .optional()
     .catch([]),
   memberStatus: z
-    .array(z.union([z.literal('active'), z.literal('inactive'), z.literal('suspended')]))
+    .array(
+      z.union([
+        z.literal('active'),
+        z.literal('inactive'),
+        z.literal('deceased')
+      ])
+    )
     .optional()
     .catch([]),
   // Per-column text filter
@@ -24,9 +30,17 @@ const membersSearchSchema = z.object({
 
 export const Route = createFileRoute('/_authenticated/members/')({
   validateSearch: membersSearchSchema,
-  loaderDeps: ({ search }) => ({ page: search.page, pageSize: search.pageSize }),
+  loaderDeps: ({ search }) => ({
+    page: search.page,
+    pageSize: search.pageSize,
+    memberStatus: search.memberStatus
+  }),
   loader: async ({ deps }) => {
-    const membersResponse = await membersService.getMembers(deps.page || 1, deps.pageSize || 10)
+    const membersResponse = await membersService.getMembers(
+      deps.page || 1,
+      deps.pageSize || 10,
+      deps.memberStatus
+    )
     return { membersResponse }
   },
   component: Members,
