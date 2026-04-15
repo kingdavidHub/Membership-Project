@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { roles } from '../data/data'
 import { type User } from '../data/schema'
@@ -38,6 +39,18 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
+  const currentScope = (search as Record<string, unknown>).scope
+  const isUnregistered = currentScope === 'unregistered'
+
+  const setUserScope = (scope: 'all' | 'unregistered') => {
+    navigate({
+      search: (prev) => ({
+        ...(prev as Record<string, unknown>),
+        page: undefined,
+        scope: scope === 'all' ? undefined : scope
+      })
+    })
+  }
 
   // Local state management for table (uncomment to use local-only state, not synced with URL)
   // const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
@@ -58,7 +71,6 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
     columnFilters: [
       // name per-column text filter
       { columnId: 'name', searchKey: 'name', type: 'string' },
-      { columnId: 'status', searchKey: 'status', type: 'array' },
       { columnId: 'role', searchKey: 'role', type: 'array' }
     ]
   })
@@ -101,28 +113,39 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
         'flex flex-1 flex-col gap-4'
       )}
     >
-      <DataTableToolbar
-        table={table}
-        searchPlaceholder="Filter users..."
-        searchKey="name"
-        filters={[
-          {
-            columnId: 'status',
-            title: 'Status',
-            options: [
-              { label: 'Active', value: 'active' },
-              { label: 'Inactive', value: 'inactive' },
-              { label: 'Invited', value: 'invited' },
-              { label: 'Suspended', value: 'suspended' }
-            ]
-          },
-          {
-            columnId: 'role',
-            title: 'Role',
-            options: roles.map((role) => ({ ...role }))
-          }
-        ]}
-      />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex-1">
+          <DataTableToolbar
+            table={table}
+            searchPlaceholder="Filter users..."
+            searchKey="name"
+            viewOptionsPlacement="left"
+            filters={[
+              {
+                columnId: 'role',
+                title: 'Role',
+                options: roles.map((role) => ({ ...role }))
+              }
+            ]}
+          />
+        </div>
+        <div className="flex items-center gap-2 sm:justify-end">
+          <Button
+            size="sm"
+            variant={isUnregistered ? 'outline' : 'default'}
+            onClick={() => setUserScope('all')}
+          >
+            All Users
+          </Button>
+          <Button
+            size="sm"
+            variant={isUnregistered ? 'default' : 'outline'}
+            onClick={() => setUserScope('unregistered')}
+          >
+            Unregistered Users
+          </Button>
+        </div>
+      </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>

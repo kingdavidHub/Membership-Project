@@ -12,13 +12,19 @@ import {
 
 type DataTableViewOptionsProps<TData> = {
   table: Table<TData>
+  align?: 'left' | 'right'
 }
 
-export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
+export function DataTableViewOptions<TData>({
+  table,
+  align = 'right'
+}: DataTableViewOptionsProps<TData>) {
+  const buttonClassName = align === 'left' ? 'hidden h-8 lg:flex' : 'ms-auto hidden h-8 lg:flex'
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="ms-auto hidden h-8 lg:flex">
+        <Button variant="outline" size="sm" className={buttonClassName}>
           <MixerHorizontalIcon className="size-4" />
           View
         </Button>

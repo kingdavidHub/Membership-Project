@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   // Users
   USERS: {
     LIST: '/users',
+    UNREGISTERED: '/users/unregistered',
     PROFILE: '/users/me',
     DETAILS: (id: string) => `/users/${id}`,
     UPDATE: (id: string) => `/users/${id}`,

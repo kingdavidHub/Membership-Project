@@ -27,6 +27,16 @@ export const usersService = {
     return response as unknown as UsersListResponse
   },
 
+  /**
+   * Get paginated list of unregistered users
+   */
+  getUnregisteredUsers: async (page = 1, limit = 10): Promise<UsersListResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.USERS.UNREGISTERED, {
+      params: { page, limit }
+    })
+    return response as unknown as UsersListResponse
+  },
+
   getUserProfile: async (): Promise<UserProfile> => {
     const response = await apiClient.get(API_ENDPOINTS.USERS.PROFILE)
     return (response as { data: { user: UserProfile } }).data.user
