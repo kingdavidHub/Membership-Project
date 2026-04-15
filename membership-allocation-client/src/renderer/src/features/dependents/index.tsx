@@ -41,7 +41,7 @@ export function Dependents() {
     firstName: dep.firstName,
     lastName: dep.lastName,
     member: memberId,
-    relation: dep.relation as Dependent['relation'],
+    relation: (dep.relation ?? dep.relationship) as Dependent['relation'],
     memberName,
     createdAt: dep.createdAt
   }))

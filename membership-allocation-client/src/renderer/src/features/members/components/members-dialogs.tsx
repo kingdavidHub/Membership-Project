@@ -27,6 +27,17 @@ export function MembersDialogs() {
           open={open === 'update-status'}
           onOpenChange={() => setOpen('update-status')}
           selectedMembers={selectedRows}
+          mode="member"
+        />
+      )}
+
+      {selectedRows.length > 0 && (
+        <MembersStatusDialog
+          key="member-update-payment-status"
+          open={open === 'update-payment-status'}
+          onOpenChange={() => setOpen('update-payment-status')}
+          selectedMembers={selectedRows}
+          mode="payment"
         />
       )}
 

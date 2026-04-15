@@ -91,6 +91,11 @@ export interface UpdateMemberStatusBulkRequest {
   memberStatus: MemberStatus
 }
 
+export interface UpdateMemberPaymentStatusBulkRequest {
+  memberIds: string[]
+  paymentStatus: PaymentStatus
+}
+
 export interface BirthdayMembersResponse {
   status: string
   results: number

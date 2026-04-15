@@ -7,6 +7,7 @@ import type {
   CreateMemberRequest,
   UpdateMemberRequest,
   UpdateMemberStatusBulkRequest,
+  UpdateMemberPaymentStatusBulkRequest,
   BirthdayMembersResponse,
   Dependent,
   DependentDetailResponse,
@@ -100,6 +101,15 @@ export const membersService = {
    */
   updateMemberStatusBulk: async (data: UpdateMemberStatusBulkRequest): Promise<void> => {
     await apiClient.patch(API_ENDPOINTS.MEMBERS.UPDATE_MEMBER_STATUS_BULK, data)
+  },
+
+  /**
+   * Update member payment status in bulk
+   */
+  updateMemberPaymentStatusBulk: async (
+    data: UpdateMemberPaymentStatusBulkRequest
+  ): Promise<void> => {
+    await apiClient.patch(API_ENDPOINTS.MEMBERS.UPDATE_MEMBER_PAYMENT_STATUS_BULK, data)
   },
 
   /**

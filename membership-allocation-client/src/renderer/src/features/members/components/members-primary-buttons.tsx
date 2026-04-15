@@ -15,41 +15,47 @@ export function MembersPrimaryButtons() {
     <div className="flex flex-col gap-2">
       {isAdminOrSuperAdmin && (
         <>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="space-x-1"
-              onClick={() => {
-                if (selectedRows.length === 0) {
-                  toast.info('Please select members from the table first.')
-                  return
-                }
-                setOpen('send-message')
-              }}
-            >
-              <span>Send Message</span> <MessageSquare size={18} />
-            </Button>
+          {selectedRows.length > 0 ? (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="space-x-1"
+                onClick={() => setOpen('update-status')}
+              >
+                <span>Update Member Status</span> <UserCog size={18} />
+              </Button>
+              <Button
+                variant="outline"
+                className="space-x-1"
+                onClick={() => setOpen('update-payment-status')}
+              >
+                <span>Update Payment Status</span> <UserCog size={18} />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="space-x-1"
+                onClick={() => {
+                  if (selectedRows.length === 0) {
+                    toast.info('Please select members from the table first.')
+                    return
+                  }
+                  setOpen('send-message')
+                }}
+              >
+                <span>Send Message</span> <MessageSquare size={18} />
+              </Button>
 
-            <Button variant="outline" className="space-x-1" onClick={() => setOpen('invite')}>
-              <span>Invite Member</span> <MailPlus size={18} />
-            </Button>
-            <Button className="space-x-1" onClick={() => setOpen('add')}>
-              <span>Add Member</span> <UserPlus size={18} />
-            </Button>
-          </div>
-          <div className="flex gap-2 items-start flex-1">
-            {selectedRows.length > 0 && (
-              <>
-                <Button
-                  variant="outline"
-                  className="space-x-1"
-                  onClick={() => setOpen('update-status')}
-                >
-                  <span>Update Member Status</span> <UserCog size={18} />
-                </Button>
-              </>
-            )}
-          </div>
+              <Button variant="outline" className="space-x-1" onClick={() => setOpen('invite')}>
+                <span>Invite Member</span> <MailPlus size={18} />
+              </Button>
+              <Button className="space-x-1" onClick={() => setOpen('add')}>
+                <span>Add Member</span> <UserPlus size={18} />
+              </Button>
+            </div>
+          )}
         </>
       )}
     </div>

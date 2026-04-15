@@ -40,6 +40,7 @@ export const API_ENDPOINTS = {
     DETAILS: (id: string) => `/members/${id}`,
     UPDATE_MEMBER: (id: string) => `/members/${id}`,
     UPDATE_MEMBER_STATUS_BULK: '/members/changeMemberStatus/bulk',
+    UPDATE_MEMBER_PAYMENT_STATUS_BULK: '/members/changePaymentStatus/bulk',
     DELETE: (id: string) => `/members/${id}`,
     CREATE: '/members',
     MEMBERS_BIRTHDAY_MONTH: (month: number) => `/members/birthdays/${month}`

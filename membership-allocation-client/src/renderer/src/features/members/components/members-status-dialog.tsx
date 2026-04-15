@@ -19,13 +19,12 @@ import {
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { membersService } from '@/api/services'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { memberStatuses } from '../data/data'
+import { memberStatuses, paymentStatuses } from '../data/data'
 import { type Member } from '../data/schema'
-
-const memberStatusValues = ['active', 'inactive', 'deceased'] as const
+import { type MemberStatus, type PaymentStatus } from '@/api/types/member.types'
 
 const formSchema = z.object({
-  memberStatus: z.enum(memberStatusValues)
+  status: z.string().min(1, 'Status is required.')
 })
 
 type MemberStatusForm = z.infer<typeof formSchema>
@@ -34,10 +33,7 @@ type MembersStatusDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   selectedMembers: Member[]
-}
-
-const defaultValues: MemberStatusForm = {
-  memberStatus: 'inactive'
+  mode?: 'member' | 'payment'
 }
 
 const formatMemberChip = (member: Member) => {
@@ -48,9 +44,19 @@ const formatMemberChip = (member: Member) => {
 export function MembersStatusDialog({
   open,
   onOpenChange,
-  selectedMembers
+  selectedMembers,
+  mode = 'member'
 }: MembersStatusDialogProps) {
   const router = useRouter()
+  const isPaymentStatus = mode === 'payment'
+  const statusLabel = isPaymentStatus ? 'Payment Status' : 'Member Status'
+  const dialogTitle = isPaymentStatus ? 'Update Payment Status' : 'Update Member Status'
+  const defaultStatusValue = isPaymentStatus ? 'unpaid' : 'inactive'
+  const statusOptions = isPaymentStatus ? paymentStatuses : memberStatuses
+
+  const defaultValues: MemberStatusForm = {
+    status: defaultStatusValue
+  }
 
   const form = useForm<MemberStatusForm>({
     resolver: zodResolver(formSchema),
@@ -60,19 +66,27 @@ export function MembersStatusDialog({
   const memberIds = selectedMembers.map((member) => member._id)
 
   const updateStatusMutation = useMutation({
-    mutationFn: (values: MemberStatusForm) =>
-      membersService.updateMemberStatusBulk({
-        memberStatus: values.memberStatus,
+    mutationFn: (values: MemberStatusForm) => {
+      if (isPaymentStatus) {
+        return membersService.updateMemberPaymentStatusBulk({
+          paymentStatus: values.status as PaymentStatus,
+          memberIds
+        })
+      }
+
+      return membersService.updateMemberStatusBulk({
+        memberStatus: values.status as MemberStatus,
         memberIds
-      }),
+      })
+    },
     onSuccess: () => {
-      toast.success('Member status updated successfully.')
+      toast.success(`${statusLabel} updated successfully.`)
       form.reset(defaultValues)
       onOpenChange(false)
       router.invalidate()
     },
     onError: () => {
-      toast.error('Failed to update member status. Please try again.')
+      toast.error(`Failed to update ${statusLabel.toLowerCase()}. Please try again.`)
     }
   })
 
@@ -90,7 +104,7 @@ export function MembersStatusDialog({
     >
       <DialogContent className="sm:max-w-lg">
         <DialogHeader className="text-start">
-          <DialogTitle>Update Member Status</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>
             Change the status for {selectedMembers.length} selected member
             {selectedMembers.length > 1 ? 's' : ''}.
@@ -105,15 +119,15 @@ export function MembersStatusDialog({
           >
             <FormField
               control={form.control}
-              name="memberStatus"
+              name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Member Status</FormLabel>
+                  <FormLabel>{statusLabel}</FormLabel>
                   <SelectDropdown
                     defaultValue={field.value}
                     onValueChange={field.onChange}
-                    placeholder="Select member status"
-                    items={memberStatuses.map(({ label, value }) => ({ label, value }))}
+                    placeholder={`Select ${statusLabel.toLowerCase()}`}
+                    items={statusOptions.map(({ label, value }) => ({ label, value }))}
                     isControlled
                   />
                   <FormMessage />
