@@ -26,6 +26,7 @@ import { roles } from '../data/data'
 import { type User } from '../data/schema'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { usersColumns as columns } from './users-columns'
+import { useUsers } from './users-provider'
 
 type DataTableProps = {
   data: User[]
@@ -39,6 +40,7 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
+  const { setSelectedRows, selectionResetKey } = useUsers()
   const currentScope = (search as Record<string, unknown>).scope
   const isUnregistered = currentScope === 'unregistered'
 
@@ -105,6 +107,17 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
   useEffect(() => {
     ensurePageInRange(table.getPageCount())
   }, [table, ensurePageInRange])
+
+  const selectedRowsData = table.getFilteredSelectedRowModel().rows
+  useEffect(() => {
+    setSelectedRows(selectedRowsData.map((row) => row.original))
+  }, [selectedRowsData, setSelectedRows])
+
+  useEffect(() => {
+    if (selectionResetKey === 0) return
+    table.resetRowSelection()
+    setSelectedRows([])
+  }, [selectionResetKey, table, setSelectedRows])
 
   return (
     <div

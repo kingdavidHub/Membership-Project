@@ -1,5 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table'
+import { BadgeCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
@@ -50,6 +52,27 @@ export const usersColumns: ColumnDef<User>[] = [
     accessorKey: 'email',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
     cell: ({ row }) => <div className="w-fit ps-2 text-nowrap">{row.getValue('email')}</div>
+  },
+  {
+    id: 'status',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    cell: ({ row }) => {
+      const { role, member } = row.original
+      const isVerified =
+        role === 'super-admin' || role === 'admin' || (role === 'member' && member != null)
+      const showIcon = role === 'super-admin' || role === 'admin'
+      const iconClassName =
+        role === 'super-admin' ? 'text-amber-500' : role === 'admin' ? 'text-sky-500' : ''
+
+      return (
+        <Badge variant="outline" className="flex items-center gap-1">
+          {showIcon && <BadgeCheck className={cn('h-3.5 w-3.5', iconClassName)} />}
+          <span className="capitalize">{isVerified ? 'Verified' : 'Non-verified'}</span>
+        </Badge>
+      )
+    },
+    enableSorting: false,
+    enableHiding: false
   },
   {
     accessorKey: 'role',

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 const paymentStatusSchema = z.union([
+  z.literal('pending'),
   z.literal('unpaid'),
   z.literal('paid')
 ])

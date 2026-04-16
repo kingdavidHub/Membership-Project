@@ -1,4 +1,4 @@
-import { MailPlus, MessageSquare, UserCog, UserPlus } from 'lucide-react'
+import { MailPlus, MessageSquare, UserCog } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { useUserProfile } from '@/hooks/use-user-profile'
@@ -50,9 +50,6 @@ export function MembersPrimaryButtons() {
 
               <Button variant="outline" className="space-x-1" onClick={() => setOpen('invite')}>
                 <span>Invite Member</span> <MailPlus size={18} />
-              </Button>
-              <Button className="space-x-1" onClick={() => setOpen('add')}>
-                <span>Add Member</span> <UserPlus size={18} />
               </Button>
             </div>
           )}

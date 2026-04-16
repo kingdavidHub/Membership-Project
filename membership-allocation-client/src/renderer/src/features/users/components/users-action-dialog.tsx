@@ -32,6 +32,7 @@ import { PasswordInput } from '@/components/password-input'
 import { SelectDropdown } from '@/components/select-dropdown'
 import { roles } from '../data/data'
 import { type User } from '../data/schema'
+import { useUsers } from './users-provider'
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First Name is required.'),
@@ -58,6 +59,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
   const isEdit = !!currentRow
   const isCreate = !isEdit
   const router = useRouter()
+  const { requestSelectionReset } = useUsers()
 
   const createUserMutation = useMutation({
     mutationFn: (values: Pick<UserForm, 'firstName' | 'lastName' | 'email'>) =>
@@ -69,6 +71,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
       toast.success('User created successfully.')
       form.reset()
       onOpenChange(false)
+      requestSelectionReset()
       router.invalidate()
     },
     onError: () => {

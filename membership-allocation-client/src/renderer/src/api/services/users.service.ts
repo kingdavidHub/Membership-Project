@@ -7,6 +7,7 @@ import type {
   UpdateUserRequest,
   ChangeUserRoleRequest,
   ChangePasswordRequest,
+  CreateMemberForUserRequest,
   UserProfile,
   UsersListResponse
 } from '../types/user.types'
@@ -59,6 +60,16 @@ export const usersService = {
     )) as CreateUserResponse
 
     return response.data.user
+  },
+
+  /**
+   * Create member for a user
+   */
+  createMemberForUser: async (
+    id: string,
+    memberData: CreateMemberForUserRequest
+  ): Promise<User> => {
+    return (await apiClient.patch(API_ENDPOINTS.USERS.CREATE_MEMBER(id), memberData)) as User
   },
 
   /**

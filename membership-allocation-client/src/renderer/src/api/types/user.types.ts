@@ -71,6 +71,14 @@ export interface ChangePasswordRequest {
   confirmPassword: string
 }
 
+export interface CreateMemberForUserRequest {
+  firstName: string
+  lastName: string
+  dob: string
+  membershipId: string
+  entryYear: number
+}
+
 // API Response for users list
 export interface ApiUser {
   _id: string

@@ -1,7 +1,8 @@
-import { CheckCircle, Clock, UserCheck, UserMinus, Skull } from 'lucide-react'
+import { CheckCircle, Clock, UserCheck, UserMinus, Skull, LoaderCircle } from 'lucide-react'
 import { type PaymentStatus, type MemberStatus } from './schema'
 
 export const paymentStatusTypes = new Map<PaymentStatus, string>([
+  ['pending', 'bg-sky-200/40 text-sky-900 dark:text-sky-100 border-sky-300'],
   ['paid', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
   ['unpaid', 'bg-amber-100/30 text-amber-900 dark:text-amber-200 border-amber-200']
 ])
@@ -13,6 +14,11 @@ export const memberStatusTypes = new Map<MemberStatus, string>([
 ])
 
 export const paymentStatuses = [
+  {
+    label: 'Pending',
+    value: 'pending',
+    icon: LoaderCircle
+  },
   {
     label: 'Paid',
     value: 'paid',
