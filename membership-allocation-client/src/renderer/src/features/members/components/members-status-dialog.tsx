@@ -22,6 +22,7 @@ import { SelectDropdown } from '@/components/select-dropdown'
 import { memberStatuses, paymentStatuses } from '../data/data'
 import { type Member } from '../data/schema'
 import { type MemberStatus, type PaymentStatus } from '@/api/types/member.types'
+import { useMembers } from './members-provider'
 
 const formSchema = z.object({
   status: z.string().min(1, 'Status is required.')
@@ -48,6 +49,7 @@ export function MembersStatusDialog({
   mode = 'member'
 }: MembersStatusDialogProps) {
   const router = useRouter()
+  const { requestSelectionReset } = useMembers()
   const isPaymentStatus = mode === 'payment'
   const statusLabel = isPaymentStatus ? 'Payment Status' : 'Member Status'
   const dialogTitle = isPaymentStatus ? 'Update Payment Status' : 'Update Member Status'
@@ -83,6 +85,7 @@ export function MembersStatusDialog({
       toast.success(`${statusLabel} updated successfully.`)
       form.reset(defaultValues)
       onOpenChange(false)
+      requestSelectionReset()
       router.invalidate()
     },
     onError: () => {

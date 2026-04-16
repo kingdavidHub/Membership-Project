@@ -23,7 +23,6 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { DataTableBulkActions } from './data-table-bulk-actions'
 import { useMembers } from './members-provider'
 import { paymentStatuses, memberStatuses } from '../data/data'
 import { type Member } from '../data/schema'
@@ -40,7 +39,7 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const { setSelectedRows } = useMembers()
+  const { setSelectedRows, selectionResetKey } = useMembers()
 
   const {
     columnFilters,
@@ -94,6 +93,12 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
   }, [selectedRowsData, setSelectedRows])
 
   React.useEffect(() => {
+    if (selectionResetKey === 0) return
+    table.resetRowSelection()
+    setSelectedRows([])
+  }, [selectionResetKey, table, setSelectedRows])
+
+  React.useEffect(() => {
     ensurePageInRange(safePageCount)
   }, [ensurePageInRange, safePageCount])
 
@@ -120,7 +125,6 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
           searchKey="name"
           searchPlaceholder="Filter members..."
         />
-        <DataTableBulkActions table={table} />
       </div>
       <div className="rounded-md border">
         <Table>
