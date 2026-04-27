@@ -10,7 +10,7 @@ const membersSearchSchema = z.object({
   // Facet filters
   paymentStatus: z
     .array(
-      z.union([z.literal('unpaid'), z.literal('paid')])
+      z.union([z.literal('unpaid'), z.literal('paid'), z.literal('pending')])
     )
     .optional()
     .catch([]),
