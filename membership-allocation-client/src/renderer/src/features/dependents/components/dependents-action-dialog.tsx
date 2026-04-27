@@ -3,7 +3,7 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -59,20 +59,21 @@ export function DependentsActionDialog({
   const isEdit = !!currentRow
   const router = useRouter()
   const { memberId } = useDependents()
+  const queryClient = useQueryClient()
 
   const form = useForm<DependentForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
-          firstName: currentRow.firstName,
-          lastName: currentRow.lastName,
-          relationship: currentRow.relation || ''
-        }
+        firstName: currentRow.firstName,
+        lastName: currentRow.lastName,
+        relationship: currentRow.relationship || ''
+      }
       : {
-          firstName: '',
-          lastName: '',
-          relationship: ''
-        }
+        firstName: '',
+        lastName: '',
+        relationship: ''
+      }
   })
 
   const createMutation = useMutation({
@@ -87,6 +88,7 @@ export function DependentsActionDialog({
       form.reset()
       onOpenChange(false)
       router.invalidate()
+      queryClient.invalidateQueries({ queryKey: ['dependents', memberId] })
     },
     onError: () => {
       toast.error('Failed to create dependent. Please try again.')
@@ -105,6 +107,7 @@ export function DependentsActionDialog({
       form.reset()
       onOpenChange(false)
       router.invalidate()
+      queryClient.invalidateQueries({ queryKey: ['dependents', memberId] })
     },
     onError: () => {
       toast.error('Failed to update dependent. Please try again.')

@@ -7,11 +7,18 @@ import type {
   CreateMemberRequest,
   UpdateMemberRequest,
   UpdateMemberStatusBulkRequest,
+  UpdateMemberPaymentStatusBulkRequest,
   BirthdayMembersResponse,
   Dependent,
+  DependentsListResponse,
   DependentDetailResponse,
   CreateDependentRequest,
-  UpdateDependentRequest
+  UpdateDependentRequest,
+  MemberPayment,
+  MemberStatus,
+  MemberPaymentsResponse,
+  CreatePaymentRequest,
+  PaymentDetailResponse
 } from '../types/member.types'
 
 /**
@@ -19,14 +26,35 @@ import type {
  * Handles all member management API calls
  */
 
+const buildMembersListQuery = (
+  page: number,
+  limit: number,
+  memberStatuses: MemberStatus[] = []
+) => {
+  const params = new URLSearchParams()
+  params.set('page', String(page))
+  params.set('limit', String(limit))
+
+  if (memberStatuses.length > 0) {
+    for (const status of memberStatuses) {
+      params.append('memberStatus', status)
+    }
+  }
+
+  return params.toString()
+}
+
 export const membersService = {
   /**
    * Get paginated list of members
    */
-  getMembers: async (page = 1, limit = 10): Promise<MembersListResponse> => {
-    const response = await apiClient.get(API_ENDPOINTS.MEMBERS.LIST, {
-      params: { page, limit }
-    })
+  getMembers: async (
+    page = 1,
+    limit = 10,
+    memberStatuses: MemberStatus[] = []
+  ): Promise<MembersListResponse> => {
+    const query = buildMembersListQuery(page, limit, memberStatuses)
+    const response = await apiClient.get(`${API_ENDPOINTS.MEMBERS.LIST}?${query}`)
     return response as unknown as MembersListResponse
   },
 
@@ -77,6 +105,15 @@ export const membersService = {
   },
 
   /**
+   * Update member payment status in bulk
+   */
+  updateMemberPaymentStatusBulk: async (
+    data: UpdateMemberPaymentStatusBulkRequest
+  ): Promise<void> => {
+    await apiClient.patch(API_ENDPOINTS.MEMBERS.UPDATE_MEMBER_PAYMENT_STATUS_BULK, data)
+  },
+
+  /**
    * Get members with birthdays in a specific month
    */
   getMembersByBirthdayMonth: async (month: number): Promise<BirthdayMembersResponse> => {
@@ -84,7 +121,44 @@ export const membersService = {
     return response as unknown as BirthdayMembersResponse
   },
 
+  /**
+   * Get member payments
+   */
+  getMemberPayments: async (
+    memberId: string,
+    page = 1,
+    limit = 10
+  ): Promise<MemberPaymentsResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.PAYMENTS.LIST(memberId), {
+      params: { page, limit }
+    })
+    return response as unknown as MemberPaymentsResponse
+  },
+
+  /**
+   * Create member payment
+   */
+  createMemberPayment: async (
+    memberId: string,
+    paymentData: CreatePaymentRequest
+  ): Promise<MemberPayment> => {
+    const response = (await apiClient.post(
+      API_ENDPOINTS.PAYMENTS.CREATE(memberId),
+      paymentData
+    )) as PaymentDetailResponse
+
+    return response.data.payment
+  },
+
   // Dependents Operations
+  /**
+   * Get member dependents
+   */
+  getMemberDependents: async (memberId: string): Promise<DependentsListResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.DEPENDENTS.LIST(memberId))
+    return response as unknown as DependentsListResponse
+  },
+
   /**
    * Create new dependent - API expects an array of dependents
    */

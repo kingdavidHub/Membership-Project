@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { type Member } from '../data/schema'
+import { useMembers } from './members-provider'
 
 type MemberDeleteDialogProps = {
   open: boolean
@@ -20,6 +21,7 @@ type MemberDeleteDialogProps = {
 export function MembersDeleteDialog({ open, onOpenChange, currentRow }: MemberDeleteDialogProps) {
   const [value, setValue] = useState('')
   const router = useRouter()
+  const { requestSelectionReset } = useMembers()
   const fullName = `${currentRow.firstName} ${currentRow.lastName}`
 
   const deleteMutation = useMutation({
@@ -33,6 +35,7 @@ export function MembersDeleteDialog({ open, onOpenChange, currentRow }: MemberDe
       toast.success(`Member "${fullName}" has been deleted successfully.`)
       onOpenChange(false)
       setValue('')
+      requestSelectionReset()
       router.invalidate()
     },
     onError: () => {

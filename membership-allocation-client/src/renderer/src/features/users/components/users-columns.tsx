@@ -1,10 +1,11 @@
 import { type ColumnDef } from '@tanstack/react-table'
+import { BadgeCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { callTypes, roles } from '../data/data'
+import { roles } from '../data/data'
 import { type User } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
@@ -53,30 +54,25 @@ export const usersColumns: ColumnDef<User>[] = [
     cell: ({ row }) => <div className="w-fit ps-2 text-nowrap">{row.getValue('email')}</div>
   },
   {
-    accessorKey: 'phoneNumber',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Phone Number" />,
-    cell: ({ row }) => <div>{row.getValue('phoneNumber') || 'N/A'}</div>,
-    enableSorting: false
-  },
-  {
-    accessorKey: 'status',
+    id: 'status',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => {
-      const { status } = row.original
-      const badgeColor = status ? callTypes.get(status) : ''
+      const { role, member } = row.original
+      const isVerified =
+        role === 'super-admin' || role === 'admin' || (role === 'member' && member != null)
+      const showIcon = role === 'super-admin' || role === 'admin'
+      const iconClassName =
+        role === 'super-admin' ? 'text-amber-500' : role === 'admin' ? 'text-sky-500' : ''
+
       return (
-        <div className="flex space-x-2">
-          <Badge variant="outline" className={cn('capitalize', badgeColor)}>
-            {status || 'unknown'}
-          </Badge>
-        </div>
+        <Badge variant="outline" className="flex items-center gap-1">
+          {showIcon && <BadgeCheck className={cn('h-3.5 w-3.5', iconClassName)} />}
+          <span className="capitalize">{isVerified ? 'Verified' : 'Non-verified'}</span>
+        </Badge>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
-    enableHiding: false,
-    enableSorting: false
+    enableSorting: false,
+    enableHiding: false
   },
   {
     accessorKey: 'role',

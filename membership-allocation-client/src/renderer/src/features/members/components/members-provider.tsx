@@ -1,8 +1,15 @@
-import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
+import React, { useState } from 'react'
 import { type Member } from '../data/schema'
 
-type MembersDialogType = 'invite' | 'add' | 'edit' | 'delete' | 'send-message'
+type MembersDialogType =
+  | 'invite'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'send-message'
+  | 'update-status'
+  | 'update-payment-status'
 
 type MembersContextType = {
   open: MembersDialogType | null
@@ -11,6 +18,8 @@ type MembersContextType = {
   setCurrentRow: React.Dispatch<React.SetStateAction<Member | null>>
   selectedRows: Member[]
   setSelectedRows: React.Dispatch<React.SetStateAction<Member[]>>
+  selectionResetKey: number
+  requestSelectionReset: () => void
 }
 
 const MembersContext = React.createContext<MembersContextType | null>(null)
@@ -19,10 +28,21 @@ export function MembersProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useDialogState<MembersDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Member | null>(null)
   const [selectedRows, setSelectedRows] = useState<Member[]>([])
+  const [selectionResetKey, setSelectionResetKey] = useState(0)
+  const requestSelectionReset = () => setSelectionResetKey((prev) => prev + 1)
 
   return (
     <MembersContext
-      value={{ open, setOpen, currentRow, setCurrentRow, selectedRows, setSelectedRows }}
+      value={{
+        open,
+        setOpen,
+        currentRow,
+        setCurrentRow,
+        selectedRows,
+        setSelectedRows,
+        selectionResetKey,
+        requestSelectionReset
+      }}
     >
       {children}
     </MembersContext>

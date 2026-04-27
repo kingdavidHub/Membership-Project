@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { reportsService } from '@/api/services'
 import { type Member } from '../data/schema'
+import { useMembers } from './members-provider'
 
 const formSchema = z.object({
   subject: z.string().min(1, 'Subject is required.'),
@@ -42,6 +43,7 @@ type SendMessageDialogProps = {
 }
 
 export function SendMessageDialog({ open, onOpenChange, selectedMembers }: SendMessageDialogProps) {
+  const { requestSelectionReset } = useMembers()
   const form = useForm<SendMessageForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,6 +63,7 @@ export function SendMessageDialog({ open, onOpenChange, selectedMembers }: SendM
       toast.success('Message sent successfully.')
       form.reset()
       onOpenChange(false)
+      requestSelectionReset()
     },
     onError: () => {
       toast.error('Failed to send message. Please try again.')

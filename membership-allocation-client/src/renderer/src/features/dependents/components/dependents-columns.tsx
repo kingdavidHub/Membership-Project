@@ -52,12 +52,16 @@ export const columns: ColumnDef<Dependent>[] = [
     cell: ({ row }) => <div>{row.getValue('lastName')}</div>
   },
   {
-    accessorKey: 'relation',
+    accessorKey: 'relationship',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Relationship" />,
     cell: ({ row }) => {
-      const relation = row.getValue('relation') as string | undefined
-      if (!relation) return <div className="text-muted-foreground">-</div>
-      return <Badge variant="outline">{dependentRelationLabels[relation] || relation}</Badge>
+      const relationship = row.getValue('relationship') as string | undefined
+      if (!relationship) return <div className="text-muted-foreground">-</div>
+      return (
+        <Badge variant="outline">
+          {dependentRelationLabels[relationship] || relationship}
+        </Badge>
+      )
     }
   },
   {
