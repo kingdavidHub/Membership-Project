@@ -4,7 +4,7 @@ export function showSubmittedData(
   data: unknown,
   title: string = 'You submitted the following values:'
 ) {
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     toast.message(title, {
       description: (
         // w-[340px]
