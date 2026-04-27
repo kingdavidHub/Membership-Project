@@ -98,7 +98,6 @@ export function MemberDependents() {
           <DependentsTable data={dependents} columns={columns} />
         </div>
       </Main>
-
       <DependentsDialogs />
     </DependentsProvider>
   )

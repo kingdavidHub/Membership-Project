@@ -2,7 +2,9 @@ export { TableSkeleton } from './table-skeleton'
 export {
   DashboardSkeleton,
   DashboardStatsSkeleton,
-  DashboardChartsSkeleton
+  DashboardChartsSkeleton,
+  UserDashboardSummarySkeleton,
+  AdminDashboardSummarySkeleton
 } from './dashboard-skeleton'
 export {
   ProfileDropdownSkeleton,
