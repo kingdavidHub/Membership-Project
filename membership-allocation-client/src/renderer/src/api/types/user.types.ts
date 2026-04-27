@@ -1,4 +1,5 @@
 import { UserRole } from '@/stores/auth-store'
+import type { Dependent as MemberDependent } from './member.types'
 
 /**
  * User API Types
@@ -15,8 +16,8 @@ export interface User {
   updatedAt?: string
 }
 
-export type PaymentStatus = 'pending' | 'paid' | 'overdue' | 'exempted'
-export type MemberStatus = 'active' | 'inactive' | 'suspended'
+export type PaymentStatus = 'pending' | 'paid'
+export type MemberStatus = 'active' | 'inactive' | 'deceased'
 
 export interface Member {
   _id: string
@@ -28,7 +29,9 @@ export interface Member {
   entryYear: number
   paymentStatus: PaymentStatus
   memberStatus: MemberStatus
-  dependents: string[]
+  paymentExpiryDate: string | null
+  lastPaid: string | null
+  dependents: MemberDependent[]
   createdAt: string
   __v: number
 }
@@ -44,8 +47,13 @@ export interface UserProfile {
 export interface CreateUserRequest {
   name: string
   email: string
-  password: string
-  role?: UserRole
+}
+
+export interface CreateUserResponse {
+  status: string
+  data: {
+    user: User
+  }
 }
 
 export interface UpdateUserRequest {
@@ -64,6 +72,14 @@ export interface ChangePasswordRequest {
   currentPassword: string
   newPassword: string
   confirmPassword: string
+}
+
+export interface CreateMemberForUserRequest {
+  firstName: string
+  lastName: string
+  dob: string
+  membershipId: string
+  entryYear: number
 }
 
 // API Response for users list

@@ -9,9 +9,11 @@ type DataTableToolbarProps<TData> = {
   table: Table<TData>
   searchPlaceholder?: string
   searchKey?: string
+  viewOptionsPlacement?: 'left' | 'right'
   filters?: {
     columnId: string
     title: string
+    singleSelect?: boolean
     options: {
       label: string
       value: string
@@ -24,7 +26,8 @@ export function DataTableToolbar<TData>({
   table,
   searchPlaceholder = 'Filter...',
   searchKey,
-  filters = []
+  filters = [],
+  viewOptionsPlacement = 'right'
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0 || table.getState().globalFilter
 
@@ -56,10 +59,12 @@ export function DataTableToolbar<TData>({
                 column={column}
                 title={filter.title}
                 options={filter.options}
+                singleSelect={filter.singleSelect}
               />
             )
           })}
         </div>
+        {viewOptionsPlacement === 'left' && <DataTableViewOptions table={table} align="left" />}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -74,7 +79,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      {viewOptionsPlacement === 'right' && <DataTableViewOptions table={table} />}
     </div>
   )
 }

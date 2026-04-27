@@ -1,16 +1,13 @@
 'use client'
 
-import { Link } from '@tanstack/react-router'
 import { ColumnDef } from '@tanstack/react-table'
 import { Users } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Button } from '@/components/ui/button'
 import { LongText } from '@/components/long-text'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { DataTableRowActions } from './data-table-row-actions'
 import { paymentStatuses, memberStatuses } from '../data/data'
 import { type Member } from '../data/schema'
-import { useDependentsNavigationStore } from '@/stores/dependents-navigation-store'
 
 export const columns: ColumnDef<Member>[] = [
   {
@@ -116,22 +113,10 @@ export const columns: ColumnDef<Member>[] = [
       const dependentsCount = row.original.dependents?.length || 0
 
       return (
-        <Link
-          to="/members/$memberId/dependents"
-          params={{ memberId: row.original._id }}
-          onClick={() => {
-            useDependentsNavigationStore.getState().setData({
-              memberId: row.original._id,
-              memberName: `${row.original.firstName} ${row.original.lastName}`,
-              dependents: row.original.dependents || []
-            })
-          }}
-        >
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
-            <span>{dependentsCount}</span>
-          </Button>
-        </Link>
+        <div className="flex items-center gap-1 text-muted-foreground">
+          <Users className="h-4 w-4" />
+          <span>{dependentsCount}</span>
+        </div>
       )
     },
     enableSorting: false

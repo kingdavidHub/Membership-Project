@@ -6,7 +6,7 @@ const dependentSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   member: z.string(),
-  relation: z.string().optional() as z.ZodType<DependentRelations | undefined>,
+  relationship: z.string().optional() as z.ZodType<DependentRelations | undefined>,
   memberName: z.string().optional(), // Enriched field for display
   createdAt: z.string().optional()
 })

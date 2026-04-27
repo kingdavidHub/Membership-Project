@@ -2,8 +2,8 @@
  * Member API Types
  */
 
-export type PaymentStatus = 'unpaid' | 'paid' | 'overdue' | 'exempted'
-export type MemberStatus = 'active' | 'inactive' | 'suspended'
+export type PaymentStatus = 'pending' | 'unpaid' | 'paid'
+export type MemberStatus = 'active' | 'inactive' | 'deceased'
 export type DependentRelations =
   | 'child'
   | 'spouse'
@@ -30,7 +30,12 @@ export interface Dependent {
   firstName: string
   lastName: string
   member: string
-  relation: DependentRelations
+  /**
+   * Backend field name.
+   * Some older client code used `relation`, so we keep that as optional for backwards compatibility.
+   */
+  relationship: DependentRelations
+  relation?: DependentRelations
   createdAt: string
   __v?: number
 }
@@ -91,11 +96,46 @@ export interface UpdateMemberStatusBulkRequest {
   memberStatus: MemberStatus
 }
 
+export interface UpdateMemberPaymentStatusBulkRequest {
+  memberIds: string[]
+  paymentStatus: PaymentStatus
+}
+
 export interface BirthdayMembersResponse {
   status: string
   results: number
   data: {
     members: ApiMember[]
+  }
+}
+
+export interface MemberPayment {
+  _id: string
+  amount: number
+  duration: number
+  member: string
+  createdAt: string
+}
+
+export interface MemberPaymentsResponse {
+  status: string
+  totalPages: number
+  currentPage: string
+  results: number
+  data: {
+    data: MemberPayment[]
+  }
+}
+
+export interface CreatePaymentRequest {
+  amount: number
+  duration: number
+}
+
+export interface PaymentDetailResponse {
+  status: string
+  data: {
+    payment: MemberPayment
   }
 }
 

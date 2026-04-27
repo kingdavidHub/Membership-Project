@@ -1,4 +1,5 @@
 import { type LinkProps } from '@tanstack/react-router'
+import type { UserRole } from '@/stores/auth-store'
 
 type Team = {
   name: string
@@ -10,6 +11,8 @@ type BaseNavItem = {
   title: string
   badge?: string
   icon?: React.ElementType
+  memberOnly?: boolean
+  roles?: UserRole[]
 }
 
 type NavLink = BaseNavItem & {

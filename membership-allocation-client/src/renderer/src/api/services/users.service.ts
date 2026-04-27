@@ -3,9 +3,11 @@ import { API_ENDPOINTS } from '../endpoints'
 import type {
   User,
   CreateUserRequest,
+  CreateUserResponse,
   UpdateUserRequest,
   ChangeUserRoleRequest,
   ChangePasswordRequest,
+  CreateMemberForUserRequest,
   UserProfile,
   UsersListResponse
 } from '../types/user.types'
@@ -21,6 +23,16 @@ export const usersService = {
    */
   getUsers: async (page = 1, limit = 10): Promise<UsersListResponse> => {
     const response = await apiClient.get(API_ENDPOINTS.USERS.LIST, {
+      params: { page, limit }
+    })
+    return response as unknown as UsersListResponse
+  },
+
+  /**
+   * Get paginated list of unregistered users
+   */
+  getUnregisteredUsers: async (page = 1, limit = 10): Promise<UsersListResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.USERS.UNREGISTERED, {
       params: { page, limit }
     })
     return response as unknown as UsersListResponse
@@ -42,7 +54,22 @@ export const usersService = {
    * Create new user
    */
   createUser: async (userData: CreateUserRequest): Promise<User> => {
-    return (await apiClient.post(API_ENDPOINTS.USERS.LIST, userData)) as User
+    const response = (await apiClient.post(
+      API_ENDPOINTS.AUTH_ADMIN.CREATE_USER,
+      userData
+    )) as CreateUserResponse
+
+    return response.data.user
+  },
+
+  /**
+   * Create member for a user
+   */
+  createMemberForUser: async (
+    id: string,
+    memberData: CreateMemberForUserRequest
+  ): Promise<User> => {
+    return (await apiClient.patch(API_ENDPOINTS.USERS.CREATE_MEMBER(id), memberData)) as User
   },
 
   /**

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -25,6 +25,7 @@ export function DependentsDeleteDialog({
   currentRow
 }: DependentDeleteDialogProps) {
   const [value, setValue] = useState('')
+  const queryClient = useQueryClient()
   const router = useRouter()
   const { memberId } = useDependents()
   const fullName = `${currentRow.firstName} ${currentRow.lastName}`
@@ -37,6 +38,7 @@ export function DependentsDeleteDialog({
       toast.success(`Dependent "${fullName}" has been deleted successfully.`)
       onOpenChange(false)
       setValue('')
+      queryClient.invalidateQueries({ queryKey: ['dependents', memberId] })
       router.invalidate()
     },
     onError: () => {

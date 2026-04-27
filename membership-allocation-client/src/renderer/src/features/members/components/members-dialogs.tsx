@@ -1,6 +1,7 @@
 import { MembersActionDialog } from './members-action-dialog'
 import { MembersDeleteDialog } from './members-delete-dialog'
 import { MembersInviteDialog } from './members-invite-dialog'
+import { MembersStatusDialog } from './members-status-dialog'
 import { SendMessageDialog } from './send-message-dialog'
 import { useMembers } from './members-provider'
 
@@ -19,6 +20,26 @@ export function MembersDialogs() {
         open={open === 'invite'}
         onOpenChange={() => setOpen('invite')}
       />
+
+      {selectedRows.length > 0 && (
+        <MembersStatusDialog
+          key="member-update-status"
+          open={open === 'update-status'}
+          onOpenChange={() => setOpen('update-status')}
+          selectedMembers={selectedRows}
+          mode="member"
+        />
+      )}
+
+      {selectedRows.length > 0 && (
+        <MembersStatusDialog
+          key="member-update-payment-status"
+          open={open === 'update-payment-status'}
+          onOpenChange={() => setOpen('update-payment-status')}
+          selectedMembers={selectedRows}
+          mode="payment"
+        />
+      )}
 
       {/* Send Message dialog */}
       {selectedRows.length > 0 && (

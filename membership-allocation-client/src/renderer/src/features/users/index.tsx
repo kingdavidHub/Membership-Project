@@ -9,21 +9,10 @@ import { UsersDialogs } from './components/users-dialogs'
 import { UsersPrimaryButtons } from './components/users-primary-buttons'
 import { UsersProvider } from './components/users-provider'
 import { UsersTable } from './components/users-table'
-import { type User, type UserStatus } from './data/schema'
+import { type User } from './data/schema'
 import { IsUserOnline } from '@/components/is-user-online'
 
 const route = getRouteApi('/_authenticated/users/')
-
-// Generate random status for users (temporary until API supports it)
-const getRandomStatus = (): UserStatus => {
-  const statuses: UserStatus[] = ['active', 'inactive', 'invited', 'suspended']
-  return statuses[Math.floor(Math.random() * statuses.length)]
-}
-
-// Generate random phone number (temporary until API supports it)
-const getRandomPhone = (): string => {
-  return `+1-${Math.floor(Math.random() * 900 + 100)}-${Math.floor(Math.random() * 900 + 100)}-${Math.floor(Math.random() * 9000 + 1000)}`
-}
 
 export function Users() {
   const search = route.useSearch()
@@ -39,10 +28,7 @@ export function Users() {
     member: apiUser.member,
     passwordGenerateCount: apiUser.passwordGenerateCount,
     isGeneratedPassword: apiUser.isGeneratedPassword,
-    passwordChangedAt: apiUser.passwordChangedAt,
-    // Frontend-only fields (random for now)
-    phoneNumber: getRandomPhone(),
-    status: getRandomStatus()
+    passwordChangedAt: apiUser.passwordChangedAt
   }))
 
   const totalResults = usersResponse.results
