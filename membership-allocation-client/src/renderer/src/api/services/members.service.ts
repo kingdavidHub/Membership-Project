@@ -10,6 +10,7 @@ import type {
   UpdateMemberPaymentStatusBulkRequest,
   BirthdayMembersResponse,
   Dependent,
+  DependentsListResponse,
   DependentDetailResponse,
   CreateDependentRequest,
   UpdateDependentRequest,
@@ -150,6 +151,14 @@ export const membersService = {
   },
 
   // Dependents Operations
+  /**
+   * Get member dependents
+   */
+  getMemberDependents: async (memberId: string): Promise<DependentsListResponse> => {
+    const response = await apiClient.get(API_ENDPOINTS.DEPENDENTS.LIST(memberId))
+    return response as unknown as DependentsListResponse
+  },
+
   /**
    * Create new dependent - API expects an array of dependents
    */

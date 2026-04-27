@@ -1,7 +1,7 @@
 'use client'
 
 import { AlertTriangle } from 'lucide-react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -21,6 +21,7 @@ export function DependentsBulkDeleteDialog({
   onOpenChange,
   selectedRows
 }: DependentsBulkDeleteDialogProps) {
+  const queryClient = useQueryClient()
   const router = useRouter()
   const { memberId, setSelectedRows } = useDependents()
   const count = selectedRows.length
@@ -34,6 +35,7 @@ export function DependentsBulkDeleteDialog({
       toast.success(`${count} dependent${count > 1 ? 's' : ''} deleted successfully.`)
       onOpenChange(false)
       setSelectedRows([])
+      queryClient.invalidateQueries({ queryKey: ['dependents', memberId] })
       router.invalidate()
     },
     onError: () => {

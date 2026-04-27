@@ -34,6 +34,8 @@ import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
+import { Route as AuthenticatedMemberPaymentsRouteImport } from './routes/_authenticated/member/payments'
+import { Route as AuthenticatedMemberDependentsRouteImport } from './routes/_authenticated/member/dependents'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 import { Route as AuthenticatedMembersMemberIdPaymentsRouteImport } from './routes/_authenticated/members/$memberId/payments'
 import { Route as AuthenticatedMembersMemberIdDependentsRouteImport } from './routes/_authenticated/members/$memberId/dependents'
@@ -171,6 +173,18 @@ const AuthenticatedSettingsAccountRoute =
     path: '/account',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedMemberPaymentsRoute =
+  AuthenticatedMemberPaymentsRouteImport.update({
+    id: '/member/payments',
+    path: '/member/payments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMemberDependentsRoute =
+  AuthenticatedMemberDependentsRouteImport.update({
+    id: '/member/dependents',
+    path: '/member/dependents',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedErrorsErrorRoute =
   AuthenticatedErrorsErrorRouteImport.update({
     id: '/errors/$error',
@@ -204,6 +218,8 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/member/dependents': typeof AuthenticatedMemberDependentsRoute
+  '/member/payments': typeof AuthenticatedMemberPaymentsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -232,6 +248,8 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/member/dependents': typeof AuthenticatedMemberDependentsRoute
+  '/member/payments': typeof AuthenticatedMemberPaymentsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -263,6 +281,8 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/_authenticated/member/dependents': typeof AuthenticatedMemberDependentsRoute
+  '/_authenticated/member/payments': typeof AuthenticatedMemberPaymentsRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -294,6 +314,8 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/errors/$error'
+    | '/member/dependents'
+    | '/member/payments'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -322,6 +344,8 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/errors/$error'
+    | '/member/dependents'
+    | '/member/payments'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -352,6 +376,8 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/'
     | '/_authenticated/errors/$error'
+    | '/_authenticated/member/dependents'
+    | '/_authenticated/member/payments'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
@@ -559,6 +585,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/member/payments': {
+      id: '/_authenticated/member/payments'
+      path: '/member/payments'
+      fullPath: '/member/payments'
+      preLoaderRoute: typeof AuthenticatedMemberPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/member/dependents': {
+      id: '/_authenticated/member/dependents'
+      path: '/member/dependents'
+      fullPath: '/member/dependents'
+      preLoaderRoute: typeof AuthenticatedMemberDependentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/errors/$error': {
       id: '/_authenticated/errors/$error'
       path: '/errors/$error'
@@ -612,6 +652,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
+  AuthenticatedMemberDependentsRoute: typeof AuthenticatedMemberDependentsRoute
+  AuthenticatedMemberPaymentsRoute: typeof AuthenticatedMemberPaymentsRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedChatsIndexRoute: typeof AuthenticatedChatsIndexRoute
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
@@ -626,6 +668,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
+  AuthenticatedMemberDependentsRoute: AuthenticatedMemberDependentsRoute,
+  AuthenticatedMemberPaymentsRoute: AuthenticatedMemberPaymentsRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedChatsIndexRoute: AuthenticatedChatsIndexRoute,
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,

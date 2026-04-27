@@ -1,4 +1,5 @@
 import { UserRole } from '@/stores/auth-store'
+import type { Dependent as MemberDependent } from './member.types'
 
 /**
  * User API Types
@@ -28,7 +29,9 @@ export interface Member {
   entryYear: number
   paymentStatus: PaymentStatus
   memberStatus: MemberStatus
-  dependents: string[]
+  paymentExpiryDate: string | null
+  lastPaid: string | null
+  dependents: MemberDependent[]
   createdAt: string
   __v: number
 }

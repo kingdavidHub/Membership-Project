@@ -30,7 +30,12 @@ export interface Dependent {
   firstName: string
   lastName: string
   member: string
-  relation: DependentRelations
+  /**
+   * Backend field name.
+   * Some older client code used `relation`, so we keep that as optional for backwards compatibility.
+   */
+  relationship: DependentRelations
+  relation?: DependentRelations
   createdAt: string
   __v?: number
 }

@@ -14,6 +14,7 @@ import { DependentsProvider } from './components/dependents-provider'
 import { DependentsTable } from './components/dependents-table'
 import { type Dependent } from './data/schema'
 import { useDependentsNavigationStore } from '@/stores/dependents-navigation-store'
+import { IsUserOnline } from '@/components/is-user-online'
 
 const route = getRouteApi('/_authenticated/members/$memberId/dependents')
 
@@ -41,7 +42,7 @@ export function Dependents() {
     firstName: dep.firstName,
     lastName: dep.lastName,
     member: memberId,
-    relation: (dep.relation ?? dep.relationship) as Dependent['relation'],
+    relationship: (dep.relationship ?? dep.relation) as Dependent['relationship'],
     memberName,
     createdAt: dep.createdAt
   }))
@@ -52,6 +53,7 @@ export function Dependents() {
         <Search />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeSwitch />
+          <IsUserOnline />
           <ProfileDropdown />
         </div>
       </Header>

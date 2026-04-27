@@ -6,7 +6,7 @@ const ACCESS_TOKEN = 'membership_access_token'
 export enum UserRole {
   SUPER_ADMIN = 'super-admin',
   ADMIN = 'admin',
-  USER = 'user'
+  USER = 'member'
 }
 
 export interface AuthUser {

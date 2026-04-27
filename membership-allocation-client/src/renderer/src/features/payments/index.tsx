@@ -15,6 +15,7 @@ import { PaymentsPrimaryButtons } from './components/payments-primary-buttons'
 import { PaymentsPendingSkeleton } from './components/payments-pending-skeleton'
 import { PaymentsTable } from './components/payments-table'
 import { type Payment } from './data/schema'
+import { IsUserOnline } from '@/components/is-user-online'
 
 const route = getRouteApi('/_authenticated/members/$memberId/payments')
 
@@ -58,6 +59,7 @@ export function Payments() {
         <Search />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeSwitch />
+          <IsUserOnline />
           <ProfileDropdown />
         </div>
       </Header>

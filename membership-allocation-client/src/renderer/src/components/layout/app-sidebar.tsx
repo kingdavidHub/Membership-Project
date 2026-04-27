@@ -7,7 +7,7 @@ import {
   SidebarRail
 } from '@/components/ui/sidebar'
 // import { AppTitle } from './app-title'
-import { sidebarData } from './data/sidebar-data'
+import { getSidebarNavGroups, sidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
@@ -17,6 +17,7 @@ import { SidebarUserSkeleton } from '@/components/skeletons'
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
   const { userProfile, isLoading } = useUserProfile()
+  const navGroups = getSidebarNavGroups(userProfile?.role)
 
   const authenticatedUser = {
     name: userProfile?.name || 'Guest User',
@@ -34,7 +35,7 @@ export function AppSidebar() {
         {/* <AppTitle /> */}
       </SidebarHeader>
       <SidebarContent>
-        {sidebarData.navGroups.map((props) => (
+        {navGroups.map((props) => (
           <NavGroup key={props.title} {...props} />
         ))}
       </SidebarContent>
