@@ -1,7 +1,7 @@
 import { type CSSProperties, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bot, MessageCircle, X } from 'lucide-react'
+import { MessageCircle, X } from 'lucide-react'
 import { ChatHeader } from './ChatHeader'
 import { ChatInput } from './ChatInput'
 import { ChatMessages } from './ChatMessages'
@@ -35,14 +35,13 @@ const launcherWrapStyle: CSSProperties = {
 }
 
 const launcherStyle: CSSProperties = {
-  minWidth: 156,
+  width: 56,
   height: 56,
   borderRadius: 9999,
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: 10,
-  padding: '0 18px',
+  padding: 0,
   cursor: 'pointer'
 }
 
@@ -108,14 +107,8 @@ export function AIChatWidget() {
           aria-controls={panelId}
         >
           {isOpen ? <X className="size-6" /> : <MessageCircle className="size-6" />}
-          <span className="text-sm font-semibold">{isOpen ? 'Collapse chat' : 'AI Assistant'}</span>
           <span className="sr-only">{isOpen ? 'Close assistant' : 'Open assistant'}</span>
         </button>
-        {!isOpen && (
-          <span className="pointer-events-none absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full border-2 border-background bg-card text-primary shadow-sm">
-            <Bot className="size-3" aria-hidden="true" />
-          </span>
-        )}
       </motion.div>
     </div>
   )
