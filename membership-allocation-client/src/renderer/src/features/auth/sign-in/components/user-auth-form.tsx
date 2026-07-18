@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/api/services'
+import { queryClient } from '@/lib/query-client'
 
 const formSchema = z.object({
   email: z.email({
@@ -52,6 +53,8 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
     mutationFn: authService.login,
     onSuccess: (data) => {
       setIsLoading(false)
+
+      queryClient.clear()
 
       // Set user and access token
       auth.setUser(data.data.user)

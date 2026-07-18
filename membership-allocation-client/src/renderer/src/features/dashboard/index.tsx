@@ -18,6 +18,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { membersService, usersService } from '@/api/services'
 import { dependentRelationLabels } from '@/features/dependents/data/dependent-relations'
+import { AIChatWidget } from '@/components/ai-chat/AIChatWidget'
 
 export function Dashboard() {
   const authRole = useAuthStore((s) => s.auth.user?.role)
@@ -352,6 +353,7 @@ export function Dashboard() {
           </TabsContent>
         </Tabs>
       </Main>
+      {isAdmin && <AIChatWidget />}
     </>
   )
 }

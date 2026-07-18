@@ -36,6 +36,10 @@ export const API_ENDPOINTS = {
     CREATE_USER: '/auth/admin/create-user'
   },
 
+  AI_CHAT: {
+    ASK: '/ai-chat/ask'
+  },
+
   // Members
   MEMBERS: {
     LIST: '/members',

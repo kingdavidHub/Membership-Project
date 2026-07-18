@@ -38,7 +38,8 @@ apiClient.interceptors.response.use(
   },
   (error: AxiosError<{ message?: string; error?: string }>) => {
     const requestUrl = error.config?.url ?? ''
-    const skipGlobalToast = requestUrl.includes('/auth/admin/create-user')
+    const skipGlobalToast =
+      requestUrl.includes('/auth/admin/create-user') || requestUrl.includes('/ai-chat/ask')
 
     if (skipGlobalToast) {
       return Promise.reject(error)
