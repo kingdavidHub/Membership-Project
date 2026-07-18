@@ -138,8 +138,8 @@ export function ChatBubble({ message }: { message: ChatMessage }) {
       <div className={`max-w-[78%] ${isAssistant ? '' : 'flex flex-col items-end'}`}>
         <div
           className={`rounded-3xl px-4 py-3 shadow-sm ${isAssistant
-              ? 'rounded-bl-md bg-card text-card-foreground ring-1 ring-border/70'
-              : 'rounded-br-md bg-primary text-primary-foreground'
+            ? 'rounded-bl-md bg-card text-card-foreground ring-1 ring-border/70'
+            : 'rounded-br-md bg-primary text-primary-foreground'
             }`}
         >
           <MessageContent content={message.message} />
