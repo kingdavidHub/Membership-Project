@@ -21,7 +21,7 @@ const taskSearchSchema = z.object({
 export const Route = createFileRoute('/_authenticated/tasks/')({
   beforeLoad: () => {
     if (import.meta.env.PROD) {
-      throw redirect({ to: '/errors/not-found' })
+      throw redirect({ to: '/404' })
     }
   },
   validateSearch: taskSearchSchema,
