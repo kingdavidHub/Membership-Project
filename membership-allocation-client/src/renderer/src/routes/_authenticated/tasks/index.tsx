@@ -2,6 +2,7 @@ import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { Tasks } from '@/features/tasks'
 import { priorities, statuses } from '@/features/tasks/data/data'
+import { redirect } from '@tanstack/react-router'
 
 const taskSearchSchema = z.object({
   page: z.number().optional().catch(1),
@@ -18,6 +19,11 @@ const taskSearchSchema = z.object({
 })
 
 export const Route = createFileRoute('/_authenticated/tasks/')({
+  beforeLoad: () => {
+    if (import.meta.env.PROD) {
+      throw redirect({ to: '/errors/not-found' })
+    }
+  },
   validateSearch: taskSearchSchema,
   component: Tasks
 })
