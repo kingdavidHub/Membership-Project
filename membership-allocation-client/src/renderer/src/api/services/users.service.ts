@@ -17,6 +17,10 @@ import type {
  * Handles all user management API calls
  */
 
+const isUnregisteredApiUser = (user: UsersListResponse['data']['users'][number]) => {
+  return user.role === 'member' && user.member == null
+}
+
 export const usersService = {
   /**
    * Get paginated list of users
@@ -35,7 +39,16 @@ export const usersService = {
     const response = await apiClient.get(API_ENDPOINTS.USERS.UNREGISTERED, {
       params: { page, limit }
     })
-    return response as unknown as UsersListResponse
+
+    const usersResponse = response as unknown as UsersListResponse
+
+    return {
+      ...usersResponse,
+      data: {
+        ...usersResponse.data,
+        users: usersResponse.data.users.filter(isUnregisteredApiUser)
+      }
+    }
   },
 
   getUserProfile: async (): Promise<UserProfile> => {

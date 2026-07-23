@@ -55,11 +55,15 @@ export const sidebarData: SidebarData = {
           url: '/',
           icon: LayoutDashboard
         },
-        {
-          title: 'Tasks',
-          url: '/tasks',
-          icon: ListTodo
-        },
+        ...(import.meta.env.DEV
+          ? [
+              {
+                title: 'Tasks',
+                url: '/tasks',
+                icon: ListTodo
+              }
+            ]
+          : []),
         // {
         //   title: 'Apps',
         //   url: '/apps',
