@@ -4,23 +4,21 @@ import { motion, useInView, animate } from 'framer-motion'
 import {
   ArrowRight,
   ArrowUpRight,
-  BarChart3,
   BellRing,
+  CalendarHeart,
   CreditCard,
-  FileSpreadsheet,
   Fingerprint,
   Gauge,
-  LayoutDashboard,
+  HeartHandshake,
   Lock,
   Mail,
-  PieChart,
-  ServerOff,
+  ReceiptText,
   ShieldCheck,
   Sparkles,
   TrendingUp,
-  UserCog,
   UserRound,
   Users,
+  WalletCards,
   WifiOff
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -30,98 +28,53 @@ import { Logo } from '@/assets/logo'
 import { cn } from '@/lib/utils'
 
 /* ------------------------------------------------------------------ */
-/* Data                                                               */
+/* Data — member facing only                                          */
 /* ------------------------------------------------------------------ */
-
-const roles = [
-  {
-    icon: ShieldCheck,
-    name: 'Super Administrator',
-    tagline: 'Total system control',
-    points: [
-      'Assign and revoke administrator privileges',
-      'System-wide analytics and oversight',
-      'Manage every account and global setting'
-    ]
-  },
-  {
-    icon: UserCog,
-    name: 'Administrator',
-    tagline: 'Day-to-day operations',
-    points: [
-      'Add, edit and manage member records',
-      'Track payments, subscriptions and status',
-      'Generate reports and send messages'
-    ]
-  },
-  {
-    icon: UserRound,
-    name: 'Member',
-    tagline: 'Personal workspace',
-    points: [
-      'View and edit personal biodata',
-      'Manage dependants and profile details',
-      'Check payment history and subscription'
-    ]
-  }
-]
 
 const features = [
   {
-    icon: Users,
-    title: 'Member management',
+    icon: UserRound,
+    title: 'Your personal profile',
     description:
-      'Register members, maintain rich profiles, and organize dependants with advanced search and filtering.'
+      'Keep your biodata, contact details, and personal information accurate and up to date, anytime.'
   },
   {
-    icon: CreditCard,
-    title: 'Payments & subscriptions',
+    icon: HeartHandshake,
+    title: 'Manage your dependants',
     description:
-      'Track dues, renewals and transaction history with a clear view of every member’s standing.'
+      'Add and update the people connected to your membership so your records always stay complete.'
   },
   {
-    icon: BarChart3,
-    title: 'Reporting & analytics',
+    icon: WalletCards,
+    title: 'Payment history',
     description:
-      'Interactive dashboards surface demographics, engagement trends and membership growth at a glance.'
+      'See every due, renewal, and receipt in one place, with a clear record of your subscription.'
+  },
+  {
+    icon: Gauge,
+    title: 'Subscription status',
+    description:
+      'Know exactly where your membership stands and when your next renewal is coming up.'
   },
   {
     icon: Mail,
-    title: 'Messaging system',
+    title: 'Messages & announcements',
     description:
-      'Send direct emails, bulk announcements and automated birthday greetings without leaving the app.'
-  },
-  {
-    icon: FileSpreadsheet,
-    title: 'Exportable reports',
-    description:
-      'Generate custom reports and export them to PDF or Excel for meetings, audits and record keeping.'
-  },
-  {
-    icon: Fingerprint,
-    title: 'Role-based access control',
-    description:
-      'A strict three-tier permission model keeps sensitive records visible only to the right people.'
-  },
-  {
-    icon: WifiOff,
-    title: 'Fully offline',
-    description:
-      'Runs as a local desktop app with no internet dependency, so records stay available and private.'
+      'Receive important updates, notices, and birthday greetings without missing a thing.'
   },
   {
     icon: Lock,
-    title: 'Secure by design',
+    title: 'Private & secure',
     description:
-      'Encrypted local storage, session management and activity audit logging protect every record.'
+      'Your data is protected with encrypted storage and secure sign-in that only you control.'
   }
 ]
 
 const stats = [
-  { value: 3, suffix: '', label: 'Access tiers', detail: 'Super Admin, Admin, Member' },
-  { value: 100, suffix: '%', label: 'Offline capable', detail: 'No internet required' },
-  { value: 6, suffix: '+', label: 'Core modules', detail: 'Members to analytics' },
-  { value: 4, suffix: '', label: 'Status states', detail: 'Active to memorial records' }
+  { value: 100, suffix: '%', label: 'Your data', detail: 'Always accessible to you' },
+  { value: 1, suffix: '', label: 'Single portal', detail: 'Everything in one place' },
+  { value: 24, suffix: '/7', label: 'Availability', detail: 'Works even offline' },
+  { value: 0, suffix: '', label: 'Paperwork', detail: 'No forms to chase' }
 ]
 
 const steps = [
@@ -129,28 +82,28 @@ const steps = [
     icon: Mail,
     title: 'Receive your invite',
     description:
-      'A super admin or administrator sends a secure invitation to the email already on file. There is no public sign up.'
+      'Your organization sends a secure invitation to the email already on file. There is no public sign up.'
   },
   {
     icon: Fingerprint,
     title: 'Activate your account',
     description:
-      'Open the activation link, confirm your identity, and set a password. Your role and permissions are applied automatically.'
+      'Open the activation link, confirm your identity, and set a password to secure your account.'
   },
   {
-    icon: LayoutDashboard,
-    title: 'Work from your dashboard',
+    icon: UserRound,
+    title: 'Manage your membership',
     description:
-      'Sign in to a workspace tailored to your role — members manage their own data while admins oversee the full system.'
+      'Sign in to your personal dashboard to view your profile, dependants, payments, and messages.'
   }
 ]
 
-/* Analytics panel bars */
-const analyticsBars = [
-  { label: 'Active', height: 92, tone: 'bg-chart-2' },
-  { label: 'Dormant', height: 58, tone: 'bg-chart-4' },
-  { label: 'Inactive', height: 40, tone: 'bg-chart-3' },
-  { label: 'New', height: 74, tone: 'bg-primary' }
+/* Personal dashboard preview bars — a member's own payment timeline */
+const paymentBars = [
+  { label: 'Jan', height: 70 },
+  { label: 'Feb', height: 88 },
+  { label: 'Mar', height: 64 },
+  { label: 'Apr', height: 96 }
 ]
 
 /* ------------------------------------------------------------------ */
@@ -215,7 +168,8 @@ function FloatingBlob({ className }: { className: string }) {
   )
 }
 
-function AnalyticsPanel() {
+/* A member's personal dashboard preview */
+function MemberPanel() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
 
@@ -225,57 +179,61 @@ function AnalyticsPanel() {
       className="overflow-hidden border-border/80 bg-card/95 shadow-[0_28px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm dark:shadow-[0_28px_80px_rgba(2,6,23,0.4)]"
     >
       <CardHeader className="flex flex-row items-center justify-between border-b border-border/70 bg-muted/40 space-y-0">
-        <div>
-          <CardDescription className="text-muted-foreground">Live membership overview</CardDescription>
-          <CardTitle className="text-lg tracking-tight text-card-foreground">
-            Analytics dashboard
-          </CardTitle>
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <UserRound className="size-5" />
+          </div>
+          <div>
+            <CardDescription className="text-muted-foreground">Welcome back</CardDescription>
+            <CardTitle className="text-lg tracking-tight text-card-foreground">
+              Your membership
+            </CardTitle>
+          </div>
         </div>
-        <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <Gauge className="size-5" />
-        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-chart-2/15 px-2.5 py-1 text-xs font-medium text-chart-2">
+          <span className="size-1.5 rounded-full bg-chart-2" />
+          Active
+        </span>
       </CardHeader>
       <CardContent className="space-y-6 p-6">
         {/* KPI row */}
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl border border-border bg-muted/40 p-4">
             <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <Users className="size-4 text-primary" />
-              Total members
+              <HeartHandshake className="size-4 text-primary" />
+              Dependants
             </div>
             <p className="mt-2 text-2xl font-semibold tracking-tight text-card-foreground">
-              <Counter to={1248} />
+              <Counter to={4} />
             </p>
-            <p className="mt-1 flex items-center gap-1 text-xs text-chart-2">
-              <TrendingUp className="size-3.5" /> +12% this term
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">All records complete</p>
           </div>
           <div className="rounded-2xl border border-border bg-muted/40 p-4">
             <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
               <CreditCard className="size-4 text-primary" />
-              Payments up to date
+              Subscription
             </div>
             <p className="mt-2 text-2xl font-semibold tracking-tight text-card-foreground">
-              <Counter to={87} suffix="%" />
+              <Counter to={100} suffix="%" />
             </p>
             <p className="mt-1 flex items-center gap-1 text-xs text-chart-2">
-              <TrendingUp className="size-3.5" /> On track
+              <TrendingUp className="size-3.5" /> Paid &amp; up to date
             </p>
           </div>
         </div>
 
-        {/* Animated bar chart */}
+        {/* Animated payment history */}
         <div className="rounded-2xl border border-border bg-muted/30 p-5">
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm font-medium text-card-foreground">Members by status</p>
-            <PieChart className="size-4 text-muted-foreground" />
+            <p className="text-sm font-medium text-card-foreground">Your payment history</p>
+            <ReceiptText className="size-4 text-muted-foreground" />
           </div>
           <div className="flex h-32 items-end justify-between gap-3">
-            {analyticsBars.map((bar, index) => (
+            {paymentBars.map((bar, index) => (
               <div key={bar.label} className="flex flex-1 flex-col items-center gap-2">
                 <div className="flex h-24 w-full items-end justify-center">
                   <motion.div
-                    className={cn('w-full rounded-t-lg', bar.tone)}
+                    className="w-full rounded-t-lg bg-primary"
                     initial={{ height: 0 }}
                     animate={inView ? { height: `${bar.height}%` } : { height: 0 }}
                     transition={{ duration: 0.9, delay: 0.2 + index * 0.12, ease: 'easeOut' }}
@@ -290,8 +248,8 @@ function AnalyticsPanel() {
         {/* Recent activity */}
         <div className="space-y-2">
           {[
-            { icon: BellRing, text: 'Birthday reminders sent to 6 members' },
-            { icon: FileSpreadsheet, text: 'Monthly report exported to PDF' }
+            { icon: CalendarHeart, text: 'Happy birthday! A greeting is on its way' },
+            { icon: BellRing, text: 'New announcement from your organization' }
           ].map((row, index) => (
             <motion.div
               key={row.text}
@@ -351,14 +309,11 @@ export function LandingPage() {
               <div className="text-sm font-semibold tracking-[0.28em] text-foreground">
                 MEMBERSHIP ALLOCATION
               </div>
-              <div className="text-xs text-muted-foreground">Role-based management system</div>
+              <div className="text-xs text-muted-foreground">Your membership portal</div>
             </div>
           </Link>
 
           <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
-            <a className="transition hover:text-foreground" href="#roles">
-              Roles
-            </a>
             <a className="transition hover:text-foreground" href="#features">
               Features
             </a>
@@ -396,24 +351,24 @@ export function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground shadow-sm">
               <ShieldCheck className="size-4 text-primary" />
-              Role-based access for schools &amp; organizations
+              Your membership, all in one place
             </div>
 
             <div className="space-y-4">
               <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                Manage every member, payment, and record from one secure desktop app.
+                Everything about your membership, right at your fingertips.
               </h1>
               <p className="max-w-2xl text-pretty text-lg leading-8 text-muted-foreground sm:text-xl">
-                Membership Allocation gives super admins, administrators, and members their own
-                workspace — with member records, payments, messaging, and analytics that work
-                entirely offline.
+                View your profile, keep your dependants up to date, follow your payment history, and
+                stay in the loop with announcements — all from one secure portal that works even
+                offline.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
               <Button asChild size="lg" className="rounded-full px-6 shadow-sm">
                 <Link to={'/signin' as any}>
-                  Sign in to your workspace
+                  Sign in to your portal
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -423,7 +378,7 @@ export function LandingPage() {
                 variant="outline"
                 className="rounded-full border-border px-6 shadow-none"
               >
-                <a href="#features">Explore what&apos;s inside</a>
+                <a href="#features">See what you can do</a>
               </Button>
             </div>
 
@@ -450,67 +405,26 @@ export function LandingPage() {
             transition={{ duration: 0.75, ease: 'easeOut', delay: 0.08 }}
             className="relative"
           >
-            <AnalyticsPanel />
+            <MemberPanel />
           </motion.div>
-        </section>
-
-        {/* Roles */}
-        <section id="roles" className="py-14 sm:py-18 scroll-mt-28">
-          <SectionTitle
-            eyebrow="Role-based access"
-            title="Three access levels, each with the right permissions"
-            description="Everyone signs into the same system, but what they can see and do is governed by a strict three-tier permission model."
-          />
-
-          <div className="grid gap-5 lg:grid-cols-3">
-            {roles.map((role, index) => (
-              <motion.div
-                key={role.name}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-              >
-                <Card className="group h-full border-border/80 bg-card/90 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
-                  <CardHeader>
-                    <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
-                      <role.icon className="size-6" />
-                    </div>
-                    <CardDescription className="text-xs font-semibold uppercase tracking-[0.25em] text-primary/80">
-                      {role.tagline}
-                    </CardDescription>
-                    <CardTitle className="text-xl text-card-foreground">{role.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {role.points.map((point) => (
-                      <div key={point} className="flex items-start gap-2.5">
-                        <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-                        <p className="text-sm leading-6 text-muted-foreground">{point}</p>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
         </section>
 
         {/* Features */}
         <section id="features" className="py-14 sm:py-18 scroll-mt-28">
           <SectionTitle
-            eyebrow="Everything included"
-            title="A complete toolkit for membership administration"
-            description="From day-to-day record keeping to analytics and communication, every module works together in one offline desktop application."
+            eyebrow="What you can do"
+            title="Your membership, fully in your hands"
+            description="Everything you need to stay on top of your membership lives in a single, easy-to-use portal built just for you."
           />
 
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {features.map((item, index) => (
               <motion.div
                 key={item.title}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.45, delay: (index % 4) * 0.06 }}
+                transition={{ duration: 0.45, delay: (index % 3) * 0.06 }}
               >
                 <Card className="group h-full border-border/80 bg-card/90 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
                   <CardHeader>
@@ -532,8 +446,8 @@ export function LandingPage() {
         <section id="how-it-works" className="py-14 sm:py-18 scroll-mt-28">
           <SectionTitle
             eyebrow="How it works"
-            title="Invite-first onboarding keeps access controlled"
-            description="There is no public sign up. Members join only after their organization sends an invitation, and each account inherits the permissions of its role."
+            title="Getting started takes just three steps"
+            description="There is no public sign up. You join once your organization invites you, then your personal portal is ready to go."
           />
 
           <div className="grid gap-5 md:grid-cols-3">
@@ -573,12 +487,12 @@ export function LandingPage() {
                 Private &amp; secure
               </p>
               <h2 className="text-balance text-3xl font-semibold tracking-tight text-card-foreground sm:text-4xl">
-                Your records stay on your machine, protected end to end.
+                Your information stays protected, every step of the way.
               </h2>
               <p className="text-pretty text-base leading-7 text-muted-foreground sm:text-lg">
-                Because the app runs fully offline, sensitive membership data never leaves your
-                device. Encryption, session management, and audit logging keep every action
-                accountable.
+                Your personal details and payment records are kept safe with encrypted storage and
+                secure sign-in. And because the portal works offline, your information is always
+                available when you need it.
               </p>
               <Button asChild size="lg" className="mt-2 rounded-full px-6 shadow-sm">
                 <Link to={'/signin' as any}>
@@ -590,17 +504,17 @@ export function LandingPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               {[
-                { icon: WifiOff, title: 'No internet needed', text: 'Operates completely offline.' },
-                { icon: Lock, title: 'Encrypted at rest', text: 'Local data encryption built in.' },
+                { icon: WifiOff, title: 'Works offline', text: 'Access your details anytime.' },
+                { icon: Lock, title: 'Encrypted data', text: 'Your records stay private.' },
                 {
                   icon: Fingerprint,
-                  title: 'Role permissions',
-                  text: 'Access scoped to each role.'
+                  title: 'Secure sign-in',
+                  text: 'Only you can access your account.'
                 },
                 {
-                  icon: ServerOff,
-                  title: 'Audit logging',
-                  text: 'Every change is tracked.'
+                  icon: ReceiptText,
+                  title: 'Clear records',
+                  text: 'Every payment neatly tracked.'
                 }
               ].map((item, index) => (
                 <motion.div
@@ -638,11 +552,11 @@ export function LandingPage() {
                     Ready when you are
                   </p>
                   <h2 className="text-balance text-3xl font-semibold tracking-tight text-card-foreground sm:text-4xl">
-                    Sign in to your membership workspace.
+                    Sign in to your membership portal.
                   </h2>
                   <p className="text-pretty text-base leading-7 text-muted-foreground sm:text-lg">
-                    Already have an invite? Sign in to manage members, payments, dependants, and
-                    reports from one secure portal built for your role.
+                    Already have an invite? Sign in to view your profile, dependants, payments, and
+                    messages — all in one secure place.
                   </p>
                 </div>
 
@@ -664,7 +578,7 @@ export function LandingPage() {
               <div className="flex size-8 items-center justify-center rounded-xl border border-border bg-card">
                 <Logo className="size-4 text-primary" />
               </div>
-              <span>Membership Allocation · Role-based management system</span>
+              <span>Membership Allocation · Your membership portal</span>
             </div>
             <p>Invite-only access · No public sign up</p>
           </div>

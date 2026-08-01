@@ -5,12 +5,13 @@ import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
-  BarChart3,
-  CreditCard,
+  BellRing,
   Fingerprint,
-  Mail,
+  HeartHandshake,
+  Lock,
   ShieldCheck,
-  Users,
+  UserRound,
+  WalletCards,
   WifiOff
 } from 'lucide-react'
 
@@ -20,29 +21,29 @@ type AuthLayoutProps = {
 
 const highlights = [
   {
-    icon: Users,
-    title: 'Member management',
-    description: 'Maintain profiles, dependants, and membership status in one organized place.'
+    icon: UserRound,
+    title: 'Your profile',
+    description: 'Keep your personal details and biodata accurate and up to date.'
   },
   {
-    icon: CreditCard,
-    title: 'Payments & subscriptions',
-    description: 'Track dues, renewals, and full payment history for every member.'
+    icon: HeartHandshake,
+    title: 'Your dependants',
+    description: 'Add and manage the people connected to your membership.'
   },
   {
-    icon: BarChart3,
-    title: 'Reporting & analytics',
-    description: 'Turn membership data into clear dashboards and exportable reports.'
+    icon: WalletCards,
+    title: 'Your payments',
+    description: 'Follow your payment history and subscription status at a glance.'
   },
   {
-    icon: Mail,
-    title: 'Built-in messaging',
-    description: 'Send emails, announcements, and automated birthday greetings.'
+    icon: BellRing,
+    title: 'Your updates',
+    description: 'Receive announcements, notices, and birthday greetings.'
   }
 ]
 
 const assurances = [
-  { icon: Fingerprint, label: 'Role-based access' },
+  { icon: Lock, label: 'Private & secure' },
   { icon: WifiOff, label: 'Works offline' }
 ]
 
@@ -95,7 +96,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               </div>
               <div>
                 <h1 className="text-lg font-semibold tracking-tight">Membership Allocation</h1>
-                <p className="text-sm text-muted-foreground">Role-based management system</p>
+                <p className="text-sm text-muted-foreground">Your membership portal</p>
               </div>
             </div>
             <ThemeSwitch />
@@ -114,11 +115,12 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
             <div className="space-y-4">
               <h2 className="text-balance text-4xl font-semibold tracking-tight text-foreground">
-                One secure portal for members, payments, and analytics.
+                Your membership, all in one secure place.
               </h2>
               <p className="max-w-lg text-pretty text-lg leading-8 text-muted-foreground">
-                Sign in to manage membership records, track payments, communicate with members, and
-                view analytics — all from a single desktop app that works entirely offline.
+                Sign in to view your profile, keep your dependants up to date, follow your payment
+                history, and stay in the loop with announcements — from an app that works even
+                offline.
               </p>
             </div>
 
@@ -165,7 +167,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               </div>
               <div>
                 <h1 className="text-base font-semibold">Membership Allocation</h1>
-                <p className="text-xs text-muted-foreground">Role-based management system</p>
+                <p className="text-xs text-muted-foreground">Your membership portal</p>
               </div>
             </div>
             <ThemeSwitch />
