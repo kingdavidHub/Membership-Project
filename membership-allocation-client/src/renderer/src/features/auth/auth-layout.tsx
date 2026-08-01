@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import {
   ArrowLeft,
   BellRing,
-  Fingerprint,
   HeartHandshake,
   Lock,
   ShieldCheck,

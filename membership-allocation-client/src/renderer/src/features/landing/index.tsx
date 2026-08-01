@@ -17,7 +17,6 @@ import {
   Sparkles,
   TrendingUp,
   UserRound,
-  Users,
   WalletCards,
   WifiOff
 } from 'lucide-react'
