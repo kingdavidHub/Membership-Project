@@ -17,7 +17,22 @@ export function NotFoundError() {
           <Button variant="outline" onClick={() => history.go(-1)}>
             Go Back
           </Button>
-          <Button onClick={() => navigate({ to: '/' })}>Back to Home</Button>
+          <Button
+            onClick={() => {
+              if (
+                typeof window !== 'undefined' &&
+                typeof document !== 'undefined' &&
+                document.referrer.startsWith(window.location.origin) &&
+                window.history.length > 1
+              ) {
+                window.history.back()
+              } else {
+                navigate({ to: '/' })
+              }
+            }}
+          >
+            Back to Home
+          </Button>
         </div>
       </div>
     </div>

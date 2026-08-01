@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+// Link intentionally unused here; removed import to silence TS warning
 import {
   Card,
   CardContent,

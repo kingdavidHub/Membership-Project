@@ -1,15 +1,39 @@
 import { Logo } from '@/assets/logo'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ShieldCheck, Clock3, CreditCard, Users } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
+import { ShieldCheck, Clock3, CreditCard, Users, ArrowLeft } from 'lucide-react'
 
 type AuthLayoutProps = {
   children: React.ReactNode
 }
 
 export function AuthLayout({ children }: AuthLayoutProps) {
+  const navigate = useNavigate()
   return (
     <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
+      <div className="absolute left-6 top-9 hidden lg:block">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            if (
+              typeof window !== 'undefined' &&
+              typeof document !== 'undefined' &&
+              document.referrer.startsWith(window.location.origin) &&
+              window.history.length > 1
+            ) {
+              window.history.back()
+            } else {
+              navigate({ to: '/' })
+            }
+          }}
+        >
+          <ArrowLeft className="me-2 h-4 w-4" />
+          Back
+        </Button>
+      </div>
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_28%)]" />
       <div className="pointer-events-none absolute -left-24 top-16 -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div className="pointer-events-none absolute right-0 top-1/2 -z-10 h-80 w-80 rounded-full bg-chart-2/10 blur-3xl" />
