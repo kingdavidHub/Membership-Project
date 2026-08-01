@@ -35,7 +35,14 @@ export const queryClient = new QueryClient({
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           const currentPath = router.history.location.pathname
-          const publicRoutes = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password']
+          const publicRoutes = [
+            '/',
+            '/signin',
+            '/sign-in',
+            '/sign-up',
+            '/forgot-password',
+            '/reset-password'
+          ]
           const isPublicRoute = publicRoutes.some((route) => currentPath.startsWith(route))
           const isAuthenticatedRoute = !isPublicRoute
 

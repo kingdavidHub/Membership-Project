@@ -1,9 +1,8 @@
-import { Link } from '@tanstack/react-router'
+// Link intentionally unused here; removed import to silence TS warning
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
@@ -23,7 +22,7 @@ export function ForgotPassword() {
         <CardContent>
           <ForgotPasswordForm />
         </CardContent>
-        <CardFooter>
+        {/* <CardFooter>
           <p className="mx-auto px-8 text-center text-sm text-balance text-muted-foreground">
             Don&apos;t have an account?{' '}
             <Link to="/sign-up" className="underline underline-offset-4 hover:text-primary">
@@ -31,7 +30,7 @@ export function ForgotPassword() {
             </Link>
             .
           </p>
-        </CardFooter>
+        </CardFooter> */}
       </Card>
     </AuthLayout>
   )

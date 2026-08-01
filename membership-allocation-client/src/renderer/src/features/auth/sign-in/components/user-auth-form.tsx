@@ -61,7 +61,7 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
       auth.setAccessToken(data.token)
 
       // Redirect to the stored location or default to dashboard
-      const targetPath = redirectTo || '/'
+      const targetPath = redirectTo || '/dashboard'
       navigate({ to: targetPath, replace: true })
 
       toast.success(`Welcome back, ${data.data.user.name}!`)
@@ -99,7 +99,7 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
   //       auth.setAccessToken('mock-access-token')
 
   //       // Redirect to the stored location or default to dashboard
-  //       const targetPath = redirectTo || '/'
+  //       const targetPath = redirectTo || '/dashboard'
   //       navigate({ to: targetPath, replace: true })
 
   //       return `Welcome back, ${data.email}!`
