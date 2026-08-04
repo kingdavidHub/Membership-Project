@@ -377,8 +377,8 @@ export function LandingPage() {
         {/* Hero */}
         <section className="grid flex-1 items-center gap-12 py-8 lg:grid-cols-[1.06fr_0.94fr] lg:py-12">
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.65, ease: 'easeOut' }}
             className="space-y-8"
           >
@@ -433,8 +433,8 @@ export function LandingPage() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 18, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.75, ease: 'easeOut', delay: 0.08 }}
             className="relative"
           >
