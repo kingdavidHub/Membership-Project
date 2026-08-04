@@ -290,6 +290,33 @@ export function LandingPage() {
     }
   }, [])
 
+  // Handle smooth scroll offset for fixed header
+  useEffect(() => {
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLAnchorElement
+      if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
+        e.preventDefault()
+        const id = target.getAttribute('href')?.slice(1)
+        if (id) {
+          const element = document.getElementById(id)
+          if (element) {
+            const headerHeight = 96 // ~72px navbar + padding
+            const elementTop = element.getBoundingClientRect().top + window.scrollY
+            window.scrollTo({
+              top: elementTop - headerHeight,
+              behavior: 'smooth'
+            })
+            // Update URL without triggering navigation
+            window.history.pushState(null, '', `#${id}`)
+          }
+        }
+      }
+    }
+
+    document.addEventListener('click', handleAnchorClick)
+    return () => document.removeEventListener('click', handleAnchorClick)
+  }, [])
+
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-background text-foreground scroll-smooth">
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.05),transparent_26%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.14),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.08),transparent_26%)]" />
@@ -416,7 +443,7 @@ export function LandingPage() {
         </section>
 
         {/* Features */}
-        <section id="features" className="py-14 sm:py-18 scroll-mt-28">
+        <section id="features" className="py-14 sm:py-18 scroll-mt-32">
           <SectionTitle
             eyebrow="What you can do"
             title="Your membership, fully in your hands"
@@ -449,7 +476,7 @@ export function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section id="how-it-works" className="py-14 sm:py-18 scroll-mt-28">
+        <section id="how-it-works" className="py-14 sm:py-18 scroll-mt-32">
           <SectionTitle
             eyebrow="How it works"
             title="Getting started takes just three steps"
@@ -486,7 +513,7 @@ export function LandingPage() {
         </section>
 
         {/* Security */}
-        <section id="security" className="py-14 sm:py-18 scroll-mt-28">
+        <section id="security" className="py-14 sm:py-18 scroll-mt-32">
           <div className="grid gap-8 rounded-[2rem] border border-border/80 bg-card/90 p-8 shadow-sm lg:grid-cols-[1fr_1fr] lg:p-12">
             <div className="space-y-4">
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
