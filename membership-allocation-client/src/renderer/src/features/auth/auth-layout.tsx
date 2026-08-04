@@ -51,7 +51,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
   return (
     <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
-      <div className="absolute left-6 top-9 z-20 hidden lg:block">
+      <div className="absolute left-6 top-6 z-20 hidden lg:block">
         <Button
           variant="ghost"
           size="sm"
@@ -87,8 +87,8 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
       <div className="mx-auto grid min-h-svh max-w-7xl lg:grid-cols-[1.05fr_480px]">
         {/* Left showcase */}
-        <aside className="hidden border-r border-border/70 px-8 py-8 lg:flex lg:flex-col lg:justify-between">
-          <div className="flex items-center justify-between gap-4">
+        <aside className="hidden border-r border-border/70 px-8 py-12 lg:flex lg:flex-col lg:justify-between">
+          <div className="flex items-center justify-between gap-4 pt-4">
             <div className="flex items-center gap-3">
               <div className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
                 <Logo className="size-5 text-primary" />
