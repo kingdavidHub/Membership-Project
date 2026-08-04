@@ -283,6 +283,13 @@ export function LandingPage() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Clear hash fragments on page load
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      window.history.replaceState(null, '', '/')
+    }
+  }, [])
+
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-background text-foreground scroll-smooth">
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.05),transparent_26%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.14),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.08),transparent_26%)]" />
@@ -339,9 +346,9 @@ export function LandingPage() {
         </div>
       </header>
 
-      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pt-28 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pt-32 sm:px-6 lg:px-8">
         {/* Hero */}
-        <section className="grid flex-1 items-center gap-12 py-12 lg:grid-cols-[1.06fr_0.94fr] lg:py-18">
+        <section className="grid flex-1 items-center gap-12 py-8 lg:grid-cols-[1.06fr_0.94fr] lg:py-12">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
