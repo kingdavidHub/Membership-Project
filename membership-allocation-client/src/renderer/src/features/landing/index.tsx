@@ -376,12 +376,7 @@ export function LandingPage() {
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pt-32 sm:px-6 lg:px-8">
         {/* Hero */}
         <section className="grid flex-1 items-center gap-12 py-8 lg:grid-cols-[1.06fr_0.94fr] lg:py-12">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.65, ease: 'easeOut' }}
-            className="space-y-8"
-          >
+          <div className="space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground shadow-sm">
               <ShieldCheck className="size-4 text-primary" />
               Your membership, all in one place
@@ -430,16 +425,11 @@ export function LandingPage() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.75, ease: 'easeOut', delay: 0.08 }}
-            className="relative"
-          >
+          <div className="relative">
             <MemberPanel />
-          </motion.div>
+          </div>
         </section>
 
         {/* Features */}
