@@ -12,6 +12,17 @@
   }
   html {
     @apply overflow-x-hidden;
+
+    /* Keep anchored sections clear of the fixed landing header (~6rem tall).
+       Single source of truth: applies to every anchor link and hash URL. */
+    scroll-padding-top: 8rem;
+  }
+
+  /* Smooth anchor scrolling (was previously a no-op on a non-scrolling element) */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   body {
     @apply min-h-svh w-full bg-background text-foreground has-[div[data-variant='inset']]:bg-sidebar;

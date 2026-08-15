@@ -169,15 +169,9 @@ function FloatingBlob({ className }: { className: string }) {
 
 /* A member's personal dashboard preview */
 function MemberPanel() {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-
   return (
-    <Card
-      ref={ref}
-      className="overflow-hidden border-border/80 bg-card/95 shadow-[0_28px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm dark:shadow-[0_28px_80px_rgba(2,6,23,0.4)]"
-    >
-      <CardHeader className="flex flex-row items-center justify-between border-b border-border/70 bg-muted/40 space-y-0">
+    <Card className="overflow-hidden border-border/80 bg-card/95 shadow-[0_28px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm dark:shadow-[0_28px_80px_rgba(2,6,23,0.4)]">
+      <CardHeader className="flex flex-row items-center justify-between border-b border-border/70 bg-muted/40 space-y-0 pt-6">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <UserRound className="size-5" />
@@ -221,21 +215,19 @@ function MemberPanel() {
           </div>
         </div>
 
-        {/* Animated payment history */}
+        {/* Payment history */}
         <div className="rounded-2xl border border-border bg-muted/30 p-5">
           <div className="mb-4 flex items-center justify-between">
             <p className="text-sm font-medium text-card-foreground">Your payment history</p>
             <ReceiptText className="size-4 text-muted-foreground" />
           </div>
           <div className="flex h-32 items-end justify-between gap-3">
-            {paymentBars.map((bar, index) => (
+            {paymentBars.map((bar) => (
               <div key={bar.label} className="flex flex-1 flex-col items-center gap-2">
                 <div className="flex h-24 w-full items-end justify-center">
-                  <motion.div
+                  <div
                     className="w-full rounded-t-lg bg-primary"
-                    initial={{ height: 0 }}
-                    animate={inView ? { height: `${bar.height}%` } : { height: 0 }}
-                    transition={{ duration: 0.9, delay: 0.2 + index * 0.12, ease: 'easeOut' }}
+                    style={{ height: `${bar.height}%` }}
                   />
                 </div>
                 <span className="text-[11px] font-medium text-muted-foreground">{bar.label}</span>
@@ -249,19 +241,16 @@ function MemberPanel() {
           {[
             { icon: CalendarHeart, text: 'Happy birthday! A greeting is on its way' },
             { icon: BellRing, text: 'New announcement from your organization' }
-          ].map((row, index) => (
-            <motion.div
+          ].map((row) => (
+            <div
               key={row.text}
-              initial={{ opacity: 0, x: -8 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.6 + index * 0.15 }}
               className="flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 shadow-sm"
             >
               <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <row.icon className="size-4" />
               </div>
               <p className="text-sm text-muted-foreground">{row.text}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </CardContent>
@@ -284,7 +273,7 @@ export function LandingPage() {
   }, [])
 
   return (
-    <main className="relative isolate min-h-screen overflow-hidden bg-background text-foreground scroll-smooth">
+    <main className="relative isolate min-h-screen overflow-clip bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.05),transparent_26%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.14),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.08),transparent_26%)]" />
       <FloatingBlob className="-left-24 top-16 h-72 w-72 bg-primary/10 dark:bg-primary/20" />
       <FloatingBlob className="-right-28 top-44 h-80 w-80 bg-chart-2/10 dark:bg-chart-2/20" />
@@ -339,15 +328,10 @@ export function LandingPage() {
         </div>
       </header>
 
-      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pt-28 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pt-20 sm:px-6 lg:px-8">
         {/* Hero */}
-        <section className="grid flex-1 items-center gap-12 py-12 lg:grid-cols-[1.06fr_0.94fr] lg:py-18">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, ease: 'easeOut' }}
-            className="space-y-8"
-          >
+        <section className="grid flex-1 items-center gap-12 py-8 lg:grid-cols-[1.06fr_0.94fr] lg:py-10">
+          <div className="space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground shadow-sm">
               <ShieldCheck className="size-4 text-primary" />
               Your membership, all in one place
@@ -396,20 +380,15 @@ export function LandingPage() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.75, ease: 'easeOut', delay: 0.08 }}
-            className="relative"
-          >
+          <div className="relative">
             <MemberPanel />
-          </motion.div>
+          </div>
         </section>
 
         {/* Features */}
-        <section id="features" className="py-14 sm:py-18 scroll-mt-28">
+        <section id="features" className="py-14 sm:py-18">
           <SectionTitle
             eyebrow="What you can do"
             title="Your membership, fully in your hands"
@@ -442,7 +421,7 @@ export function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section id="how-it-works" className="py-14 sm:py-18 scroll-mt-28">
+        <section id="how-it-works" className="py-14 sm:py-18">
           <SectionTitle
             eyebrow="How it works"
             title="Getting started takes just three steps"
@@ -479,7 +458,7 @@ export function LandingPage() {
         </section>
 
         {/* Security */}
-        <section id="security" className="py-14 sm:py-18 scroll-mt-28">
+        <section id="security" className="py-14 sm:py-18">
           <div className="grid gap-8 rounded-[2rem] border border-border/80 bg-card/90 p-8 shadow-sm lg:grid-cols-[1fr_1fr] lg:p-12">
             <div className="space-y-4">
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">

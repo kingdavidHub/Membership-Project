@@ -14,14 +14,14 @@ export function SignIn() {
   const { redirect } = useSearch({ from: '/(auth)/sign-in' })
   return (
     <AuthLayout>
-      <Card className="gap-4 border-border/80 bg-card/95 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+      <Card className="gap-5 border-border/80 bg-card/95 p-2 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-4">
         <CardHeader>
           <CardTitle className="text-2xl tracking-tight">Sign in</CardTitle>
           <CardDescription>
             Use the email address and password from your invite to access your member portal.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-8">
           <UserAuthForm redirectTo={redirect} />
         </CardContent>
         <CardFooter>

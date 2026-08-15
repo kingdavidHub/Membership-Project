@@ -9,5 +9,6 @@ export {
 export {
   ProfileDropdownSkeleton,
   SidebarUserSkeleton,
+  SidebarNavSkeleton,
   ProfileFormSkeleton
 } from './profile-skeleton'

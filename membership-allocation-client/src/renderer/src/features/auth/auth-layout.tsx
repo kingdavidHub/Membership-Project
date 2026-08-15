@@ -1,78 +1,31 @@
-import { Logo } from '@/assets/logo'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import {
-  ArrowLeft,
-  BellRing,
-  HeartHandshake,
-  Lock,
-  ShieldCheck,
-  UserRound,
-  WalletCards,
-  WifiOff
-} from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 type AuthLayoutProps = {
   children: React.ReactNode
 }
 
-const highlights = [
-  {
-    icon: UserRound,
-    title: 'Your profile',
-    description: 'Keep your personal details and biodata accurate and up to date.'
-  },
-  {
-    icon: HeartHandshake,
-    title: 'Your dependants',
-    description: 'Add and manage the people connected to your membership.'
-  },
-  {
-    icon: WalletCards,
-    title: 'Your payments',
-    description: 'Follow your payment history and subscription status at a glance.'
-  },
-  {
-    icon: BellRing,
-    title: 'Your updates',
-    description: 'Receive announcements, notices, and birthday greetings.'
-  }
-]
-
-const assurances = [
-  { icon: Lock, label: 'Private & secure' },
-  { icon: WifiOff, label: 'Works offline' }
-]
-
 export function AuthLayout({ children }: AuthLayoutProps) {
   const navigate = useNavigate()
 
-  return (
-    <div className="relative min-h-svh overflow-hidden bg-background text-foreground">
-      <div className="absolute left-6 top-9 z-20 hidden lg:block">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            if (
-              typeof window !== 'undefined' &&
-              typeof document !== 'undefined' &&
-              document.referrer.startsWith(window.location.origin) &&
-              window.history.length > 1
-            ) {
-              window.history.back()
-            } else {
-              navigate({ to: '/' })
-            }
-          }}
-        >
-          <ArrowLeft className="me-2 h-4 w-4" />
-          Back
-        </Button>
-      </div>
+  const goBack = () => {
+    if (
+      typeof window !== 'undefined' &&
+      typeof document !== 'undefined' &&
+      document.referrer.startsWith(window.location.origin) &&
+      window.history.length > 1
+    ) {
+      window.history.back()
+    } else {
+      navigate({ to: '/' })
+    }
+  }
 
+  return (
+    <div className="relative flex min-h-svh flex-col overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_28%)]" />
       <motion.div
         className="pointer-events-none absolute -left-24 top-16 -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
@@ -85,103 +38,32 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      <div className="mx-auto grid min-h-svh max-w-7xl lg:grid-cols-[1.05fr_480px]">
-        {/* Left showcase */}
-        <aside className="hidden border-r border-border/70 px-8 py-8 lg:flex lg:flex-col lg:justify-between">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
-                <Logo className="size-5 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-lg font-semibold tracking-tight">Membership Allocation</h1>
-                <p className="text-sm text-muted-foreground">Your membership portal</p>
-              </div>
-            </div>
-            <ThemeSwitch />
+      {/* Top bar — Back + brand on the left, theme switch on the right */}
+      <header className="flex items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-10">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Button variant="ghost" size="sm" onClick={goBack}>
+            <ArrowLeft className="me-2 h-4 w-4" />
+            Back
+          </Button>
+          <div className="leading-tight">
+            <h1 className="text-base font-semibold tracking-tight sm:text-lg">Membership Allocation</h1>
+            <p className="text-xs text-muted-foreground sm:text-sm">Your membership portal</p>
           </div>
+        </div>
+        <ThemeSwitch />
+      </header>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="max-w-xl space-y-6"
-          >
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground shadow-sm">
-              <ShieldCheck className="size-4 text-primary" />
-              Invite-only access for members
-            </div>
-
-            <div className="space-y-4">
-              <h2 className="text-balance text-4xl font-semibold tracking-tight text-foreground">
-                Your membership, all in one secure place.
-              </h2>
-              <p className="max-w-lg text-pretty text-lg leading-8 text-muted-foreground">
-                Sign in to view your profile, keep your dependants up to date, follow your payment
-                history, and stay in the loop with announcements — from an app that works even
-                offline.
-              </p>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {highlights.map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: 0.15 + index * 0.08 }}
-                  className="rounded-2xl border border-border/80 bg-card/90 p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1"
-                >
-                  <div className="mb-3 flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <item.icon className="size-5" />
-                  </div>
-                  <p className="text-sm font-semibold text-card-foreground">{item.title}</p>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              {assurances.map((item) => (
-                <div
-                  key={item.label}
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm"
-                >
-                  <item.icon className="size-3.5 text-primary" />
-                  {item.label}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <p className="text-sm text-muted-foreground">Invite-only access. No public sign up.</p>
-        </aside>
-
-        {/* Right form */}
-        <section className="flex flex-col px-4 py-6 sm:px-8 lg:justify-center">
-          <div className="mb-6 flex items-center justify-between lg:hidden">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
-                <Logo className="size-5 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-base font-semibold">Membership Allocation</h1>
-                <p className="text-xs text-muted-foreground">Your membership portal</p>
-              </div>
-            </div>
-            <ThemeSwitch />
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="mx-auto w-full max-w-md lg:max-w-none"
-          >
-            {children}
-          </motion.div>
-        </section>
-      </div>
+      {/* Centered form */}
+      <main className="flex flex-1 items-center justify-center px-4 pb-12 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="w-full max-w-md"
+        >
+          {children}
+        </motion.div>
+      </main>
     </div>
   )
 }

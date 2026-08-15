@@ -18,6 +18,26 @@ export function SidebarUserSkeleton() {
   )
 }
 
+/** Skeleton for the sidebar navigation while the user's role is loading */
+export function SidebarNavSkeleton() {
+  const rows = [4, 3]
+  return (
+    <div aria-hidden className="flex flex-col gap-2">
+      {rows.map((count, groupIndex) => (
+        <div key={groupIndex} className="flex w-full flex-col p-2">
+          <Skeleton className="mb-2 ml-2 h-3.5 w-14" />
+          {Array.from({ length: count }).map((_, i) => (
+            <div key={i} className="flex h-8 items-center gap-2 rounded-md px-2">
+              <Skeleton className="size-4 shrink-0" />
+              <Skeleton className={`h-3.5 ${['w-24', 'w-20', 'w-28', 'w-16'][i % 4]}`} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /** Skeleton for the settings profile form */
 export function ProfileFormSkeleton() {
   return (

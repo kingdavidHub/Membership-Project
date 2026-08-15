@@ -117,7 +117,7 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn('grid gap-3', className)}
+        className={cn('grid gap-4', className)}
         {...props}
       >
         <FormField
@@ -152,16 +152,10 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
             </FormItem>
           )}
         />
-        <Button className="mt-2" disabled={isLoading}>
+        <Button className="mt-3" disabled={isLoading}>
           {isLoading ? <Loader2 className="animate-spin" /> : <LogIn />}
           Sign in
         </Button>
-
-        <div className="relative my-2">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-        </div>
       </form>
     </Form>
   )

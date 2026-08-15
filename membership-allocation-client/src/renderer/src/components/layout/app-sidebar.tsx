@@ -12,7 +12,7 @@ import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
 import { useUserProfile } from '@/hooks/use-user-profile'
-import { SidebarUserSkeleton } from '@/components/skeletons'
+import { SidebarNavSkeleton, SidebarUserSkeleton } from '@/components/skeletons'
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
@@ -35,9 +35,11 @@ export function AppSidebar() {
         {/* <AppTitle /> */}
       </SidebarHeader>
       <SidebarContent>
-        {navGroups.map((props) => (
-          <NavGroup key={props.title} {...props} />
-        ))}
+        {isLoading ? (
+          <SidebarNavSkeleton />
+        ) : (
+          navGroups.map((props) => <NavGroup key={props.title} {...props} />)
+        )}
       </SidebarContent>
       <SidebarFooter>
         {isLoading ? <SidebarUserSkeleton /> : <NavUser user={authenticatedUser} />}
