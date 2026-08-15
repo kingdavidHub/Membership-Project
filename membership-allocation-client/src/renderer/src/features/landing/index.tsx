@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
-import { motion, useInView, animate } from 'framer-motion'
+import { motion, useInView, animate, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -158,12 +158,50 @@ function SectionTitle({
 }
 
 function FloatingBlob({ className }: { className: string }) {
+  const reduceMotion = useReducedMotion()
   return (
     <motion.div
       className={cn('pointer-events-none absolute rounded-full blur-3xl', className)}
-      animate={{ y: [0, 18, 0], x: [0, 12, 0], scale: [1, 1.06, 1] }}
+      animate={reduceMotion ? undefined : { y: [0, 18, 0], x: [0, 12, 0], scale: [1, 1.06, 1] }}
       transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
     />
+  )
+}
+
+/* Scroll-reveal wrapper that respects prefers-reduced-motion */
+function Reveal({
+  children,
+  delay = 0,
+  y = 16,
+  scale,
+  className
+}: {
+  children: ReactNode
+  delay?: number
+  y?: number
+  scale?: number
+  className?: string
+}) {
+  const reduceMotion = useReducedMotion()
+
+  return (
+    <motion.div
+      className={className}
+      initial={
+        reduceMotion ? false : scale !== undefined ? { opacity: 0, scale } : { opacity: 0, y }
+      }
+      whileInView={
+        reduceMotion
+          ? undefined
+          : scale !== undefined
+            ? { opacity: 1, scale: 1 }
+            : { opacity: 1, y: 0 }
+      }
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.45, delay, ease: 'easeOut' }}
+    >
+      {children}
+    </motion.div>
   )
 }
 
@@ -275,6 +313,7 @@ export function LandingPage() {
   return (
     <main className="relative isolate min-h-screen overflow-clip bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.08),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.05),transparent_26%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.14),transparent_28%),radial-gradient(circle_at_bottom,rgba(99,102,241,0.08),transparent_26%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_75%_60%_at_50%_0%,black,transparent)]" />
       <FloatingBlob className="-left-24 top-16 h-72 w-72 bg-primary/10 dark:bg-primary/20" />
       <FloatingBlob className="-right-28 top-44 h-80 w-80 bg-chart-2/10 dark:bg-chart-2/20" />
       <FloatingBlob className="bottom-[-9rem] left-1/2 h-96 w-96 -translate-x-1/2 bg-chart-4/10 dark:bg-chart-4/15" />
@@ -339,7 +378,10 @@ export function LandingPage() {
 
             <div className="space-y-4">
               <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                Everything about your membership, right at your fingertips.
+                Everything about your membership,{' '}
+                <span className="bg-gradient-to-r from-primary via-sky-400 to-chart-2 bg-clip-text text-transparent">
+                  right at your fingertips.
+                </span>
               </h1>
               <p className="max-w-2xl text-pretty text-lg leading-8 text-muted-foreground sm:text-xl">
                 View your profile, keep your dependants up to date, follow your payment history, and
@@ -383,6 +425,7 @@ export function LandingPage() {
           </div>
 
           <div className="relative">
+            <div className="pointer-events-none absolute -inset-10 -z-10 rounded-[3rem] bg-[radial-gradient(closest-side,rgba(59,130,246,0.22),rgba(16,185,129,0.1),transparent_75%)] blur-2xl" />
             <MemberPanel />
           </div>
         </section>
@@ -397,14 +440,9 @@ export function LandingPage() {
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {features.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.45, delay: (index % 3) * 0.06 }}
-              >
-                <Card className="group h-full border-border/80 bg-card/90 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <Reveal key={item.title} delay={(index % 3) * 0.06}>
+                <Card className="group relative h-full overflow-hidden border-border/80 bg-card/90 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_20px_50px_rgba(2,6,23,0.25)]">
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <CardHeader>
                     <div className="mb-4 flex size-12 items-center justify-center rounded-2xl border border-border bg-muted text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
                       <item.icon className="size-5" />
@@ -415,7 +453,7 @@ export function LandingPage() {
                     </CardDescription>
                   </CardHeader>
                 </Card>
-              </motion.div>
+              </Reveal>
             ))}
           </div>
         </section>
@@ -430,14 +468,13 @@ export function LandingPage() {
 
           <div className="grid gap-5 md:grid-cols-3">
             {steps.map((step, index) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative"
-              >
+              <Reveal key={step.title} delay={index * 0.1} className="relative">
+                {index < 2 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute right-[-1.25rem] top-[2.875rem] hidden w-5 border-t-2 border-dashed border-primary/25 md:block"
+                  />
+                )}
                 <Card className="h-full border-border/80 bg-card/90">
                   <CardContent className="space-y-4 p-6">
                     <div className="flex items-center justify-between">
@@ -452,14 +489,18 @@ export function LandingPage() {
                     <p className="text-sm leading-6 text-muted-foreground">{step.description}</p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </Reveal>
             ))}
           </div>
         </section>
 
         {/* Security */}
         <section id="security" className="py-14 sm:py-18">
-          <div className="grid gap-8 rounded-[2rem] border border-border/80 bg-card/90 p-8 shadow-sm lg:grid-cols-[1fr_1fr] lg:p-12">
+          <div className="relative grid gap-8 overflow-hidden rounded-[2rem] border border-border/80 bg-card/90 p-8 shadow-sm lg:grid-cols-[1fr_1fr] lg:p-12">
+            <ShieldCheck
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-12 -right-12 size-60 text-primary/5"
+            />
             <div className="space-y-4">
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
                 Private &amp; secure
@@ -495,20 +536,18 @@ export function LandingPage() {
                   text: 'Every payment neatly tracked.'
                 }
               ].map((item, index) => (
-                <motion.div
+                <Reveal
                   key={item.title}
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: '-60px' }}
-                  transition={{ duration: 0.4, delay: index * 0.07 }}
-                  className="rounded-2xl border border-border bg-background/60 p-5"
+                  scale={0.96}
+                  delay={index * 0.07}
+                  className="rounded-2xl border border-border bg-background/60 p-5 transition-colors duration-300 hover:border-primary/30"
                 >
                   <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <item.icon className="size-5" />
                   </div>
                   <p className="text-sm font-semibold text-card-foreground">{item.title}</p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.text}</p>
-                </motion.div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -516,13 +555,8 @@ export function LandingPage() {
 
         {/* CTA */}
         <section className="py-16 sm:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card className="overflow-hidden border-border/80 bg-card/95 shadow-[0_22px_55px_rgba(15,23,42,0.08)]">
+          <Reveal>
+            <Card className="overflow-hidden border-border/70 bg-gradient-to-br from-primary/15 via-card to-chart-2/10 shadow-[0_22px_55px_rgba(2,6,23,0.18)]">
               <CardContent className="flex flex-col items-start justify-between gap-6 p-6 sm:p-8 lg:flex-row lg:items-center">
                 <div className="max-w-2xl space-y-3">
                   <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
@@ -546,7 +580,7 @@ export function LandingPage() {
                 </Button>
               </CardContent>
             </Card>
-          </motion.div>
+          </Reveal>
         </section>
 
         {/* Footer */}
@@ -558,6 +592,17 @@ export function LandingPage() {
               </div>
               <span>Membership Allocation · Your membership portal</span>
             </div>
+            <nav className="hidden items-center gap-6 md:flex">
+              <a className="transition hover:text-foreground" href="#features">
+                Features
+              </a>
+              <a className="transition hover:text-foreground" href="#how-it-works">
+                How It Works
+              </a>
+              <a className="transition hover:text-foreground" href="#security">
+                Security
+              </a>
+            </nav>
             <p>Invite-only access · No public sign up</p>
           </div>
         </footer>

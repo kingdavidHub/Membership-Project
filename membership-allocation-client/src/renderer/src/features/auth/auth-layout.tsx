@@ -41,9 +41,8 @@ export function AuthLayout({ children }: AuthLayoutProps) {
       {/* Top bar — Back + brand on the left, theme switch on the right */}
       <header className="flex items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-10">
         <div className="flex items-center gap-3 sm:gap-4">
-          <Button variant="ghost" size="sm" onClick={goBack}>
-            <ArrowLeft className="me-2 h-4 w-4" />
-            Back
+          <Button variant="ghost" size="icon" onClick={goBack} aria-label="Go back">
+            <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="leading-tight">
             <h1 className="text-base font-semibold tracking-tight sm:text-lg">Membership Allocation</h1>
