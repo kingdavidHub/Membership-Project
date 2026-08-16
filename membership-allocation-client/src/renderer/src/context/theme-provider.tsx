@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useMemo } from 'react'
 import { getCookie, setCookie, removeCookie } from '@/lib/cookies'
+import { syncPwaTheme } from '@/lib/pwa-theme'
 
 type Theme = 'dark' | 'light' | 'system'
 type ResolvedTheme = Exclude<Theme, 'system'>
@@ -61,6 +62,9 @@ export function ThemeProvider({
       if (theme === 'system') {
         const systemTheme = mediaQuery.matches ? 'dark' : 'light'
         applyTheme(systemTheme)
+        // The resolvedTheme memo doesn't recompute on OS flips, so re-sync
+        // the PWA chrome here (meta tag + manifest) explicitly.
+        syncPwaTheme(systemTheme)
       }
     }
 
@@ -70,6 +74,18 @@ export function ThemeProvider({
 
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [theme, resolvedTheme])
+
+  /* Keep the PWA chrome (title bar, toolbar, splash) in sync with the theme */
+  useEffect(() => {
+    syncPwaTheme(resolvedTheme)
+  }, [resolvedTheme])
+
+  /* Keep the native Electron window chrome (title bar) in sync with the theme.
+     Sending the raw theme (not resolved) lets nativeTheme follow the OS
+     automatically in system mode. No-op in the browser build. */
+  useEffect(() => {
+    window.api?.setNativeTheme(theme)
+  }, [theme])
 
   const setTheme = (theme: Theme) => {
     setCookie(storageKey, theme, THEME_COOKIE_MAX_AGE)

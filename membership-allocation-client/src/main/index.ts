@@ -1,9 +1,14 @@
-import { app, shell, BrowserWindow, ipcMain, session } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, nativeTheme, session } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 const isDev = process.env.NODE_ENV === 'development'
+const THEME_COOKIE_NAME = 'vite-ui-theme'
+
+function isValidTheme(theme: unknown): theme is 'dark' | 'light' | 'system' {
+  return theme === 'dark' || theme === 'light' || theme === 'system'
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -51,10 +56,27 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  // Keep the native window chrome (title bar) in sync with the app theme.
+  // The renderer sends the current theme whenever it changes; applying it to
+  // nativeTheme.themeSource flips the OS-level dark/light window frame flag.
+  ipcMain.on('theme:set', (_event, theme: unknown) => {
+    if (isValidTheme(theme)) {
+      nativeTheme.themeSource = theme
+    }
+  })
 
-  createWindow()
+  // Read the stored theme before the window is created so the very first
+  // frame of the title bar matches the app (no dark/light flash on startup).
+  session.defaultSession.cookies
+    .get({ name: THEME_COOKIE_NAME })
+    .then((cookies) => {
+      const stored = cookies[0]?.value
+      if (isValidTheme(stored)) {
+        nativeTheme.themeSource = stored
+      }
+      createWindow()
+    })
+    .catch(() => createWindow())
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

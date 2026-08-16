@@ -1,8 +1,14 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  // Tells the main process to flip the native window chrome (title bar)
+  // to match the app theme. 'system' lets Electron follow the OS natively.
+  setNativeTheme: (theme: 'dark' | 'light' | 'system'): void => {
+    ipcRenderer.send('theme:set', theme)
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

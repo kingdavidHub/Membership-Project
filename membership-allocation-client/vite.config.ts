@@ -1,9 +1,22 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+
+// Dev-only: the strict CSP meta (`script-src 'self'`) blocks Vite's inline
+// HMR preamble and vite-plugin-pwa's inline dev-SW registration script, so
+// the service worker never registers on localhost and the browser never
+// offers to install the app. Relax script-src just for `vite dev`; the
+// production bundle keeps the strict CSP unchanged.
+const relaxCspForDev: Plugin = {
+  name: 'relax-csp-for-dev',
+  apply: 'serve',
+  transformIndexHtml(html) {
+    return html.replace("script-src 'self';", "script-src 'self' 'unsafe-inline';")
+  }
+}
 
 export default defineConfig({
   root: 'src/renderer',
@@ -25,6 +38,7 @@ export default defineConfig({
     }),
     react(),
     tailwindcss(),
+    relaxCspForDev,
     VitePWA({
       registerType: 'autoUpdate',
       // 'auto' injects an external /registerSW.js script (CSP-safe) and keeps
