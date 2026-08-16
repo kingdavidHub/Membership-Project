@@ -64,7 +64,11 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        // manifest.webmanifest must be precached too: the installed PWA's
+        // window chrome reads the manifest at launch, and if it can't be
+        // fetched (offline launch), Chromium falls back to a default WHITE
+        // title bar instead of the app's theme color.
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,webmanifest}'],
         navigateFallback: '/index.html'
       },
       devOptions: {

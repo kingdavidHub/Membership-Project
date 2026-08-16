@@ -10,7 +10,27 @@ function isValidTheme(theme: unknown): theme is 'dark' | 'light' | 'system' {
   return theme === 'dark' || theme === 'light' || theme === 'system'
 }
 
-function createWindow(): void {
+/**
+ * Flip the native window chrome (title bar) to match the given theme.
+ *
+ * For 'system' we deliberately resolve the value first, then restore
+ * 'system': on Windows, setting `themeSource` to the value it already has
+ * (the default is 'system') is a no-op that never re-applies the
+ * dark/light frame flag — the title bar can end up stuck on the default
+ * light color even when the OS is in dark mode. Assigning the resolved
+ * value ('dark'/'light') first triggers the frame repaint, and restoring
+ * 'system' keeps following OS theme flips natively.
+ */
+function applyThemeToFrame(theme: 'dark' | 'light' | 'system'): void {
+  if (theme === 'system') {
+    nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
+    nativeTheme.themeSource = 'system'
+  } else {
+    nativeTheme.themeSource = theme
+  }
+}
+
+function createWindow(initialTheme?: 'dark' | 'light' | 'system'): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -23,6 +43,12 @@ function createWindow(): void {
       sandbox: false
     }
   })
+
+  // Apply the stored theme AFTER the native window (HWND) exists: on
+  // Windows the dark/light frame flag is applied when the window is
+  // created, so setting nativeTheme before construction can race and
+  // leave the title bar on the default light color.
+  if (initialTheme) applyThemeToFrame(initialTheme)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -61,20 +87,18 @@ app.whenReady().then(() => {
   // nativeTheme.themeSource flips the OS-level dark/light window frame flag.
   ipcMain.on('theme:set', (_event, theme: unknown) => {
     if (isValidTheme(theme)) {
-      nativeTheme.themeSource = theme
+      applyThemeToFrame(theme)
     }
   })
 
-  // Read the stored theme before the window is created so the very first
-  // frame of the title bar matches the app (no dark/light flash on startup).
+  // Read the stored theme and pass it to createWindow, which applies it
+  // once the native window exists, so the very first frame of the title
+  // bar matches the app (no dark/light flash on startup).
   session.defaultSession.cookies
     .get({ name: THEME_COOKIE_NAME })
     .then((cookies) => {
       const stored = cookies[0]?.value
-      if (isValidTheme(stored)) {
-        nativeTheme.themeSource = stored
-      }
-      createWindow()
+      createWindow(isValidTheme(stored) ? stored : undefined)
     })
     .catch(() => createWindow())
 

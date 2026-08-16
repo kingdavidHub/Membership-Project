@@ -63,8 +63,10 @@ export function ThemeProvider({
         const systemTheme = mediaQuery.matches ? 'dark' : 'light'
         applyTheme(systemTheme)
         // The resolvedTheme memo doesn't recompute on OS flips, so re-sync
-        // the PWA chrome here (meta tag + manifest) explicitly.
+        // the PWA chrome here (meta tag + manifest) and re-assert the
+        // native Electron window frame for the new OS theme.
         syncPwaTheme(systemTheme)
+        window.api?.setNativeTheme('system')
       }
     }
 
