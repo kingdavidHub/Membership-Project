@@ -24,8 +24,9 @@ import {
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { useMembers } from './members-provider'
-import { paymentStatuses, memberStatuses } from '../data/data'
 import { type Member } from '../data/schema'
+import { MembersAttributeDialog } from './members-attribute-dialog'
+import { MembersViewDialog } from './members-view-dialog'
 
 type MembersTableProps = {
   columns: ColumnDef<Member>[]
@@ -102,28 +103,19 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
     ensurePageInRange(safePageCount)
   }, [ensurePageInRange, safePageCount])
 
-  const filters = [
-    {
-      columnId: 'paymentStatus',
-      title: 'Payment',
-      options: paymentStatuses.map((s) => ({ label: s.label, value: s.value, icon: s.icon }))
-    },
-    {
-      columnId: 'memberStatus',
-      title: 'Status',
-      singleSelect: true,
-      options: memberStatuses.map((s) => ({ label: s.label, value: s.value, icon: s.icon }))
-    }
-  ]
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <DataTableToolbar
           table={table}
-          filters={filters}
           searchKey="name"
           searchPlaceholder="Filter members..."
+          rightExtra={
+            <>
+              <MembersAttributeDialog table={table} />
+              <MembersViewDialog table={table} />
+            </>
+          }
         />
       </div>
       <div className="rounded-md border">

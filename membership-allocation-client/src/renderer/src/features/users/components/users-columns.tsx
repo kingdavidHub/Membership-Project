@@ -71,8 +71,7 @@ export const usersColumns: ColumnDef<User>[] = [
         </Badge>
       )
     },
-    enableSorting: false,
-    enableHiding: false
+    enableSorting: false
   },
   {
     accessorKey: 'role',
@@ -95,8 +94,7 @@ export const usersColumns: ColumnDef<User>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
-    enableSorting: false,
-    enableHiding: false
+    enableSorting: false
   },
   {
     id: 'actions',

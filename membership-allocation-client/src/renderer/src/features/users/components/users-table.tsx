@@ -22,11 +22,12 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { roles } from '../data/data'
 import { type User } from '../data/schema'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { usersColumns as columns } from './users-columns'
 import { useUsers } from './users-provider'
+import { UsersRoleFilter } from './users-role-filter'
+import { UsersViewDialog } from './users-view-dialog'
 
 type DataTableProps = {
   data: User[]
@@ -132,14 +133,12 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
             table={table}
             searchPlaceholder="Filter users..."
             searchKey="name"
-            viewOptionsPlacement="left"
-            filters={[
-              {
-                columnId: 'role',
-                title: 'Role',
-                options: roles.map((role) => ({ ...role }))
-              }
-            ]}
+            leftExtra={
+              <>
+                <UsersRoleFilter table={table} />
+                <UsersViewDialog table={table} />
+              </>
+            }
           />
         </div>
         <div className="flex items-center gap-2 sm:justify-end">

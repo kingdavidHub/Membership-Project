@@ -10,6 +10,8 @@ type DataTableToolbarProps<TData> = {
   searchPlaceholder?: string
   searchKey?: string
   viewOptionsPlacement?: 'left' | 'right'
+  leftExtra?: React.ReactNode
+  rightExtra?: React.ReactNode
   filters?: {
     columnId: string
     title: string
@@ -27,7 +29,9 @@ export function DataTableToolbar<TData>({
   searchPlaceholder = 'Filter...',
   searchKey,
   filters = [],
-  viewOptionsPlacement = 'right'
+  viewOptionsPlacement = 'right',
+  leftExtra,
+  rightExtra
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0 || table.getState().globalFilter
 
@@ -63,8 +67,9 @@ export function DataTableToolbar<TData>({
               />
             )
           })}
+          {leftExtra}
         </div>
-        {viewOptionsPlacement === 'left' && <DataTableViewOptions table={table} align="left" />}
+        {viewOptionsPlacement === 'left' && !leftExtra && <DataTableViewOptions table={table} align="left" />}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -79,7 +84,12 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      {viewOptionsPlacement === 'right' && <DataTableViewOptions table={table} />}
+      {!leftExtra && viewOptionsPlacement === 'right' && (
+        <div className="flex items-center gap-2">
+          {rightExtra}
+          {!rightExtra && <DataTableViewOptions table={table} />}
+        </div>
+      )}
     </div>
   )
 }
