@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ConfigDrawer } from '@/components/config-drawer'
@@ -8,6 +8,8 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Analytics } from './components/analytics'
+import { AnalyticsOverview } from './components/analytics-overview'
+import { UsersAnalyticsOverview } from './components/users-analytics-overview'
 import { UserRole, useAuthStore } from '@/stores/auth-store'
 import { IsUserOnline } from '@/components/is-user-online'
 import { useUserProfile } from '@/hooks/use-user-profile'
@@ -60,6 +62,8 @@ export function Dashboard() {
     enabled: isAdmin
   })
 
+  const [activeTab, setActiveTab] = useState('overview')
+
   const birthMonth = new Date().getMonth() + 1
   const {
     data: birthdaysResponse,
@@ -101,11 +105,8 @@ export function Dashboard() {
       <Main>
         <div className="mb-2 flex items-center justify-between space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <div className="flex items-center space-x-2">
-            <Button>Download</Button>
-          </div>
         </div>
-        <Tabs orientation="vertical" defaultValue="overview" className="space-y-4">
+        <Tabs orientation="vertical" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <div className="w-full overflow-x-auto pb-2">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -294,6 +295,11 @@ export function Dashboard() {
                               <p className="text-xs text-muted-foreground">Based on member profiles.</p>
                             </CardContent>
                           </Card>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <AnalyticsOverview onViewAnalytics={() => setActiveTab('analytics')} />
+                          <UsersAnalyticsOverview onViewAnalytics={() => setActiveTab('analytics')} />
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
