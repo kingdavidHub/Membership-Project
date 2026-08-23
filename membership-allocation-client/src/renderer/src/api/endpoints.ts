@@ -70,6 +70,19 @@ export const API_ENDPOINTS = {
   // Reports
   REPORTS: {
     SEND_MEMBERS_MESSAGE: '/reports/sendMembersMessage'
+  },
+
+  // Settings
+  SETTINGS: {
+    DEFAULT_MONTHLY_PAYMENT: '/settings/default-monthly-payment'
+  },
+
+  // Analytics
+  ANALYTICS: {
+    ADMIN_PAYMENTS: '/analytics/admin/payments',
+    ADMIN_PAYMENTS_EXPORT: '/analytics/admin/payments/export',
+    ADMIN_USERS: '/analytics/admin/users',
+    ADMIN_USERS_EXPORT: '/analytics/admin/users/export'
   }
 } as const
 

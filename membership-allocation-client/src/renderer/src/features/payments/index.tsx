@@ -14,6 +14,7 @@ import { PaymentsActionDialog } from './components/payments-action-dialog'
 import { PaymentsPrimaryButtons } from './components/payments-primary-buttons'
 import { PaymentsPendingSkeleton } from './components/payments-pending-skeleton'
 import { PaymentsTable } from './components/payments-table'
+import { SettingsActionDialog } from './components/settings-action-dialog'
 import { type Payment } from './data/schema'
 import { IsUserOnline } from '@/components/is-user-online'
 
@@ -25,6 +26,7 @@ export function Payments() {
   const navigate = useNavigate()
   const storeData = usePaymentsNavigationStore((state) => state.data)
   const [addPaymentOpen, setAddPaymentOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const hasMemberContext = !!storeData && storeData.memberId === memberId
   const page = search.page || 1
   const pageSize = search.pageSize || 10
@@ -78,7 +80,7 @@ export function Payments() {
             <h2 className="text-2xl font-bold tracking-tight">Payment Summary for {memberName}</h2>
             <p className="text-muted-foreground">Review payment history for this member.</p>
           </div>
-          <PaymentsPrimaryButtons onClick={() => setAddPaymentOpen(true)} />
+          <PaymentsPrimaryButtons onClick={() => setAddPaymentOpen(true)} onSettingsClick={() => setSettingsOpen(true)} />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
           <PaymentsTable data={payments} pageCount={pageCount} />
@@ -91,6 +93,7 @@ export function Payments() {
         open={addPaymentOpen}
         onOpenChange={setAddPaymentOpen}
       />
+      <SettingsActionDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </>
   )
 }

@@ -10,6 +10,21 @@ export { authService } from './auth.service'
 export { usersService } from './users.service'
 export { membersService } from './members.service'
 export { reportsService } from './reports.service'
+export { settingsService } from './settings.service'
+export { analyticsService } from './analytics.service'
+export type {
+  AdminPaymentAnalyticsResponse,
+  AdminUsersAnalyticsResponse,
+  PaymentTrend,
+  PaymentStatusCount,
+  PaymentByType,
+  TopMember,
+  ExpiryRisk
+} from './analytics.service'
+export type {
+  UpdateDefaultMonthlyPaymentRequest,
+  DefaultMonthlyPaymentResponse
+} from './settings.service'
 
 // Re-export common types for convenience
 export type * from '../types'

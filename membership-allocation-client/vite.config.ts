@@ -71,9 +71,6 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,webmanifest}'],
         navigateFallback: '/index.html'
       },
-      devOptions: {
-        enabled: true
-      }
     })
   ],
   server: {

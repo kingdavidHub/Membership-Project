@@ -1,141 +1,238 @@
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { Users, DollarSign, Activity, AlertTriangle, Download, BarChart3 } from 'lucide-react'
+import { analyticsService } from '@/api/services'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AnalyticsChart } from './analytics-chart'
+import { AdminUsersAnalytics } from './admin-users-analytics'
+import { ExportFormatModal } from './export-format-modal'
 
 export function Analytics() {
+  const [paymentsModalOpen, setPaymentsModalOpen] = useState(false)
+  const [usersModalOpen, setUsersModalOpen] = useState(false)
+
   return (
     <div className="space-y-4">
+      {/* Export Buttons */}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPaymentsModalOpen(true)}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Export Admin Payments
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setUsersModalOpen(true)}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Export Admin Users
+        </Button>
+      </div>
+
+      {/* Export Modals */}
+      <ExportFormatModal
+        open={paymentsModalOpen}
+        onOpenChange={setPaymentsModalOpen}
+        title="Export Admin Payments"
+        description="Download organization-wide payment data in your preferred format."
+        onExport={(format) => analyticsService.exportAdminPayments(format)}
+      />
+      <ExportFormatModal
+        open={usersModalOpen}
+        onOpenChange={setUsersModalOpen}
+        title="Export Admin Users"
+        description="Download user and member data in your preferred format."
+        onExport={(format) => analyticsService.exportAdminUsers(format)}
+      />
+
+      {/* Sub-tabs for Payments vs Users */}
+      <Tabs defaultValue="payments" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="payments" className="gap-1.5">
+            <BarChart3 className="h-3.5 w-3.5" />
+            Payments
+          </TabsTrigger>
+          <TabsTrigger value="users" className="gap-1.5">
+            <Users className="h-3.5 w-3.5" />
+            Users
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="payments">
+          <PaymentsAnalytics />
+        </TabsContent>
+
+        <TabsContent value="users">
+          <AdminUsersAnalytics />
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
+
+function PaymentsAnalytics() {
+  const { data: analyticsResponse, isPending } = useQuery({
+    queryKey: ['analytics', 'admin-payments'],
+    queryFn: () => analyticsService.getAdminPayments()
+  })
+
+  const data = analyticsResponse?.data
+  const totals = data?.totals
+  const trend = data?.trend ?? []
+  const currentStatus = data?.currentStatus ?? []
+  const topMembers = data?.topMembers ?? []
+  const expiryRisk = data?.expiryRisk
+
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(value)
+
+  return (
+    <div className="space-y-4">
+      {/* Trend Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Traffic Overview</CardTitle>
-          <CardDescription>Weekly clicks and unique visitors</CardDescription>
+          <CardTitle>Payment Trend</CardTitle>
+          <CardDescription>
+            {data?.range
+              ? `${new Date(data.range.from).toLocaleDateString()} — ${new Date(data.range.to).toLocaleDateString()}`
+              : 'Monthly collection overview'}
+          </CardDescription>
         </CardHeader>
         <CardContent className="px-6">
-          <AnalyticsChart />
+          {isPending ? (
+            <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+              Loading analytics…
+            </div>
+          ) : trend.length === 0 ? (
+            <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+              No payment data yet.
+            </div>
+          ) : (
+            <AnalyticsChart trend={trend} />
+          )}
         </CardContent>
       </Card>
+
+      {/* Stat Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Clicks</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M3 3v18h18" />
-              <path d="M7 15l4-4 4 4 4-6" />
-            </svg>
+            <CardTitle className="text-sm font-medium">Total Collected</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,248</div>
-            <p className="text-xs text-muted-foreground">+12.4% vs last week</p>
+            <div className="text-2xl font-bold">
+              {isPending ? '—' : formatCurrency(totals?.totalCollected ?? 0)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isPending ? 'Loading…' : `${totals?.transactionCount ?? 0} transactions`}
+            </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unique Visitors</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <circle cx="12" cy="7" r="4" />
-              <path d="M6 21v-2a6 6 0 0 1 12 0v2" />
-            </svg>
+            <CardTitle className="text-sm font-medium">Paying Members</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">832</div>
-            <p className="text-xs text-muted-foreground">+5.8% vs last week</p>
+            <div className="text-2xl font-bold">
+              {isPending ? '—' : totals?.uniquePayingMembers ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isPending
+                ? 'Loading…'
+                : `${data?.membersWithoutPayments ?? 0} without payments`}
+            </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Bounce Rate</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M3 12h6l3 6 3-6h6" />
-            </svg>
+            <CardTitle className="text-sm font-medium">Avg. Transaction</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">42%</div>
-            <p className="text-xs text-muted-foreground">-3.2% vs last week</p>
+            <div className="text-2xl font-bold">
+              {isPending ? '—' : formatCurrency(totals?.averageTransactionValue ?? 0)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isPending ? 'Loading…' : `${totals?.operationCount ?? 0} operations`}
+            </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Session</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg>
+            <CardTitle className="text-sm font-medium">Expiry Risk</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3m 24s</div>
-            <p className="text-xs text-muted-foreground">+18s vs last week</p>
+            <div className="text-2xl font-bold">
+              {isPending ? '—' : expiryRisk?.expired ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isPending
+                ? 'Loading…'
+                : `${expiryRisk?.dueWithin7Days ?? 0} due within 7 days`}
+            </p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Bar Lists */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
+        {/* Payment Status */}
         <Card className="col-span-1 lg:col-span-4">
           <CardHeader>
-            <CardTitle>Referrers</CardTitle>
-            <CardDescription>Top sources driving traffic</CardDescription>
+            <CardTitle>Payment Status</CardTitle>
+            <CardDescription>Current payment status breakdown</CardDescription>
           </CardHeader>
           <CardContent>
-            <SimpleBarList
-              items={[
-                { name: 'Direct', value: 512 },
-                { name: 'Product Hunt', value: 238 },
-                { name: 'Twitter', value: 174 },
-                { name: 'Blog', value: 104 }
-              ]}
-              barClass="bg-primary"
-              valueFormatter={(n) => `${n}`}
-            />
+            {isPending ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : currentStatus.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No payment data yet.</p>
+            ) : (
+              <SimpleBarList
+                items={currentStatus.map((s) => ({
+                  name: s._id.charAt(0).toUpperCase() + s._id.slice(1),
+                  value: s.count
+                }))}
+                barClass="bg-primary"
+                valueFormatter={(n) => String(n)}
+              />
+            )}
           </CardContent>
         </Card>
+
+        {/* Top Members */}
         <Card className="col-span-1 lg:col-span-3">
           <CardHeader>
-            <CardTitle>Devices</CardTitle>
-            <CardDescription>How users access your app</CardDescription>
+            <CardTitle>Top Paying Members</CardTitle>
+            <CardDescription>Highest contributors this period</CardDescription>
           </CardHeader>
           <CardContent>
-            <SimpleBarList
-              items={[
-                { name: 'Desktop', value: 74 },
-                { name: 'Mobile', value: 22 },
-                { name: 'Tablet', value: 4 }
-              ]}
-              barClass="bg-muted-foreground"
-              valueFormatter={(n) => `${n}%`}
-            />
+            {isPending ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : topMembers.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No member data yet.</p>
+            ) : (
+              <SimpleBarList
+                items={topMembers.map((m) => ({
+                  name: `${m.firstName} ${m.lastName}`,
+                  value: m.total
+                }))}
+                barClass="bg-primary"
+                valueFormatter={(n) => formatCurrency(n)}
+              />
+            )}
           </CardContent>
         </Card>
       </div>
@@ -165,7 +262,9 @@ function SimpleBarList({
                 <div className={`h-2.5 rounded-full ${barClass}`} style={{ width }} />
               </div>
             </div>
-            <div className="ps-2 text-xs font-medium tabular-nums">{valueFormatter(i.value)}</div>
+            <div className="ps-2 text-xs font-medium tabular-nums">
+              {valueFormatter(i.value)}
+            </div>
           </li>
         )
       })}

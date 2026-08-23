@@ -75,3 +75,6 @@ coverage
 .temp
 .tmp
 *.tsbuildinfo
+
+#personal
+final_project.txt

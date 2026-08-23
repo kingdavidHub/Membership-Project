@@ -109,7 +109,7 @@ export function Dashboard() {
           <div className="w-full overflow-x-auto pb-2">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              {isAdmin && <TabsTrigger value="analytics">Analytics</TabsTrigger>}
               <TabsTrigger value="reports" disabled>
                 Reports
               </TabsTrigger>
@@ -348,9 +348,11 @@ export function Dashboard() {
               </>
             )}
           </TabsContent>
-          <TabsContent value="analytics" className="space-y-4">
-            <Analytics />
-          </TabsContent>
+          {isAdmin && (
+            <TabsContent value="analytics" className="space-y-4">
+              <Analytics />
+            </TabsContent>
+          )}
         </Tabs>
       </Main>
       {isAdmin && <AIChatWidget />}

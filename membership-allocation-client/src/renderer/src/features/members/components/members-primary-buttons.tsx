@@ -51,6 +51,8 @@ export function MembersPrimaryButtons() {
             <Button
               variant="outline"
               className="space-x-1"
+              disabled
+              title="Payment status is now updated automatically by the backend"
               onClick={() => openWithSelection('update-payment-status')}
             >
               <span>Update Payment Status</span> <UserCog size={18} />
