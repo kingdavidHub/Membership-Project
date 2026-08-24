@@ -25,6 +25,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type PaymentsActionDialogProps = {
   memberId: string
@@ -120,17 +121,21 @@ export function PaymentsActionDialog({
   const [amount, setAmount] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<{ duration?: string; amount?: string }>({})
+  const [isFetchingDefault, setIsFetchingDefault] = useState(false)
 
   // Fetch fresh default payment and auto-fill when dialog opens
   useEffect(() => {
     if (open) {
-      refetchDefaultPayment().then((result) => {
-        const fresh = result.data?.data?.defaultMonthlyPayment ?? 0
-        if (fresh > 0) {
-          setDuration('1')
-          setAmount(String(fresh))
-        }
-      })
+      setIsFetchingDefault(true)
+      refetchDefaultPayment()
+        .then((result) => {
+          const fresh = result.data?.data?.defaultMonthlyPayment ?? 0
+          if (fresh > 0) {
+            setDuration('1')
+            setAmount(String(fresh))
+          }
+        })
+        .finally(() => setIsFetchingDefault(false))
     }
   }, [open, refetchDefaultPayment])
 
@@ -141,6 +146,7 @@ export function PaymentsActionDialog({
       setAmount('')
       setErrors({})
       setIsSubmitting(false)
+      setIsFetchingDefault(false)
     }
   }, [open])
 
@@ -223,108 +229,132 @@ export function PaymentsActionDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2">
-          {/* Left: Form */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="duration">Duration (months)</Label>
-              <Input
-                id="duration"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="1"
-                value={duration}
-                onChange={(e) => handleDurationChange(e.target.value.replace(/[^0-9]/g, ''))}
-              />
-              {errors.duration && (
-                <p className="text-sm text-destructive">{errors.duration}</p>
-              )}
-              {!errors.duration && (
-                <p className="text-xs text-muted-foreground">
-                  Minimum 1, maximum 12 months
-                </p>
-              )}
+        {isFetchingDefault ? (
+          /* Loading skeleton while fetching default payment */
+          <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-3 w-40" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-3 w-48" />
+              </div>
+            </div>
+            <div className="flex flex-col rounded-lg border bg-muted/30 p-4">
+              <Skeleton className="mb-3 h-4 w-32" />
+              <div className="flex flex-1 items-center justify-center">
+                <Skeleton className="h-20 w-full rounded-md" />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 py-4 sm:grid-cols-2">
+            {/* Left: Form */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="duration">Duration (months)</Label>
+                <Input
+                  id="duration"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="1"
+                  value={duration}
+                  onChange={(e) => handleDurationChange(e.target.value.replace(/[^0-9]/g, ''))}
+                />
+                {errors.duration && (
+                  <p className="text-sm text-destructive">{errors.duration}</p>
+                )}
+                {!errors.duration && (
+                  <p className="text-xs text-muted-foreground">
+                    Minimum 1, maximum 12 months
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="amount">Amount</Label>
+                <Input
+                  id="amount"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="0"
+                  value={amount}
+                  onChange={(e) => handleAmountChange(e.target.value.replace(/[^0-9]/g, ''))}
+                />
+                {errors.amount && (
+                  <p className="text-sm text-destructive">{errors.amount}</p>
+                )}
+                {defaultMonthly > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Must be a multiple of {defaultMonthly.toLocaleString()} and at least{' '}
+                    {defaultMonthly.toLocaleString()} × {duration || 0} ={' '}
+                    {(parseInt(duration || '0', 10) * defaultMonthly).toLocaleString()}
+                  </p>
+                )}
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="amount">Amount</Label>
-              <Input
-                id="amount"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="0"
-                value={amount}
-                onChange={(e) => handleAmountChange(e.target.value.replace(/[^0-9]/g, ''))}
-              />
-              {errors.amount && (
-                <p className="text-sm text-destructive">{errors.amount}</p>
-              )}
+            {/* Right: Coverage period visual */}
+            <div className="flex flex-col rounded-lg border bg-muted/30 p-4">
+              <div className="mb-3 flex items-center gap-2 text-sm font-medium">
+                <CalendarDays className="h-4 w-4" />
+                Coverage Period
+              </div>
+
+              {!coverage ? (
+                <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+                  Enter a duration to see coverage
+                </div>
+              ) : isSingleMonth ? (
+                /* 1 month: mini calendar with day grid */
+                <div className="space-y-2">
+                  <MiniMonthCalendar date={coverage.start} />
+                  <Separator className="my-1" />
+                  <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                    <span>
+                      Coverage: {format(coverage.start, 'MMMM d')} – {format(endOfMonth(coverage.start), 'MMMM d, yyyy')}
+                    </span>
+                  </div>
+                </div>
+              ) : isMultiMonth ? (
+                /* 2+ months: compact start → dotted line → end */
+                <div className="space-y-2">
+                  <CompactCoverage start={coverage.start} end={coverage.end} />
+                  <Separator className="my-1" />
+                  <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                    <span>
+                      {coverage.dur} months of coverage: {format(coverage.start, 'd MMM yyyy')} → {format(coverage.end, 'd MMM yyyy')}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+
               {defaultMonthly > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  Must be a multiple of {defaultMonthly.toLocaleString()} and at least{' '}
-                  {defaultMonthly.toLocaleString()} × {duration || 0} ={' '}
-                  {(parseInt(duration || '0', 10) * defaultMonthly).toLocaleString()}
-                </p>
+                <>
+                  <Separator className="my-3" />
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Default monthly</span>
+                    <span className="font-medium">{defaultMonthly.toLocaleString()}</span>
+                  </div>
+                </>
               )}
             </div>
           </div>
-
-          {/* Right: Coverage period visual */}
-          <div className="flex flex-col rounded-lg border bg-muted/30 p-4">
-            <div className="mb-3 flex items-center gap-2 text-sm font-medium">
-              <CalendarDays className="h-4 w-4" />
-              Coverage Period
-            </div>
-
-            {!coverage ? (
-              <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
-                Enter a duration to see coverage
-              </div>
-            ) : isSingleMonth ? (
-              /* 1 month: mini calendar with day grid */
-              <div className="space-y-2">
-                <MiniMonthCalendar date={coverage.start} />
-                <Separator className="my-1" />
-                <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                  <span>
-                    Coverage: {format(coverage.start, 'MMMM d')} – {format(endOfMonth(coverage.start), 'MMMM d, yyyy')}
-                  </span>
-                </div>
-              </div>
-            ) : isMultiMonth ? (
-              /* 2+ months: compact start → dotted line → end */
-              <div className="space-y-2">
-                <CompactCoverage start={coverage.start} end={coverage.end} />
-                <Separator className="my-1" />
-                <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                  <span>
-                    {coverage.dur} months of coverage: {format(coverage.start, 'd MMM yyyy')} → {format(coverage.end, 'd MMM yyyy')}
-                  </span>
-                </div>
-              </div>
-            ) : null}
-
-            {defaultMonthly > 0 && (
-              <>
-                <Separator className="my-3" />
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Default monthly</span>
-                  <span className="font-medium">{defaultMonthly.toLocaleString()}</span>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        )}
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button type="button" onClick={handleSubmit} disabled={isSubmitting || defaultMonthly === 0}>
+          <Button type="button" onClick={handleSubmit} disabled={isSubmitting || isFetchingDefault || defaultMonthly === 0}>
             {isSubmitting ? 'Saving...' : 'Save Payment'}
           </Button>
         </DialogFooter>
