@@ -32,6 +32,7 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  triggerRef: React.RefObject<HTMLButtonElement | null>
 }
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
@@ -60,6 +61,7 @@ function SidebarProvider({
 }) {
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
+  const triggerRef = React.useRef<HTMLButtonElement | null>(null)
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -110,9 +112,10 @@ function SidebarProvider({
       isMobile,
       openMobile,
       setOpenMobile,
-      toggleSidebar
+      toggleSidebar,
+      triggerRef
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, triggerRef]
   )
 
   return (
@@ -170,8 +173,15 @@ function Sidebar({
   }
 
   if (isMobile) {
+    const handleOpenChange = (open: boolean) => {
+      setOpenMobile(open)
+      if (!open && triggerRef.current) {
+        triggerRef.current.focus()
+      }
+    }
+
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+      <Sheet open={openMobile} onOpenChange={handleOpenChange} {...props}>
         <SheetContent
           data-sidebar="sidebar"
           data-slot="sidebar"
@@ -242,11 +252,20 @@ function Sidebar({
   )
 }
 
-function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+function SidebarTrigger({ className, onClick, ref, ...props }: React.ComponentProps<typeof Button> & { ref?: React.Ref<HTMLButtonElement> }) {
+  const { toggleSidebar, triggerRef } = useSidebar()
+  const combinedRef = React.useCallback(
+    (node: HTMLButtonElement | null) => {
+      triggerRef.current = node
+      if (typeof ref === 'function') ref(node)
+      else if (ref) (ref as React.MutableRefObject<HTMLButtonElement | null>).current = node
+    },
+    [ref, triggerRef]
+  )
 
   return (
     <Button
+      ref={combinedRef}
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
