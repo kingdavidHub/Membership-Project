@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { ChevronsUpDown, LayoutDashboard, LogOut, Users, Flame, CreditCard, UsersRound } from 'lucide-react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { useUserProfile } from '@/hooks/use-user-profile'
@@ -42,6 +42,7 @@ export function NavUser({ user }: NavUserProps) {
   const [open, setOpen] = useDialogState()
   const { userProfile } = useUserProfile()
   const role = userProfile?.role
+  const href = useLocation({ select: (location) => location.href })
 
   return (
     <>
@@ -85,7 +86,7 @@ export function NavUser({ user }: NavUserProps) {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                  <Link to="/dashboard">
+                  <Link to="/dashboard" className={href.split('?')[0] === '/dashboard' ? 'bg-secondary' : ''}>
                     <LayoutDashboard />
                     Dashboard
                   </Link>
@@ -93,13 +94,13 @@ export function NavUser({ user }: NavUserProps) {
                 {role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN ? (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link to="/users">
+                      <Link to="/users" className={href.split('?')[0] === '/users' ? 'bg-secondary' : ''}>
                         <Users />
                         Users
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/members">
+                      <Link to="/members" className={href.split('?')[0] === '/members' ? 'bg-secondary' : ''}>
                         <Flame />
                         Members
                       </Link>
@@ -108,13 +109,13 @@ export function NavUser({ user }: NavUserProps) {
                 ) : (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link to="/member/payments">
+                      <Link to="/member/payments" className={href.split('?')[0] === '/member/payments' ? 'bg-secondary' : ''}>
                         <CreditCard />
                         Payment Summary
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/member/dependents">
+                      <Link to="/member/dependents" className={href.split('?')[0] === '/member/dependents' ? 'bg-secondary' : ''}>
                         <UsersRound />
                         Dependents
                       </Link>
