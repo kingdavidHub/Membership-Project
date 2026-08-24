@@ -1,6 +1,8 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
+import { LayoutDashboard, Users, Flame, CreditCard, UsersRound } from 'lucide-react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { useUserProfile } from '@/hooks/use-user-profile'
+import { UserRole } from '@/stores/auth-store'
 import { ProfileDropdownSkeleton } from '@/components/skeletons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -16,9 +18,19 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SignOutDialog } from '@/components/sign-out-dialog'
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+  }
+  return name.substring(0, 2).toUpperCase() || 'U'
+}
+
 export function ProfileDropdown() {
   const { userProfile, isLoading } = useUserProfile()
   const [open, setOpen] = useDialogState()
+  const href = useLocation({ select: (location) => location.href })
+  const role = userProfile?.role
 
   if (isLoading) {
     return <ProfileDropdownSkeleton />
@@ -32,7 +44,7 @@ export function ProfileDropdown() {
             <Avatar className="h-8 w-8">
               <AvatarImage src="/avatars/01.png" alt={userProfile?.name} />
               <AvatarFallback>
-                {userProfile?.name?.substring(0, 2).toUpperCase() || 'U'}
+                {getInitials(userProfile?.name || '')}
               </AvatarFallback>
             </Avatar>
           </Button>
@@ -47,17 +59,42 @@ export function ProfileDropdown() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link to="/settings">
-                Profile
-                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <Link to="/dashboard" className={href.split('?')[0] === '/dashboard' ? 'bg-secondary' : ''}>
+                <LayoutDashboard />
+                Dashboard
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/settings">
-                Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-              </Link>
-            </DropdownMenuItem>
+            {role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN ? (
+              <>
+                <DropdownMenuItem asChild>
+                  <Link to="/users" className={href.split('?')[0] === '/users' ? 'bg-secondary' : ''}>
+                    <Users />
+                    Users
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/members" className={href.split('?')[0] === '/members' ? 'bg-secondary' : ''}>
+                    <Flame />
+                    Members
+                  </Link>
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <>
+                <DropdownMenuItem asChild>
+                  <Link to="/member/payments" className={href.split('?')[0] === '/member/payments' ? 'bg-secondary' : ''}>
+                    <CreditCard />
+                    Payment Summary
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/member/dependents" className={href.split('?')[0] === '/member/dependents' ? 'bg-secondary' : ''}>
+                    <UsersRound />
+                    Dependents
+                  </Link>
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={() => setOpen(true)}>
