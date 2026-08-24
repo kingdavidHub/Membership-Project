@@ -108,11 +108,10 @@ export function PaymentsActionDialog({
   onOpenChange
 }: PaymentsActionDialogProps) {
   const queryClient = useQueryClient()
-  const { data: settingsData } = useQuery({
+  const { data: settingsData, refetch: refetchDefaultPayment } = useQuery({
     queryKey: ['default-monthly-payment'],
     queryFn: () => settingsService.getDefaultMonthlyPayment(),
-    enabled: open,
-    refetchOnMount: 'always'
+    enabled: false
   })
 
   const defaultMonthly = settingsData?.data?.defaultMonthlyPayment ?? 0
@@ -122,13 +121,18 @@ export function PaymentsActionDialog({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<{ duration?: string; amount?: string }>({})
 
-  // Auto-fill duration to 1 when dialog opens and default is available
+  // Fetch fresh default payment and auto-fill when dialog opens
   useEffect(() => {
-    if (open && defaultMonthly > 0 && !duration) {
-      setDuration('1')
-      setAmount(String(defaultMonthly))
+    if (open) {
+      refetchDefaultPayment().then((result) => {
+        const fresh = result.data?.data?.defaultMonthlyPayment ?? 0
+        if (fresh > 0) {
+          setDuration('1')
+          setAmount(String(fresh))
+        }
+      })
     }
-  }, [open, defaultMonthly])
+  }, [open, refetchDefaultPayment])
 
   // Reset on close
   useEffect(() => {
