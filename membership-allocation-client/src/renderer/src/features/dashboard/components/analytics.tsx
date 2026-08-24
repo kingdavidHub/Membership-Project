@@ -5,7 +5,6 @@ import { analyticsService } from '@/api/services'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { AnalyticsChart } from './analytics-chart'
 import { AdminUsersAnalytics } from './admin-users-analytics'
 import { ExportFormatModal } from './export-format-modal'
 
@@ -84,7 +83,6 @@ function PaymentsAnalytics() {
 
   const data = analyticsResponse?.data
   const totals = data?.totals
-  const trend = data?.trend ?? []
   const currentStatus = data?.currentStatus ?? []
   const topMembers = data?.topMembers ?? []
   const expiryRisk = data?.expiryRisk
@@ -94,31 +92,6 @@ function PaymentsAnalytics() {
 
   return (
     <div className="space-y-4">
-      {/* Trend Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Payment Trend</CardTitle>
-          <CardDescription>
-            {data?.range
-              ? `${new Date(data.range.from).toLocaleDateString()} — ${new Date(data.range.to).toLocaleDateString()}`
-              : 'Monthly collection overview'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="px-6">
-          {isPending ? (
-            <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-              Loading analytics…
-            </div>
-          ) : trend.length === 0 ? (
-            <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-              No payment data yet.
-            </div>
-          ) : (
-            <AnalyticsChart trend={trend} />
-          )}
-        </CardContent>
-      </Card>
-
       {/* Stat Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
