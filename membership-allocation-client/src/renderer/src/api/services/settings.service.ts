@@ -18,7 +18,26 @@ export interface DefaultMonthlyPaymentResponse {
  * Settings Service
  * Handles settings-related API calls
  */
+export interface GetDefaultMonthlyPaymentResponse {
+  status: string
+  data: {
+    defaultMonthlyPayment: number
+    currency: string
+    updatedAt: string
+  }
+}
+
 export const settingsService = {
+  /**
+   * Get the current default monthly payment
+   */
+  getDefaultMonthlyPayment: async (): Promise<GetDefaultMonthlyPaymentResponse> => {
+    const response = (await apiClient.get(
+      API_ENDPOINTS.SETTINGS.GET
+    )) as GetDefaultMonthlyPaymentResponse
+    return response
+  },
+
   /**
    * Update the default monthly payment amount
    */

@@ -23,7 +23,8 @@ export type {
 } from './analytics.service'
 export type {
   UpdateDefaultMonthlyPaymentRequest,
-  DefaultMonthlyPaymentResponse
+  DefaultMonthlyPaymentResponse,
+  GetDefaultMonthlyPaymentResponse
 } from './settings.service'
 
 // Re-export common types for convenience

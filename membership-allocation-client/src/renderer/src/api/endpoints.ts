@@ -74,6 +74,7 @@ export const API_ENDPOINTS = {
 
   // Settings
   SETTINGS: {
+    GET: '/settings',
     DEFAULT_MONTHLY_PAYMENT: '/settings/default-monthly-payment'
   },
 

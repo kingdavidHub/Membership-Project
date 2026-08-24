@@ -111,12 +111,7 @@ export function Dashboard() {
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               {isAdmin && <TabsTrigger value="analytics">Analytics</TabsTrigger>}
-              <TabsTrigger value="reports" disabled>
-                Reports
-              </TabsTrigger>
-              <TabsTrigger value="notifications" disabled>
-                Notifications
-              </TabsTrigger>
+
             </TabsList>
           </div>
           <TabsContent value="overview" className="space-y-4">

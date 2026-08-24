@@ -52,6 +52,7 @@ export interface ApiMember {
   memberStatus: MemberStatus
   dependents: Dependent[]
   lastPaid: string | null
+  paymentExpiryDate: string | null
   createdAt: string
   __v?: number
 }

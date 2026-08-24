@@ -23,7 +23,7 @@ export function Analytics() {
           onClick={() => setPaymentsModalOpen(true)}
         >
           <Download className="mr-2 h-4 w-4" />
-          Export Admin Payments
+          Export Payments
         </Button>
         <Button
           variant="outline"
@@ -31,7 +31,7 @@ export function Analytics() {
           onClick={() => setUsersModalOpen(true)}
         >
           <Download className="mr-2 h-4 w-4" />
-          Export Admin Users
+          Export User Profiles
         </Button>
       </div>
 
@@ -39,14 +39,14 @@ export function Analytics() {
       <ExportFormatModal
         open={paymentsModalOpen}
         onOpenChange={setPaymentsModalOpen}
-        title="Export Admin Payments"
+        title="Export Payments"
         description="Download organization-wide payment data in your preferred format."
         onExport={(format) => analyticsService.exportAdminPayments(format)}
       />
       <ExportFormatModal
         open={usersModalOpen}
         onOpenChange={setUsersModalOpen}
-        title="Export Admin Users"
+        title="Export User Profiles"
         description="Download user and member data in your preferred format."
         onExport={(format) => analyticsService.exportAdminUsers(format)}
       />
