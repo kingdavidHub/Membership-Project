@@ -52,6 +52,7 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size="lg"
+                aria-label="User menu"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <Avatar className="h-8 w-8 rounded-lg">
@@ -62,7 +63,7 @@ export function NavUser({ user }: NavUserProps) {
                   <span className="truncate font-semibold">{user.name}</span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
-                <ChevronsUpDown className="ms-auto size-4" />
+                <ChevronsUpDown className="ms-auto size-4" aria-hidden="true" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -86,22 +87,22 @@ export function NavUser({ user }: NavUserProps) {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                  <Link to="/dashboard" className={href.split('?')[0] === '/dashboard' ? 'bg-secondary' : ''}>
-                    <LayoutDashboard />
+                  <Link to="/dashboard" aria-current={href.split('?')[0] === '/dashboard' ? 'page' : undefined} className={href.split('?')[0] === '/dashboard' ? 'bg-secondary' : ''}>
+                    <LayoutDashboard aria-hidden="true" />
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
                 {role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN ? (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link to="/users" className={href.split('?')[0] === '/users' ? 'bg-secondary' : ''}>
-                        <Users />
+                      <Link to="/users" aria-current={href.split('?')[0] === '/users' ? 'page' : undefined} className={href.split('?')[0] === '/users' ? 'bg-secondary' : ''}>
+                        <Users aria-hidden="true" />
                         Users
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/members" className={href.split('?')[0] === '/members' ? 'bg-secondary' : ''}>
-                        <Flame />
+                      <Link to="/members" aria-current={href.split('?')[0] === '/members' ? 'page' : undefined} className={href.split('?')[0] === '/members' ? 'bg-secondary' : ''}>
+                        <Flame aria-hidden="true" />
                         Members
                       </Link>
                     </DropdownMenuItem>
@@ -109,14 +110,14 @@ export function NavUser({ user }: NavUserProps) {
                 ) : (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link to="/member/payments" className={href.split('?')[0] === '/member/payments' ? 'bg-secondary' : ''}>
-                        <CreditCard />
+                      <Link to="/member/payments" aria-current={href.split('?')[0] === '/member/payments' ? 'page' : undefined} className={href.split('?')[0] === '/member/payments' ? 'bg-secondary' : ''}>
+                        <CreditCard aria-hidden="true" />
                         Payment Summary
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/member/dependents" className={href.split('?')[0] === '/member/dependents' ? 'bg-secondary' : ''}>
-                        <UsersRound />
+                      <Link to="/member/dependents" aria-current={href.split('?')[0] === '/member/dependents' ? 'page' : undefined} className={href.split('?')[0] === '/member/dependents' ? 'bg-secondary' : ''}>
+                        <UsersRound aria-hidden="true" />
                         Dependents
                       </Link>
                     </DropdownMenuItem>
@@ -125,7 +126,7 @@ export function NavUser({ user }: NavUserProps) {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={() => setOpen(true)}>
-                <LogOut />
+                <LogOut aria-hidden="true" />
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>

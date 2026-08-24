@@ -126,8 +126,8 @@ function SidebarMenuCollapsedDropdown({ item, href }: { item: NavCollapsible; hr
           <DropdownMenuSeparator />
           {item.items.map((sub) => (
             <DropdownMenuItem key={`${sub.title}-${sub.url}`} asChild>
-              <Link to={sub.url} className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}>
-                {sub.icon && <sub.icon />}
+              <Link to={sub.url} aria-current={checkIsActive(href, sub) ? 'page' : undefined} className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}>
+                {sub.icon && <sub.icon aria-hidden="true" />}
                 <span className="max-w-52 text-wrap">{sub.title}</span>
                 {sub.badge && <span className="ms-auto text-xs">{sub.badge}</span>}
               </Link>
