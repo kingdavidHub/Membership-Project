@@ -48,15 +48,7 @@ export function MembersPrimaryButtons() {
             >
               <span>Update Member Status</span> <UserCog size={18} />
             </Button>
-            <Button
-              variant="outline"
-              className="space-x-1"
-              disabled
-              title="Payment status is now updated automatically by the backend"
-              onClick={() => openWithSelection('update-payment-status')}
-            >
-              <span>Update Payment Status</span> <UserCog size={18} />
-            </Button>
+
           </div>
           {selectedRows.length > 0 && (
             <div className="flex flex-wrap items-center justify-end gap-2">
