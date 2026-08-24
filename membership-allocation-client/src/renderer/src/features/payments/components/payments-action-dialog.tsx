@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
   addMonths,
@@ -31,14 +31,6 @@ type PaymentsActionDialogProps = {
   memberName: string
   open: boolean
   onOpenChange: (open: boolean) => void
-}
-
-function useDefaultMonthlyPayment() {
-  return useQuery({
-    queryKey: ['default-monthly-payment'],
-    queryFn: () => settingsService.getDefaultMonthlyPayment(),
-    staleTime: 5 * 60 * 1000
-  })
 }
 
 /** Mini calendar grid showing days in a month */
@@ -116,7 +108,12 @@ export function PaymentsActionDialog({
   onOpenChange
 }: PaymentsActionDialogProps) {
   const queryClient = useQueryClient()
-  const { data: settingsData } = useDefaultMonthlyPayment()
+  const { data: settingsData } = useQuery({
+    queryKey: ['default-monthly-payment'],
+    queryFn: () => settingsService.getDefaultMonthlyPayment(),
+    enabled: open,
+    refetchOnMount: 'always'
+  })
 
   const defaultMonthly = settingsData?.data?.defaultMonthlyPayment ?? 0
 
