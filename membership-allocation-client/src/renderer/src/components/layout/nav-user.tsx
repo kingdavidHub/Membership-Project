@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router'
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react'
+import { ChevronsUpDown, LayoutDashboard, LogOut, Users, Flame, CreditCard, UsersRound } from 'lucide-react'
 import useDialogState from '@/hooks/use-dialog-state'
+import { useUserProfile } from '@/hooks/use-user-profile'
+import { UserRole } from '@/stores/auth-store'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -19,6 +21,14 @@ import {
 } from '@/components/ui/sidebar'
 import { SignOutDialog } from '@/components/sign-out-dialog'
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+  }
+  return name.substring(0, 2).toUpperCase() || 'U'
+}
+
 type NavUserProps = {
   user: {
     name: string
@@ -30,6 +40,8 @@ type NavUserProps = {
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar()
   const [open, setOpen] = useDialogState()
+  const { userProfile } = useUserProfile()
+  const role = userProfile?.role
 
   return (
     <>
@@ -43,7 +55,7 @@ export function NavUser({ user }: NavUserProps) {
               >
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">{getInitials(user.name)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
@@ -62,7 +74,7 @@ export function NavUser({ user }: NavUserProps) {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{getInitials(user.name)}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-start text-sm leading-tight">
                     <span className="truncate font-semibold">{user.name}</span>
@@ -72,31 +84,43 @@ export function NavUser({ user }: NavUserProps) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Sparkles />
-                  Upgrade to Pro
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                  <Link to="/settings/account">
-                    <BadgeCheck />
-                    Account
+                  <Link to="/dashboard">
+                    <LayoutDashboard />
+                    Dashboard
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings">
-                    <CreditCard />
-                    Billing
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings/notifications">
-                    <Bell />
-                    Notifications
-                  </Link>
-                </DropdownMenuItem>
+                {role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN ? (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/users">
+                        <Users />
+                        Users
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/members">
+                        <Flame />
+                        Members
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/member/payments">
+                        <CreditCard />
+                        Payment Summary
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/member/dependents">
+                        <UsersRound />
+                        Dependents
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={() => setOpen(true)}>
