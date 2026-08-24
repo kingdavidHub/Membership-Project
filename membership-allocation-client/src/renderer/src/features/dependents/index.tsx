@@ -6,6 +6,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { ConfigDrawer } from '@/components/config-drawer'
 import { Button } from '@/components/ui/button'
 import { columns } from './components/dependents-columns'
 import { DependentsDialogs } from './components/dependents-dialogs'
@@ -53,6 +54,7 @@ export function Dependents() {
         <Search />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeSwitch />
+          <ConfigDrawer />
           <IsUserOnline />
           <ProfileDropdown />
         </div>

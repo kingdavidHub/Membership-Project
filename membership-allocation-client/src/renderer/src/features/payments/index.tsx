@@ -8,6 +8,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { ConfigDrawer } from '@/components/config-drawer'
 import { Button } from '@/components/ui/button'
 import { usePaymentsNavigationStore } from '@/stores/payments-navigation-store'
 import { PaymentsActionDialog } from './components/payments-action-dialog'
@@ -61,6 +62,7 @@ export function Payments() {
         <Search />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeSwitch />
+          <ConfigDrawer />
           <IsUserOnline />
           <ProfileDropdown />
         </div>

@@ -6,6 +6,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { ConfigDrawer } from '@/components/config-drawer'
 import { useUserProfile } from '@/hooks/use-user-profile'
 import { PaymentsPendingSkeleton } from '@/features/payments/components/payments-pending-skeleton'
 import { PaymentsTable } from './components/payments-table'
@@ -41,6 +42,7 @@ export function MemberPayments() {
           <Search />
           <div className="ml-auto flex items-center space-x-4">
             <ThemeSwitch />
+            <ConfigDrawer />
             <IsUserOnline />
             <ProfileDropdown />
           </div>
@@ -69,6 +71,7 @@ export function MemberPayments() {
         <Search />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeSwitch />
+          <ConfigDrawer />
           <IsUserOnline />
           <ProfileDropdown />
         </div>

@@ -33,14 +33,14 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
     <>
       <div className="p-1 md:hidden">
         <Select value={val} onValueChange={handleSelect}>
-          <SelectTrigger className="h-12 sm:w-48">
-            <SelectValue placeholder="Theme" />
+          <SelectTrigger className="h-12 sm:w-48" aria-label="Navigate settings">
+            <SelectValue placeholder="Settings" />
           </SelectTrigger>
           <SelectContent>
             {items.map((item) => (
               <SelectItem key={item.href} value={item.href}>
                 <div className="flex gap-x-4 px-2 py-1">
-                  <span className="scale-125">{item.icon}</span>
+                  <span className="scale-125" aria-hidden="true">{item.icon}</span>
                   <span className="text-md">{item.title}</span>
                 </div>
               </SelectItem>
@@ -70,7 +70,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
                 'justify-start'
               )}
             >
-              <span className="me-2">{item.icon}</span>
+              <span className="me-2" aria-hidden="true">{item.icon}</span>
               {item.title}
             </Link>
           ))}

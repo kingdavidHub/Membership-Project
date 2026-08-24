@@ -5,6 +5,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { ConfigDrawer } from '@/components/config-drawer'
 import { membersService } from '@/api/services'
 import { useUserProfile } from '@/hooks/use-user-profile'
 import { DependentsPendingSkeleton } from '@/features/dependents/components/dependents-pending-skeleton'
@@ -44,6 +45,7 @@ export function MemberDependents() {
           <Search />
           <div className="ml-auto flex items-center space-x-4">
             <ThemeSwitch />
+            <ConfigDrawer />
             <IsUserOnline />
             <ProfileDropdown />
           </div>
@@ -81,6 +83,7 @@ export function MemberDependents() {
         <Search />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeSwitch />
+          <ConfigDrawer />
           <IsUserOnline />
           <ProfileDropdown />
         </div>
