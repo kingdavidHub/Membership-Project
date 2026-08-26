@@ -288,7 +288,7 @@ This project demonstrates the practical application of role-based access control
 
 ## 📚 Methodology
 
-The development follows a structured software development approach:
+The development follow's a structured software development approach:
 
 1. Requirements analysis and system specification
 2. System design (database and user interface)
