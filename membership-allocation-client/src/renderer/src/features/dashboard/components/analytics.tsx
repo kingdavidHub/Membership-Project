@@ -197,14 +197,16 @@ function PaymentsAnalytics() {
             ) : topMembers.length === 0 ? (
               <p className="text-sm text-muted-foreground">No member data yet.</p>
             ) : (
-              <SimpleBarList
-                items={topMembers.map((m) => ({
-                  name: `${m.firstName} ${m.lastName}`,
-                  value: m.total
-                }))}
-                barClass="bg-primary"
-                valueFormatter={(n) => formatCurrency(n)}
-              />
+              <div className="max-h-80 overflow-y-auto pr-1">
+                <SimpleBarList
+                  items={topMembers.map((m) => ({
+                    name: `${m.firstName} ${m.lastName}`,
+                    value: m.total
+                  }))}
+                  barClass="bg-primary"
+                  valueFormatter={(n) => formatCurrency(n)}
+                />
+              </div>
             )}
           </CardContent>
         </Card>
