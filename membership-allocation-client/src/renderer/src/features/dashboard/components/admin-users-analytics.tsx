@@ -233,19 +233,21 @@ export function AdminUsersAnalytics() {
             {isPending ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : (
-              <SimpleBarList
-                items={(data?.birthdays ?? [])
-                  .map((b) => ({
-                    name: MONTH_NAMES[b._id] || `Month ${b._id}`,
-                    value: b.count
-                  }))
-                  .sort((a, b) => {
-                    const monthOrder = MONTH_NAMES.indexOf(a.name) - MONTH_NAMES.indexOf(b.name)
-                    return monthOrder !== 0 ? monthOrder : a.name.localeCompare(b.name)
-                  })}
-                barClass="bg-primary"
-                valueFormatter={(n) => String(n)}
-              />
+              <div className="max-h-80 overflow-y-auto pr-1">
+                <SimpleBarList
+                  items={(data?.birthdays ?? [])
+                    .map((b) => ({
+                      name: MONTH_NAMES[b._id] || `Month ${b._id}`,
+                      value: b.count
+                    }))
+                    .sort((a, b) => {
+                      const monthOrder = MONTH_NAMES.indexOf(a.name) - MONTH_NAMES.indexOf(b.name)
+                      return monthOrder !== 0 ? monthOrder : a.name.localeCompare(b.name)
+                    })}
+                  barClass="bg-primary"
+                  valueFormatter={(n) => String(n)}
+                />
+              </div>
             )}
           </CardContent>
         </Card>
