@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   type SortingState,
   type VisibilityState,
@@ -82,7 +82,16 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data,
+  // Client-side slice: show only the current page's rows.
+  // The API returns all fetched records; pagination is purely visual.
+  const safeData = useMemo(
+    () => data.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
+    [data, pagination.pageIndex, pagination.pageSize]
+  )
+
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const table = useReactTable({
+    data: safeData,
     columns,
     state: {
       sorting,

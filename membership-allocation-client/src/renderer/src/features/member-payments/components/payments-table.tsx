@@ -41,8 +41,14 @@ export function PaymentsTable({ data, pageCount }: MemberPaymentsTableProps) {
 
   const displayPageCount = Math.max(Math.ceil(data.length / pagination.pageSize), 1)
 
+  // Client-side slice: show only the current page's rows.
+  const safeData = React.useMemo(
+    () => data.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
+    [data, pagination.pageIndex, pagination.pageSize]
+  )
+
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     state: {
       sorting,
