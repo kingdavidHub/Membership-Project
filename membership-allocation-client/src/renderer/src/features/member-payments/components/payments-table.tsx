@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import {
   type SortingState,
@@ -41,8 +41,15 @@ export function PaymentsTable({ data, pageCount }: MemberPaymentsTableProps) {
     globalFilter: { enabled: false }
   })
 
+  // Client-side safety net: if the API returns more rows than the page size,
+  // slice to the correct page to ensure pagination displays correctly.
+  const safeData = useMemo(
+    () => (data.length > pagination.pageSize ? data.slice(0, pagination.pageSize) : data),
+    [data, pagination.pageSize]
+  )
+
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     state: {
       sorting,

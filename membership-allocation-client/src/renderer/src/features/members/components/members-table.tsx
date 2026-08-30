@@ -62,8 +62,15 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
 
   const safePageCount = Math.max(pageCount, 1)
 
+  // Client-side safety net: if the API returns more rows than the page size,
+  // slice to the correct page to ensure pagination displays correctly.
+  const safeData = React.useMemo(
+    () => (data.length > pagination.pageSize ? data.slice(0, pagination.pageSize) : data),
+    [data, pagination.pageSize]
+  )
+
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     state: {
       sorting,

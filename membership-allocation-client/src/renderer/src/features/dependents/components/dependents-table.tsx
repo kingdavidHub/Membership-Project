@@ -3,7 +3,6 @@
 import * as React from 'react'
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -15,7 +14,9 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import { getRouteApi } from '@tanstack/react-router'
 import { Trash2 } from 'lucide-react'
+import { useTableUrlState } from '@/hooks/use-table-url-state'
 import {
   Table,
   TableBody,
@@ -30,6 +31,8 @@ import { DependentsViewDialog } from './dependents-view-dialog'
 import { type Dependent } from '../data/schema'
 import { useDependents } from './dependents-provider'
 
+const route = getRouteApi('/_authenticated/members/$memberId/dependents')
+
 type DependentsTableProps = {
   columns: ColumnDef<Dependent>[]
   data: Dependent[]
@@ -38,15 +41,31 @@ type DependentsTableProps = {
 export function DependentsTable({ columns, data }: DependentsTableProps) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
   const { setOpen, setSelectedRows } = useDependents()
+
+  const {
+    columnFilters,
+    onColumnFiltersChange,
+    pagination,
+    onPaginationChange,
+    ensurePageInRange
+  } = useTableUrlState({
+    search: route.useSearch(),
+    navigate: route.useNavigate(),
+    pagination: { defaultPage: 1, defaultPageSize: 10 },
+    globalFilter: { enabled: false },
+    columnFilters: [
+      { columnId: 'firstName', searchKey: 'firstName', type: 'string' }
+    ]
+  })
 
   const table = useReactTable({
     data,
     columns,
     state: {
       sorting,
+      pagination,
       columnVisibility,
       rowSelection,
       columnFilters
@@ -54,8 +73,9 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
+    onPaginationChange,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -63,6 +83,11 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues()
   })
+
+  const pageCount = table.getPageCount()
+  React.useEffect(() => {
+    ensurePageInRange(pageCount)
+  }, [pageCount, ensurePageInRange])
 
   const selectedRowsData = table.getFilteredSelectedRowModel().rows
 

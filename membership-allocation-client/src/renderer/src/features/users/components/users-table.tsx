@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   type SortingState,
   type VisibilityState,
@@ -78,9 +78,16 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
     ]
   })
 
+  // Client-side safety net: if the API returns more rows than the page size,
+  // slice to the correct page to ensure pagination displays correctly.
+  const safeData = useMemo(
+    () => (data.length > pagination.pageSize ? data.slice(0, pagination.pageSize) : data),
+    [data, pagination.pageSize]
+  )
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     state: {
       sorting,
