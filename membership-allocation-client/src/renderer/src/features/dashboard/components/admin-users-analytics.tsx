@@ -201,16 +201,18 @@ export function AdminUsersAnalytics() {
             {isPending ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : (
-              <SimpleBarList
-                items={(data?.entryYears ?? [])
-                  .map((e) => ({
-                    name: String(e._id),
-                    value: e.count
-                  }))
-                  .sort((a, b) => Number(a.name) - Number(b.name))}
-                barClass="bg-muted-foreground"
-                valueFormatter={(n) => String(n)}
-              />
+              <div className="max-h-80 overflow-y-auto pr-1">
+                <SimpleBarList
+                  items={(data?.entryYears ?? [])
+                    .map((e) => ({
+                      name: String(e._id),
+                      value: e.count
+                    }))
+                    .sort((a, b) => Number(a.name) - Number(b.name))}
+                  barClass="bg-muted-foreground"
+                  valueFormatter={(n) => String(n)}
+                />
+              </div>
             )}
           </CardContent>
         </Card>
