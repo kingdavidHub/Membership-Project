@@ -201,7 +201,7 @@ export function AdminUsersAnalytics() {
             {isPending ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : (
-              <div className="max-h-80 scroll-smooth overflow-y-auto pr-1">
+              <div className="max-h-60 scroll-smooth overflow-y-auto pr-1">
                 <SimpleBarList
                   items={(data?.entryYears ?? [])
                     .map((e) => ({
@@ -233,7 +233,7 @@ export function AdminUsersAnalytics() {
             {isPending ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : (
-              <div className="max-h-80 scroll-smooth overflow-y-auto pr-1">
+              <div className="max-h-60 scroll-smooth overflow-y-auto pr-1">
                 <SimpleBarList
                   items={(data?.birthdays ?? [])
                     .map((b) => ({
