@@ -197,7 +197,7 @@ function PaymentsAnalytics() {
             ) : topMembers.length === 0 ? (
               <p className="text-sm text-muted-foreground">No member data yet.</p>
             ) : (
-              <div className="max-h-80 overflow-y-auto pr-1">
+              <div className="max-h-80 scroll-smooth overflow-y-auto pr-1">
                 <SimpleBarList
                   items={topMembers.map((m) => ({
                     name: `${m.firstName} ${m.lastName}`,
