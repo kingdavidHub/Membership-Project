@@ -18,12 +18,28 @@ import {
 type DataTablePaginationProps<TData> = {
   table: Table<TData>
   className?: string
+  /** When provided the dropdown controls the API fetch size via this
+   *  callback instead of calling table.setPageSize().  The table's
+   *  internal pageSize stays unchanged (always 10 for display). */
+  onFetchSizeChange?: (newSize: number) => void
+  /** Current fetch size shown in the dropdown (only used with onFetchSizeChange). */
+  fetchSize?: number
 }
 
-export function DataTablePagination<TData>({ table, className }: DataTablePaginationProps<TData>) {
+export function DataTablePagination<TData>({
+  table,
+  className,
+  onFetchSizeChange,
+  fetchSize
+}: DataTablePaginationProps<TData>) {
   const currentPage = table.getState().pagination.pageIndex + 1
   const totalPages = table.getPageCount()
   const pageNumbers = getPageNumbers(currentPage, totalPages)
+
+  const displayPageSize = table.getState().pagination.pageSize
+  const dropdownValue = onFetchSizeChange
+    ? `${fetchSize ?? displayPageSize}`
+    : `${displayPageSize}`
 
   return (
     <div
@@ -40,13 +56,18 @@ export function DataTablePagination<TData>({ table, className }: DataTablePagina
         </div>
         <div className="flex items-center gap-2 @max-2xl/content:flex-row-reverse">
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={dropdownValue}
             onValueChange={(value) => {
-              table.setPageSize(Number(value))
+              const newSize = Number(value)
+              if (onFetchSizeChange) {
+                onFetchSizeChange(newSize)
+              } else {
+                table.setPageSize(newSize)
+              }
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue placeholder={dropdownValue} />
             </SelectTrigger>
             <SelectContent side="top">
               {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -56,7 +77,7 @@ export function DataTablePagination<TData>({ table, className }: DataTablePagina
               ))}
             </SelectContent>
           </Select>
-          <p className="hidden text-sm font-medium sm:block">Rows per page</p>
+          <p className="hidden text-sm font-medium sm:block">Fetching</p>
         </div>
       </div>
 

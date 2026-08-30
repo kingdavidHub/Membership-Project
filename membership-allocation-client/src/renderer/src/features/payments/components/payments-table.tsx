@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import {
   type SortingState,
@@ -32,31 +32,24 @@ type PaymentsTableProps = {
 export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const safePageCount = Math.max(pageCount, 1)
-
-  const { pagination, onPaginationChange, ensurePageInRange } = useTableUrlState({
+  const { pagination, onPaginationChange, ensurePageInRange, fetchSize, setFetchSize } = useTableUrlState({
     search: route.useSearch(),
     navigate: route.useNavigate(),
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: false }
   })
 
-  // Client-side safety net: if the API returns more rows than the page size,
-  // slice to the correct page to ensure pagination displays correctly.
-  const safeData = React.useMemo(
-    () => (data.length > pagination.pageSize ? data.slice(0, pagination.pageSize) : data),
-    [data, pagination.pageSize]
-  )
+  const displayPageCount = Math.max(Math.ceil(data.length / pagination.pageSize), 1)
 
   const table = useReactTable({
-    data: safeData,
+    data,
     columns,
     state: {
       sorting,
       pagination
     },
     manualPagination: true,
-    pageCount: safePageCount,
+    pageCount: displayPageCount,
     onPaginationChange,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -64,8 +57,8 @@ export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
   })
 
   useEffect(() => {
-    ensurePageInRange(safePageCount)
-  }, [ensurePageInRange, safePageCount])
+    ensurePageInRange(displayPageCount)
+  }, [ensurePageInRange, displayPageCount])
 
   return (
     <div className="flex flex-1 flex-col gap-4">
@@ -105,7 +98,7 @@ export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} />
     </div>
   )
 }

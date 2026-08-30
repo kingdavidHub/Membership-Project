@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   type SortingState,
   type VisibilityState,
@@ -65,7 +65,9 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
     onColumnFiltersChange,
     pagination,
     onPaginationChange,
-    ensurePageInRange
+    ensurePageInRange,
+    fetchSize,
+    setFetchSize
   } = useTableUrlState({
     search,
     navigate,
@@ -78,16 +80,9 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
     ]
   })
 
-  // Client-side safety net: if the API returns more rows than the page size,
-  // slice to the correct page to ensure pagination displays correctly.
-  const safeData = useMemo(
-    () => (data.length > pagination.pageSize ? data.slice(0, pagination.pageSize) : data),
-    [data, pagination.pageSize]
-  )
-
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: safeData,
+    data,
     columns,
     state: {
       sorting,
@@ -98,7 +93,7 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
     },
     // Server-side pagination
     manualPagination: true,
-    pageCount: Math.ceil(totalCount / pagination.pageSize),
+    pageCount: Math.ceil(data.length / pagination.pageSize),
     enableRowSelection: true,
     onPaginationChange,
     onColumnFiltersChange,
@@ -222,7 +217,7 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} />
       <DataTableBulkActions table={table} />
     </div>
   )

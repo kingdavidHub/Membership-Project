@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import type { ColumnFiltersState, OnChangeFn, PaginationState } from '@tanstack/react-table'
 
 type SearchRecord = Record<string, unknown>
@@ -8,6 +8,9 @@ export type NavigateFn = (opts: {
   replace?: boolean
 }) => void
 
+/** Display page size is always 10 – the dropdown only controls the API fetch limit. */
+const DISPLAY_PAGE_SIZE = 10
+
 type UseTableUrlStateParams = {
   search: SearchRecord
   navigate: NavigateFn
@@ -15,6 +18,7 @@ type UseTableUrlStateParams = {
     pageKey?: string
     pageSizeKey?: string
     defaultPage?: number
+    /** Used only as the default fetch size when the URL has no pageSize param. */
     defaultPageSize?: number
   }
   globalFilter?: {
@@ -27,7 +31,6 @@ type UseTableUrlStateParams = {
         columnId: string
         searchKey: string
         type?: 'string'
-        // Optional transformers for custom types
         serialize?: (value: unknown) => unknown
         deserialize?: (value: unknown) => unknown
       }
@@ -42,17 +45,18 @@ type UseTableUrlStateParams = {
 }
 
 type UseTableUrlStateReturn = {
-  // Global filter
   globalFilter?: string
   onGlobalFilterChange?: OnChangeFn<string>
-  // Column filters
   columnFilters: ColumnFiltersState
   onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
-  // Pagination
+  /** Always uses the fixed display page size (10). */
   pagination: PaginationState
   onPaginationChange: OnChangeFn<PaginationState>
-  // Helpers
   ensurePageInRange: (pageCount: number, opts?: { resetTo?: 'first' | 'last' }) => void
+  /** The current fetch size (from the URL's pageSize param). */
+  fetchSize: number
+  /** Update the fetch size in the URL (triggers a loader refetch). */
+  setFetchSize: (size: number) => void
 }
 
 export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlStateReturn {
@@ -85,7 +89,6 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
           collected.push({ id: cfg.columnId, value })
         }
       } else {
-        // default to array type
         const value = (deserialize(raw) as unknown[]) ?? []
         if (Array.isArray(value) && value.length > 0) {
           collected.push({ id: cfg.columnId, value })
@@ -97,26 +100,44 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialColumnFilters)
 
+  // Fetch size: how many records to request from the API (from URL param).
+  const fetchSize = useMemo(() => {
+    const raw = (search as SearchRecord)[pageSizeKey]
+    return typeof raw === 'number' ? raw : defaultPageSize
+  }, [search, pageSizeKey, defaultPageSize])
+
+  // Display pagination: always fixed at DISPLAY_PAGE_SIZE rows per page.
   const pagination: PaginationState = useMemo(() => {
     const rawPage = (search as SearchRecord)[pageKey]
-    const rawPageSize = (search as SearchRecord)[pageSizeKey]
     const pageNum = typeof rawPage === 'number' ? rawPage : defaultPage
-    const pageSizeNum = typeof rawPageSize === 'number' ? rawPageSize : defaultPageSize
-    return { pageIndex: Math.max(0, pageNum - 1), pageSize: pageSizeNum }
-  }, [search, pageKey, pageSizeKey, defaultPage, defaultPageSize])
+    return { pageIndex: Math.max(0, pageNum - 1), pageSize: DISPLAY_PAGE_SIZE }
+  }, [search, pageKey, defaultPage])
 
+  // Page navigation only (does NOT touch the fetch-size param).
   const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
     const next = typeof updater === 'function' ? updater(pagination) : updater
     const nextPage = next.pageIndex + 1
-    const nextPageSize = next.pageSize
     navigate({
       search: (prev) => ({
         ...(prev as SearchRecord),
-        [pageKey]: nextPage <= defaultPage ? undefined : nextPage,
-        [pageSizeKey]: nextPageSize === defaultPageSize ? undefined : nextPageSize
+        [pageKey]: nextPage <= defaultPage ? undefined : nextPage
       })
     })
   }
+
+  // Update the fetch size in the URL (triggers loader refetch).
+  const setFetchSize = useCallback(
+    (size: number) => {
+      navigate({
+        search: (prev) => ({
+          ...(prev as SearchRecord),
+          [pageKey]: undefined, // reset to first page when fetch size changes
+          [pageSizeKey]: size === defaultPageSize ? undefined : size
+        })
+      })
+    },
+    [navigate, pageKey, pageSizeKey, defaultPageSize]
+  )
 
   const [globalFilter, setGlobalFilter] = useState<string | undefined>(() => {
     if (!globalFilterEnabled) return undefined
@@ -190,6 +211,8 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
     onColumnFiltersChange,
     pagination,
     onPaginationChange,
-    ensurePageInRange
+    ensurePageInRange,
+    fetchSize,
+    setFetchSize
   }
 }

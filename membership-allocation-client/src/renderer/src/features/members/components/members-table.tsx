@@ -47,7 +47,9 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
     onColumnFiltersChange,
     pagination,
     onPaginationChange,
-    ensurePageInRange
+    ensurePageInRange,
+    fetchSize,
+    setFetchSize
   } = useTableUrlState({
     search,
     navigate,
@@ -60,17 +62,10 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
     ]
   })
 
-  const safePageCount = Math.max(pageCount, 1)
-
-  // Client-side safety net: if the API returns more rows than the page size,
-  // slice to the correct page to ensure pagination displays correctly.
-  const safeData = React.useMemo(
-    () => (data.length > pagination.pageSize ? data.slice(0, pagination.pageSize) : data),
-    [data, pagination.pageSize]
-  )
+  const displayPageCount = Math.max(Math.ceil(data.length / pagination.pageSize), 1)
 
   const table = useReactTable({
-    data: safeData,
+    data,
     columns,
     state: {
       sorting,
@@ -81,7 +76,7 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
     },
     enableRowSelection: true,
     manualPagination: true,
-    pageCount: safePageCount,
+    pageCount: displayPageCount,
     onPaginationChange,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -107,8 +102,8 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
   }, [selectionResetKey, table, setSelectedRows])
 
   React.useEffect(() => {
-    ensurePageInRange(safePageCount)
-  }, [ensurePageInRange, safePageCount])
+    ensurePageInRange(displayPageCount)
+  }, [ensurePageInRange, displayPageCount])
 
   return (
     <div className="space-y-4">
@@ -163,7 +158,7 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} fetchSize={fetchSize} onFetchSizeChange={setFetchSize} />
     </div>
   )
 }
