@@ -20,6 +20,9 @@ type UseTableUrlStateParams = {
     defaultPage?: number
     /** Used only as the default fetch size when the URL has no pageSize param. */
     defaultPageSize?: number
+    /** When true, page index is kept in local state (no URL navigation on page change).
+     *  Only the fetch size (pageSize) is read from / written to the URL. */
+    localPagination?: boolean
   }
   globalFilter?: {
     enabled?: boolean
@@ -72,6 +75,7 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
   const pageSizeKey = paginationCfg?.pageSizeKey ?? ('pageSize' as string)
   const defaultPage = paginationCfg?.defaultPage ?? 1
   const defaultPageSize = paginationCfg?.defaultPageSize ?? 10
+  const localPagination = paginationCfg?.localPagination ?? false
 
   const globalFilterKey = globalFilterCfg?.key ?? ('filter' as string)
   const globalFilterEnabled = globalFilterCfg?.enabled ?? true
@@ -106,32 +110,32 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
     return typeof raw === 'number' ? raw : defaultPageSize
   }, [search, pageSizeKey, defaultPageSize])
 
-  // Display pagination: always fixed at DISPLAY_PAGE_SIZE rows per page.
-  const pagination: PaginationState = useMemo(() => {
+  // Display pagination
+  const [displayPageIndex, setDisplayPageIndex] = useState(() => {
+    if (localPagination) return defaultPage - 1
     const rawPage = (search as SearchRecord)[pageKey]
-    const pageNum = typeof rawPage === 'number' ? rawPage : defaultPage
-    return { pageIndex: Math.max(0, pageNum - 1), pageSize: DISPLAY_PAGE_SIZE }
-  }, [search, pageKey, defaultPage])
+    return typeof rawPage === 'number' ? Math.max(0, rawPage - 1) : defaultPage - 1
+  })
 
-  // Page navigation only (does NOT touch the fetch-size param).
+  const pagination: PaginationState = useMemo(
+    () => ({ pageIndex: displayPageIndex, pageSize: DISPLAY_PAGE_SIZE }),
+    [displayPageIndex]
+  )
+
+  // Page navigation — local only, never touches the URL.
   const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
     const next = typeof updater === 'function' ? updater(pagination) : updater
-    const nextPage = next.pageIndex + 1
-    navigate({
-      search: (prev) => ({
-        ...(prev as SearchRecord),
-        [pageKey]: nextPage <= defaultPage ? undefined : nextPage
-      })
-    })
+    setDisplayPageIndex(next.pageIndex)
   }
 
-  // Update the fetch size in the URL (triggers loader refetch).
+  // Update the fetch size in the URL (triggers loader refetch) and reset to first page.
   const setFetchSize = useCallback(
     (size: number) => {
+      setDisplayPageIndex(0)
       navigate({
         search: (prev) => ({
           ...(prev as SearchRecord),
-          [pageKey]: undefined, // reset to first page when fetch size changes
+          [pageKey]: undefined,
           [pageSizeKey]: size === defaultPageSize ? undefined : size
         })
       })
@@ -150,6 +154,7 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
         const next = typeof updater === 'function' ? updater(globalFilter ?? '') : updater
         const value = trimGlobal ? next.trim() : next
         setGlobalFilter(value)
+        setDisplayPageIndex(0)
         navigate({
           search: (prev) => ({
             ...(prev as SearchRecord),
@@ -163,6 +168,7 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
   const onColumnFiltersChange: OnChangeFn<ColumnFiltersState> = (updater) => {
     const next = typeof updater === 'function' ? updater(columnFilters) : updater
     setColumnFilters(next)
+    setDisplayPageIndex(0)
 
     const patch: Record<string, unknown> = {}
 
@@ -191,16 +197,11 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
     pageCount: number,
     opts: { resetTo?: 'first' | 'last' } = { resetTo: 'first' }
   ) => {
-    const currentPage = (search as SearchRecord)[pageKey]
-    const pageNum = typeof currentPage === 'number' ? currentPage : defaultPage
-    if (pageCount > 0 && pageNum > pageCount) {
-      navigate({
-        replace: true,
-        search: (prev) => ({
-          ...(prev as SearchRecord),
-          [pageKey]: opts.resetTo === 'last' ? pageCount : undefined
-        })
-      })
+    const currentPageIdx = displayPageIndex
+    const currentPageNum = currentPageIdx + 1
+    if (pageCount > 0 && currentPageNum > pageCount) {
+      const newPageIndex = opts.resetTo === 'last' ? pageCount - 1 : 0
+      setDisplayPageIndex(newPageIndex)
     }
   }
 

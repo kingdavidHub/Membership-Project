@@ -71,7 +71,7 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
   } = useTableUrlState({
     search,
     navigate,
-    pagination: { defaultPage: 1, defaultPageSize: 10 },
+    pagination: { defaultPage: 1, defaultPageSize: 10, localPagination: true },
     globalFilter: { enabled: false },
     columnFilters: [
       // name per-column text filter

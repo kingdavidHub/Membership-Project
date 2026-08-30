@@ -35,7 +35,7 @@ export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
   const { pagination, onPaginationChange, ensurePageInRange, fetchSize, setFetchSize } = useTableUrlState({
     search: route.useSearch(),
     navigate: route.useNavigate(),
-    pagination: { defaultPage: 1, defaultPageSize: 10 },
+    pagination: { defaultPage: 1, defaultPageSize: 10, localPagination: true },
     globalFilter: { enabled: false }
   })
 
