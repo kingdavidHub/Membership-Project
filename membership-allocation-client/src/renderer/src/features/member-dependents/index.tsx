@@ -20,7 +20,8 @@ import { IsUserOnline } from '@/components/is-user-online'
 const route = getRouteApi('/_authenticated/member/dependents')
 
 export function MemberDependents() {
-  route.useSearch()
+  const search = route.useSearch()
+  const navigate = route.useNavigate()
   const { userProfile, isLoading: isProfileLoading } = useUserProfile()
   const memberProfile = userProfile?.member
   const memberId = memberProfile?._id
@@ -98,7 +99,7 @@ export function MemberDependents() {
           <DependentsPrimaryButtons />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <DependentsTable data={dependents} columns={columns} />
+          <DependentsTable data={dependents} columns={columns} search={search} navigate={navigate} />
         </div>
       </Main>
       <DependentsDialogs />

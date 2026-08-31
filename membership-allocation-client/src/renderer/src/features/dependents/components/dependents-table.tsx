@@ -13,9 +13,8 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { getRouteApi } from '@tanstack/react-router'
 import { Trash2 } from 'lucide-react'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
+import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
 import {
   Table,
   TableBody,
@@ -30,14 +29,14 @@ import { type Dependent } from '../data/schema'
 import { useDependents } from './dependents-provider'
 import { DependentsViewDialog } from './dependents-view-dialog'
 
-const route = getRouteApi('/_authenticated/members/$memberId/dependents')
-
 type DependentsTableProps = {
   columns: ColumnDef<Dependent>[]
   data: Dependent[]
+  search: Record<string, unknown>
+  navigate: NavigateFn
 }
 
-export function DependentsTable({ columns, data }: DependentsTableProps) {
+export function DependentsTable({ columns, data, search, navigate }: DependentsTableProps) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -52,8 +51,8 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
     displayPageSize,
     setDisplayPageSize
   } = useTableUrlState({
-    search: route.useSearch(),
-    navigate: route.useNavigate(),
+    search,
+    navigate,
     pagination: { defaultPage: 1, defaultPageSize: 10, localPagination: true },
     globalFilter: { enabled: false },
     columnFilters: [

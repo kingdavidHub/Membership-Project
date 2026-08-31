@@ -38,7 +38,8 @@ type MembersTableProps = {
   navigate: NavigateFn
 }
 
-export function MembersTable({ columns, data, search, navigate }: MembersTableProps) {
+export function MembersTable({ columns, data, search, navigate, _pageCount }: MembersTableProps) {
+  void _pageCount
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [sorting, setSorting] = React.useState<SortingState>([])

@@ -29,7 +29,8 @@ type MemberPaymentsTableProps = {
   pageCount: number
 }
 
-export function PaymentsTable({ data }: MemberPaymentsTableProps) {
+export function PaymentsTable({ data, _pageCount }: MemberPaymentsTableProps) {
+  void _pageCount
   const [sorting, setSorting] = useState<SortingState>([])
 
   const { pagination, onPaginationChange, ensurePageInRange, fetchSize, setFetchSize, displayPageSize, setDisplayPageSize } = useTableUrlState({

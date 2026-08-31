@@ -22,6 +22,7 @@ const route = getRouteApi('/_authenticated/members/$memberId/dependents')
 export function Dependents() {
   const { memberId } = route.useParams()
   const navigate = useNavigate()
+  const search = route.useSearch()
   const storeData = useDependentsNavigationStore((s) => s.data)
 
   // If the store has no data (e.g. direct URL access), redirect back to members
@@ -77,7 +78,7 @@ export function Dependents() {
           <DependentsPrimaryButtons />
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <DependentsTable data={dependents} columns={columns} />
+          <DependentsTable data={dependents} columns={columns} search={search} navigate={navigate} />
         </div>
       </Main>
 
