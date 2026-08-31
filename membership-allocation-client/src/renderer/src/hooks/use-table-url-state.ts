@@ -8,9 +8,6 @@ export type NavigateFn = (opts: {
   replace?: boolean
 }) => void
 
-/** Display page size is always 10 – the dropdown only controls the API fetch limit. */
-const DISPLAY_PAGE_SIZE = 10
-
 type UseTableUrlStateParams = {
   search: SearchRecord
   navigate: NavigateFn
@@ -18,10 +15,7 @@ type UseTableUrlStateParams = {
     pageKey?: string
     pageSizeKey?: string
     defaultPage?: number
-    /** Used only as the default fetch size when the URL has no pageSize param. */
     defaultPageSize?: number
-    /** When true, page index is kept in local state (no URL navigation on page change).
-     *  Only the fetch size (pageSize) is read from / written to the URL. */
     localPagination?: boolean
   }
   globalFilter?: {
@@ -52,15 +46,18 @@ type UseTableUrlStateReturn = {
   onGlobalFilterChange?: OnChangeFn<string>
   columnFilters: ColumnFiltersState
   onColumnFiltersChange: OnChangeFn<ColumnFiltersState>
-  /** Always uses the fixed display page size (10). */
   pagination: PaginationState
   onPaginationChange: OnChangeFn<PaginationState>
   ensurePageInRange: (pageCount: number, opts?: { resetTo?: 'first' | 'last' }) => void
-  /** The current fetch size (from the URL's pageSize param). */
+  /** Fetch size from the URL – how many records the API returns. */
   fetchSize: number
-  /** Update the fetch size in the URL (triggers a loader refetch). */
   setFetchSize: (size: number) => void
+  /** Display page size – how many rows the table shows per page (user-controlled). */
+  displayPageSize: number
+  setDisplayPageSize: (size: number) => void
 }
+
+const DEFAULT_DISPLAY_PAGE_SIZE = 10
 
 export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlStateReturn {
   const {
@@ -81,7 +78,6 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
   const globalFilterEnabled = globalFilterCfg?.enabled ?? true
   const trimGlobal = globalFilterCfg?.trim ?? true
 
-  // Build initial column filters from the current search params
   const initialColumnFilters: ColumnFiltersState = useMemo(() => {
     const collected: ColumnFiltersState = []
     for (const cfg of columnFiltersCfg) {
@@ -110,7 +106,10 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
     return typeof raw === 'number' ? raw : defaultPageSize
   }, [search, pageSizeKey, defaultPageSize])
 
-  // Display pagination
+  // Display page size: how many rows to show per page (user-controlled via dropdown).
+  const [displayPageSize, setDisplayPageSizeState] = useState(DEFAULT_DISPLAY_PAGE_SIZE)
+
+  // Display page index: local state, never touches URL.
   const [displayPageIndex, setDisplayPageIndex] = useState(() => {
     if (localPagination) return defaultPage - 1
     const rawPage = (search as SearchRecord)[pageKey]
@@ -118,8 +117,8 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
   })
 
   const pagination: PaginationState = useMemo(
-    () => ({ pageIndex: displayPageIndex, pageSize: DISPLAY_PAGE_SIZE }),
-    [displayPageIndex]
+    () => ({ pageIndex: displayPageIndex, pageSize: displayPageSize }),
+    [displayPageIndex, displayPageSize]
   )
 
   // Page navigation — local only, never touches the URL.
@@ -142,6 +141,12 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
     },
     [navigate, pageKey, pageSizeKey, defaultPageSize]
   )
+
+  // Update display page size and reset to first page.
+  const setDisplayPageSize = useCallback((size: number) => {
+    setDisplayPageSizeState(size)
+    setDisplayPageIndex(0)
+  }, [])
 
   const [globalFilter, setGlobalFilter] = useState<string | undefined>(() => {
     if (!globalFilterEnabled) return undefined
@@ -197,8 +202,7 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
     pageCount: number,
     opts: { resetTo?: 'first' | 'last' } = { resetTo: 'first' }
   ) => {
-    const currentPageIdx = displayPageIndex
-    const currentPageNum = currentPageIdx + 1
+    const currentPageNum = displayPageIndex + 1
     if (pageCount > 0 && currentPageNum > pageCount) {
       const newPageIndex = opts.resetTo === 'last' ? pageCount - 1 : 0
       setDisplayPageIndex(newPageIndex)
@@ -214,6 +218,8 @@ export function useTableUrlState(params: UseTableUrlStateParams): UseTableUrlSta
     onPaginationChange,
     ensurePageInRange,
     fetchSize,
-    setFetchSize
+    setFetchSize,
+    displayPageSize,
+    setDisplayPageSize
   }
 }

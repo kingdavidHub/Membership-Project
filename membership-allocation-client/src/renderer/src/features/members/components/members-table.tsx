@@ -49,7 +49,9 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
     onPaginationChange,
     ensurePageInRange,
     fetchSize,
-    setFetchSize
+    setFetchSize,
+    displayPageSize,
+    setDisplayPageSize
   } = useTableUrlState({
     search,
     navigate,
@@ -164,7 +166,7 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} fetchSize={fetchSize} onFetchSizeChange={setFetchSize} />
+      <DataTablePagination table={table} fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} />
     </div>
   )
 }

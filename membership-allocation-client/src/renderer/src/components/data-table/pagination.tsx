@@ -15,31 +15,33 @@ import {
   SelectValue
 } from '@/components/ui/select'
 
+const ROWS_PER_PAGE_OPTIONS = [10, 20, 40]
+const FETCH_SIZE_OPTIONS = [10, 20, 30, 40, 50]
+
 type DataTablePaginationProps<TData> = {
   table: Table<TData>
   className?: string
-  /** When provided the dropdown controls the API fetch size via this
-   *  callback instead of calling table.setPageSize().  The table's
-   *  internal pageSize stays unchanged (always 10 for display). */
-  onFetchSizeChange?: (newSize: number) => void
-  /** Current fetch size shown in the dropdown (only used with onFetchSizeChange). */
+  /** API fetch size – how many records to request. */
   fetchSize?: number
+  onFetchSizeChange?: (newSize: number) => void
+  /** Display page size – how many rows to show per page. */
+  displayPageSize?: number
+  onDisplayPageSizeChange?: (size: number) => void
 }
 
 export function DataTablePagination<TData>({
   table,
   className,
+  fetchSize,
   onFetchSizeChange,
-  fetchSize
+  displayPageSize,
+  onDisplayPageSizeChange
 }: DataTablePaginationProps<TData>) {
   const currentPage = table.getState().pagination.pageIndex + 1
   const totalPages = table.getPageCount()
   const pageNumbers = getPageNumbers(currentPage, totalPages)
 
-  const displayPageSize = table.getState().pagination.pageSize
-  const dropdownValue = onFetchSizeChange
-    ? `${fetchSize ?? displayPageSize}`
-    : `${displayPageSize}`
+  const rowsValue = displayPageSize ?? table.getState().pagination.pageSize
 
   return (
     <div
@@ -54,30 +56,52 @@ export function DataTablePagination<TData>({
         <div className="flex w-[100px] items-center justify-center text-sm font-medium @2xl/content:hidden">
           Page {currentPage} of {totalPages}
         </div>
-        <div className="flex items-center gap-2 @max-2xl/content:flex-row-reverse">
-          <Select
-            value={dropdownValue}
-            onValueChange={(value) => {
-              const newSize = Number(value)
-              if (onFetchSizeChange) {
-                onFetchSizeChange(newSize)
-              } else {
-                table.setPageSize(newSize)
-              }
-            }}
-          >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={dropdownValue} />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <p className="hidden text-sm font-medium sm:block">Fetching</p>
+        <div className="flex items-center gap-3 @max-2xl/content:flex-row-reverse">
+          {/* Rows per page dropdown */}
+          <div className="flex items-center gap-2">
+            <Select
+              value={`${rowsValue}`}
+              onValueChange={(value) => {
+                onDisplayPageSizeChange?.(Number(value))
+              }}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue placeholder={`${rowsValue}`} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {ROWS_PER_PAGE_OPTIONS.map((size) => (
+                  <SelectItem key={size} value={`${size}`}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="hidden text-sm font-medium sm:block">Rows per page</p>
+          </div>
+
+          {/* Fetching dropdown */}
+          {onFetchSizeChange && (
+            <div className="flex items-center gap-2">
+              <Select
+                value={`${fetchSize ?? 10}`}
+                onValueChange={(value) => {
+                  onFetchSizeChange(Number(value))
+                }}
+              >
+                <SelectTrigger className="h-8 w-[70px]">
+                  <SelectValue placeholder={`${fetchSize ?? 10}`} />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {FETCH_SIZE_OPTIONS.map((size) => (
+                    <SelectItem key={size} value={`${size}`}>
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="hidden text-sm font-medium sm:block">Fetching</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -105,7 +129,6 @@ export function DataTablePagination<TData>({
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
 
-          {/* Page number buttons */}
           {pageNumbers.map((pageNumber, index) => (
             <div key={`${pageNumber}-${index}`} className="flex items-center">
               {pageNumber === '...' ? (

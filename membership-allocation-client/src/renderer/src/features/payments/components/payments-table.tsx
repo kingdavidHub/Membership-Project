@@ -32,7 +32,7 @@ type PaymentsTableProps = {
 export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const { pagination, onPaginationChange, ensurePageInRange, fetchSize, setFetchSize } = useTableUrlState({
+  const { pagination, onPaginationChange, ensurePageInRange, fetchSize, setFetchSize, displayPageSize, setDisplayPageSize } = useTableUrlState({
     search: route.useSearch(),
     navigate: route.useNavigate(),
     pagination: { defaultPage: 1, defaultPageSize: 10, localPagination: true },
@@ -104,7 +104,7 @@ export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} />
+      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} />
     </div>
   )
 }

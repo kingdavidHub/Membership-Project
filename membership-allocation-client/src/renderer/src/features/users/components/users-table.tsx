@@ -67,7 +67,9 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
     onPaginationChange,
     ensurePageInRange,
     fetchSize,
-    setFetchSize
+    setFetchSize,
+    displayPageSize,
+    setDisplayPageSize
   } = useTableUrlState({
     search,
     navigate,
@@ -224,7 +226,7 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} />
+      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} />
       <DataTableBulkActions table={table} />
     </div>
   )
