@@ -3,13 +3,11 @@ import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTableFacetedFilter } from './faceted-filter'
-import { DataTableViewOptions } from './view-options'
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>
   searchPlaceholder?: string
   searchKey?: string
-  viewOptionsPlacement?: 'left' | 'right'
   leftExtra?: React.ReactNode
   rightExtra?: React.ReactNode
   filters?: {
@@ -29,7 +27,6 @@ export function DataTableToolbar<TData>({
   searchPlaceholder = 'Filter...',
   searchKey,
   filters = [],
-  viewOptionsPlacement = 'right',
   leftExtra,
   rightExtra
 }: DataTableToolbarProps<TData>) {
@@ -69,9 +66,9 @@ export function DataTableToolbar<TData>({
           })}
           {leftExtra}
         </div>
-        {viewOptionsPlacement === 'left' && !leftExtra && <DataTableViewOptions table={table} align="left" />}
       </div>
       <div className="flex items-center gap-2">
+        {rightExtra}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -85,8 +82,6 @@ export function DataTableToolbar<TData>({
             <Cross2Icon className="ms-2 h-4 w-4" />
           </Button>
         )}
-        {rightExtra}
-        {!rightExtra && viewOptionsPlacement === 'right' && <DataTableViewOptions table={table} />}
       </div>
     </div>
   )
