@@ -82,11 +82,28 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
     ]
   })
 
-  // Client-side slice: show only the current page's rows.
-  // The API returns all fetched records; pagination is purely visual.
+  // Filter the full data BEFORE slicing for pagination.
+  // This ensures column filters work across all fetched records.
+  const filteredData = useMemo(() => {
+    if (columnFilters.length === 0) return data
+    return data.filter((row) => {
+      return columnFilters.every((filter) => {
+        const value = row[filter.id as keyof typeof row]
+        if (Array.isArray(filter.value)) {
+          return filter.value.length === 0 || filter.value.includes(value as never)
+        }
+        if (typeof filter.value === 'string') {
+          return !filter.value || String(value).toLowerCase().includes(filter.value.toLowerCase())
+        }
+        return true
+      })
+    })
+  }, [data, columnFilters])
+
+  // Slice the filtered data for the current page.
   const safeData = useMemo(
-    () => data.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
-    [data, pagination.pageIndex, pagination.pageSize]
+    () => filteredData.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
+    [filteredData, pagination.pageIndex, pagination.pageSize]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -97,12 +114,10 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
       sorting,
       pagination,
       rowSelection,
-      columnFilters,
       columnVisibility
     },
-    // Server-side pagination
     manualPagination: true,
-    pageCount: Math.ceil(data.length / pagination.pageSize),
+    pageCount: Math.ceil(filteredData.length / pagination.pageSize),
     enableRowSelection: true,
     onPaginationChange,
     onColumnFiltersChange,

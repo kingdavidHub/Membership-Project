@@ -64,13 +64,30 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
     ]
   })
 
-  const displayPageCount = Math.max(Math.ceil(data.length / pagination.pageSize), 1)
+  // Filter the full data BEFORE slicing for pagination.
+  const filteredData = React.useMemo(() => {
+    if (columnFilters.length === 0) return data
+    return data.filter((row) => {
+      return columnFilters.every((filter) => {
+        const value = row[filter.id as keyof typeof row]
+        if (Array.isArray(filter.value)) {
+          return filter.value.length === 0 || filter.value.includes(value as never)
+        }
+        if (typeof filter.value === 'string') {
+          return !filter.value || String(value).toLowerCase().includes(filter.value.toLowerCase())
+        }
+        return true
+      })
+    })
+  }, [data, columnFilters])
 
-  // Client-side slice: show only the current page's rows.
+  // Slice the filtered data for the current page.
   const safeData = React.useMemo(
-    () => data.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
-    [data, pagination.pageIndex, pagination.pageSize]
+    () => filteredData.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
+    [filteredData, pagination.pageIndex, pagination.pageSize]
   )
+
+  const displayPageCount = Math.max(Math.ceil(filteredData.length / pagination.pageSize), 1)
 
   const table = useReactTable({
     data: safeData,
@@ -79,8 +96,7 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
       sorting,
       pagination,
       columnVisibility,
-      rowSelection,
-      columnFilters
+      rowSelection
     },
     enableRowSelection: true,
     manualPagination: true,
