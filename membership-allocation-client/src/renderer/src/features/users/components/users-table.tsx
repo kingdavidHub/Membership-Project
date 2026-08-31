@@ -33,6 +33,7 @@ import { UsersViewDialog } from './users-view-dialog'
 type DataTableProps = {
   data: User[]
   totalCount: number
+  _totalCount?: number
   search: Record<string, unknown>
   navigate: NavigateFn
 }

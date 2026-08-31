@@ -27,6 +27,7 @@ const route = getRouteApi('/_authenticated/members/$memberId/payments')
 type PaymentsTableProps = {
   data: Payment[]
   pageCount: number
+  _pageCount?: number
 }
 
 export function PaymentsTable({ data, _pageCount }: PaymentsTableProps) {

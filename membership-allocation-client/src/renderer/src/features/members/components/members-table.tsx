@@ -34,6 +34,7 @@ type MembersTableProps = {
   columns: ColumnDef<Member>[]
   data: Member[]
   pageCount: number
+  _pageCount?: number
   search: Record<string, unknown>
   navigate: NavigateFn
 }
