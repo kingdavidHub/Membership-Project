@@ -10,7 +10,6 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
@@ -27,7 +26,6 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { DependentsViewDialog } from './dependents-view-dialog'
 import { type Dependent } from '../data/schema'
 import { useDependents } from './dependents-provider'
 
@@ -49,28 +47,57 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
     onColumnFiltersChange,
     pagination,
     onPaginationChange,
-    ensurePageInRange
+    ensurePageInRange,
+    displayPageSize,
+    setDisplayPageSize
   } = useTableUrlState({
     search: route.useSearch(),
     navigate: route.useNavigate(),
-    pagination: { defaultPage: 1, defaultPageSize: 10 },
+    pagination: { defaultPage: 1, defaultPageSize: 10, localPagination: true },
     globalFilter: { enabled: false },
     columnFilters: [
       { columnId: 'firstName', searchKey: 'firstName', type: 'string' }
     ]
   })
 
+  // Filter the full data BEFORE slicing for pagination.
+  const filteredData = React.useMemo(() => {
+    if (columnFilters.length === 0) return data
+    return data.filter((row) => {
+      return columnFilters.every((filter) => {
+        const value = row[filter.id as keyof typeof row]
+        if (Array.isArray(filter.value)) {
+          return filter.value.length === 0 || filter.value.includes(value as never)
+        }
+        if (typeof filter.value === 'string') {
+          return !filter.value || String(value).toLowerCase().includes(filter.value.toLowerCase())
+        }
+        return true
+      })
+    })
+  }, [data, columnFilters])
+
+  // Slice the filtered data for the current page.
+  const safeData = React.useMemo(
+    () => filteredData.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
+    [filteredData, pagination.pageIndex, pagination.pageSize]
+  )
+
+  const displayPageCount = Math.max(Math.ceil(filteredData.length / pagination.pageSize), 1)
+
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     state: {
       sorting,
       pagination,
+      columnFilters,
       columnVisibility,
-      rowSelection,
-      columnFilters
+      rowSelection
     },
     enableRowSelection: true,
+    manualPagination: true,
+    pageCount: displayPageCount,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange,
@@ -78,16 +105,14 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
     onPaginationChange,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues()
   })
 
-  const pageCount = table.getPageCount()
   React.useEffect(() => {
-    ensurePageInRange(pageCount)
-  }, [pageCount, ensurePageInRange])
+    ensurePageInRange(displayPageCount)
+  }, [ensurePageInRange, displayPageCount])
 
   const selectedRowsData = table.getFilteredSelectedRowModel().rows
 
@@ -100,7 +125,6 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
             filters={[]}
             searchKey="firstName"
             searchPlaceholder="Filter dependents..."
-            leftExtra={<DependentsViewDialog table={table} />}
           />
         </div>
         {selectedRowsData.length > 0 && (
@@ -160,7 +184,7 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} />
     </div>
   )
 }
