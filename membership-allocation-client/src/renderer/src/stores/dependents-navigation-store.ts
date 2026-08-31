@@ -19,6 +19,7 @@ interface MemberDependentsData {
 interface DependentsNavigationState {
   data: MemberDependentsData | null
   setData: (data: MemberDependentsData) => void
+  removeDependent: (dependentId: string) => void
   clear: () => void
 }
 
@@ -29,5 +30,14 @@ interface DependentsNavigationState {
 export const useDependentsNavigationStore = create<DependentsNavigationState>()((set) => ({
   data: null,
   setData: (data) => set({ data }),
+  removeDependent: (dependentId: string) =>
+    set((state) => ({
+      data: state.data
+        ? {
+            ...state.data,
+            dependents: state.data.dependents.filter((d) => d._id !== dependentId)
+          }
+        : null
+    })),
   clear: () => set({ data: null })
 }))
