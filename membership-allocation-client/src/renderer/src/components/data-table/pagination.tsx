@@ -99,7 +99,7 @@ export function DataTablePagination<TData>({
                   ))}
                 </SelectContent>
               </Select>
-              <p className="hidden text-sm font-medium sm:block">Fetching</p>
+              <p className="hidden text-sm font-medium sm:block">Load</p>
             </div>
           )}
         </div>
