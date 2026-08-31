@@ -30,7 +30,7 @@ export function Payments() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const hasMemberContext = !!storeData && storeData.memberId === memberId
   const page = search.page || 1
-  const pageSize = search.pageSize || 10
+  const pageSize = search.pageSize ?? 10
 
   const { data: paymentsResponse, isPending } = useQuery({
     queryKey: ['member-payments', memberId, page, pageSize],

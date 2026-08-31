@@ -28,7 +28,7 @@ export const Route = createFileRoute('/_authenticated/users/')({
   loader: async ({ deps }) => {
     // Get page and limit from search params, default to page 1 and limit 10
     const page = deps.page || 1
-    const limit = deps.pageSize || 10
+    const limit = deps.pageSize ?? 10
 
     const usersResponse =
       deps.scope === 'unregistered'

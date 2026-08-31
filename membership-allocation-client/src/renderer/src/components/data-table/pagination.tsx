@@ -16,7 +16,8 @@ import {
 } from '@/components/ui/select'
 
 const ROWS_PER_PAGE_OPTIONS = [10, 20, 40]
-const FETCH_SIZE_OPTIONS = [10, 20, 30, 40, 50]
+const FETCH_SIZE_OPTIONS = [0, 10, 20, 30, 40, 50]
+const ALL_VALUE = 'all'
 
 type DataTablePaginationProps<TData> = {
   table: Table<TData>
@@ -85,23 +86,24 @@ export function DataTablePagination<TData>({
           {/* Fetching dropdown */}
           {onFetchSizeChange && (
             <div className="flex items-center gap-2">
-              <Select
-                value={`${fetchSize ?? 10}`}
-                onValueChange={(value) => {
-                  onFetchSizeChange(Number(value))
-                }}
-              >
-                <SelectTrigger className="h-8 w-[70px]">
-                  <SelectValue placeholder={`${fetchSize ?? 10}`} />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {FETCH_SIZE_OPTIONS.map((size) => (
-                    <SelectItem key={size} value={`${size}`}>
-                      {size}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <Select
+              value={fetchSize === 0 ? ALL_VALUE : `${fetchSize}`}
+              onValueChange={(value) => {
+                onFetchSizeChange(value === ALL_VALUE ? 0 : Number(value))
+              }}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue placeholder={fetchSize === 0 ? 'All' : `${fetchSize}`} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                <SelectItem value={ALL_VALUE}>All</SelectItem>
+                {FETCH_SIZE_OPTIONS.filter((s) => s > 0).map((size) => (
+                  <SelectItem key={size} value={`${size}`}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
               <p className="hidden text-sm font-medium sm:block">{loadLabel}</p>
             </div>
           )}

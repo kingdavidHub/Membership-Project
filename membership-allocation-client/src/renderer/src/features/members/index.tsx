@@ -37,7 +37,7 @@ export function Members() {
   }))
 
   const totalResults = membersResponse?.results || 0
-  const pageSize = search.pageSize || 10
+  const pageSize = search.pageSize ?? 10
   const pageCount = Math.ceil(totalResults / pageSize)
 
   return (

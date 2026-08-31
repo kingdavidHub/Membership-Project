@@ -37,8 +37,8 @@ export const Route = createFileRoute('/_authenticated/members/')({
   }),
   loader: async ({ deps }) => {
     const membersResponse = await membersService.getMembers(
-      deps.page || 1,
-      deps.pageSize || 10,
+      deps.page ?? 1,
+      deps.pageSize ?? 10,
       deps.memberStatus
     )
     return { membersResponse }
