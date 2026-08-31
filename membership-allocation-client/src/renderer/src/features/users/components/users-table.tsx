@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Cross2Icon } from '@radix-ui/react-icons'
 import {
   type SortingState,
   type VisibilityState,
@@ -160,10 +161,24 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
             table={table}
             searchPlaceholder="Filter users..."
             searchKey="name"
+            showResetButton={false}
             leftExtra={
               <>
                 <UsersRoleFilter table={table} />
                 <UsersViewDialog table={table} />
+                {table.getState().columnFilters.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      table.resetColumnFilters()
+                      table.setGlobalFilter('')
+                    }}
+                    className="h-8 px-2 lg:px-3"
+                  >
+                    Reset
+                    <Cross2Icon className="ms-2 h-4 w-4" />
+                  </Button>
+                )}
               </>
             }
           />

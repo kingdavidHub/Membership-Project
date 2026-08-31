@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { Cross2Icon } from '@radix-ui/react-icons'
 import {
   ColumnDef,
   SortingState,
@@ -22,6 +23,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { useMembers } from './members-provider'
 import { type Member } from '../data/schema'
@@ -137,10 +139,24 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
           table={table}
           searchKey="name"
           searchPlaceholder="Filter members..."
-          rightExtra={
+          showResetButton={false}
+          leftExtra={
             <>
               <MembersAttributeDialog table={table} />
               <MembersViewDialog table={table} />
+              {table.getState().columnFilters.length > 0 && (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    table.resetColumnFilters()
+                    table.setGlobalFilter('')
+                  }}
+                  className="h-8 px-2 lg:px-3"
+                >
+                  Reset
+                  <Cross2Icon className="ms-2 h-4 w-4" />
+                </Button>
+              )}
             </>
           }
         />

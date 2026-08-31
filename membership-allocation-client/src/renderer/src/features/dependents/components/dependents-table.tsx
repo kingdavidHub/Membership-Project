@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { type Dependent } from '../data/schema'
 import { useDependents } from './dependents-provider'
+import { DependentsViewDialog } from './dependents-view-dialog'
 
 const route = getRouteApi('/_authenticated/members/$memberId/dependents')
 
@@ -125,6 +126,7 @@ export function DependentsTable({ columns, data }: DependentsTableProps) {
             filters={[]}
             searchKey="firstName"
             searchPlaceholder="Filter dependents..."
+            leftExtra={<DependentsViewDialog table={table} />}
           />
         </div>
         {selectedRowsData.length > 0 && (

@@ -10,6 +10,7 @@ type DataTableToolbarProps<TData> = {
   searchKey?: string
   leftExtra?: React.ReactNode
   rightExtra?: React.ReactNode
+  showResetButton?: boolean
   filters?: {
     columnId: string
     title: string
@@ -28,9 +29,24 @@ export function DataTableToolbar<TData>({
   searchKey,
   filters = [],
   leftExtra,
-  rightExtra
+  rightExtra,
+  showResetButton = false
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0 || table.getState().globalFilter
+
+  const resetButton = showResetButton && isFiltered ? (
+    <Button
+      variant="ghost"
+      onClick={() => {
+        table.resetColumnFilters()
+        table.setGlobalFilter('')
+      }}
+      className="h-8 px-2 lg:px-3"
+    >
+      Reset
+      <Cross2Icon className="ms-2 h-4 w-4" />
+    </Button>
+  ) : null
 
   return (
     <div className="flex items-center justify-between">
@@ -65,23 +81,11 @@ export function DataTableToolbar<TData>({
             )
           })}
           {leftExtra}
+          {resetButton}
         </div>
       </div>
       <div className="flex items-center gap-2">
         {rightExtra}
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => {
-              table.resetColumnFilters()
-              table.setGlobalFilter('')
-            }}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-            <Cross2Icon className="ms-2 h-4 w-4" />
-          </Button>
-        )}
       </div>
     </div>
   )
