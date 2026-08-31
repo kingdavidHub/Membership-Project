@@ -70,6 +70,8 @@ export function DataTableToolbar<TData>({
           {leftExtra}
         </div>
         {viewOptionsPlacement === 'left' && !leftExtra && <DataTableViewOptions table={table} align="left" />}
+      </div>
+      <div className="flex items-center gap-2">
         {isFiltered && (
           <Button
             variant="ghost"
@@ -83,13 +85,9 @@ export function DataTableToolbar<TData>({
             <Cross2Icon className="ms-2 h-4 w-4" />
           </Button>
         )}
+        {rightExtra}
+        {!rightExtra && viewOptionsPlacement === 'right' && <DataTableViewOptions table={table} />}
       </div>
-      {!leftExtra && viewOptionsPlacement === 'right' && (
-        <div className="flex items-center gap-2">
-          {rightExtra}
-          {!rightExtra && <DataTableViewOptions table={table} />}
-        </div>
-      )}
     </div>
   )
 }
