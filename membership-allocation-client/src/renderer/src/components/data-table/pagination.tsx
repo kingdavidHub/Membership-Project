@@ -27,6 +27,8 @@ type DataTablePaginationProps<TData> = {
   /** Display page size – how many rows to show per page. */
   displayPageSize?: number
   onDisplayPageSizeChange?: (size: number) => void
+  /** Label for the fetch size dropdown, e.g. "Load users". */
+  loadLabel?: string
 }
 
 export function DataTablePagination<TData>({
@@ -35,7 +37,8 @@ export function DataTablePagination<TData>({
   fetchSize,
   onFetchSizeChange,
   displayPageSize,
-  onDisplayPageSizeChange
+  onDisplayPageSizeChange,
+  loadLabel = 'Load'
 }: DataTablePaginationProps<TData>) {
   const currentPage = table.getState().pagination.pageIndex + 1
   const totalPages = table.getPageCount()
@@ -99,7 +102,7 @@ export function DataTablePagination<TData>({
                   ))}
                 </SelectContent>
               </Select>
-              <p className="hidden text-sm font-medium sm:block">Load</p>
+              <p className="hidden text-sm font-medium sm:block">{loadLabel}</p>
             </div>
           )}
         </div>

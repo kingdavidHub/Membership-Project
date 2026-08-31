@@ -166,7 +166,7 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} />
+      <DataTablePagination table={table} fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} loadLabel="Load members" />
     </div>
   )
 }

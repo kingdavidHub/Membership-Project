@@ -104,7 +104,7 @@ export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} />
+      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} loadLabel="Load payments" />
     </div>
   )
 }

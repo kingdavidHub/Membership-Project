@@ -226,7 +226,7 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} />
+      <DataTablePagination table={table} className="mt-auto" fetchSize={fetchSize} onFetchSizeChange={setFetchSize} displayPageSize={displayPageSize} onDisplayPageSizeChange={setDisplayPageSize} loadLabel="Load users" />
       <DataTableBulkActions table={table} />
     </div>
   )
