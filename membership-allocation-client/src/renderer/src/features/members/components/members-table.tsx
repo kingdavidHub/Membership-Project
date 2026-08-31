@@ -95,6 +95,7 @@ export function MembersTable({ columns, data, pageCount, search, navigate }: Mem
     state: {
       sorting,
       pagination,
+      columnFilters,
       columnVisibility,
       rowSelection
     },

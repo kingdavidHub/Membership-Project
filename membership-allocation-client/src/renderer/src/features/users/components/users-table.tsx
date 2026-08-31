@@ -114,6 +114,7 @@ export function UsersTable({ data, totalCount, search, navigate }: DataTableProp
       sorting,
       pagination,
       rowSelection,
+      columnFilters,
       columnVisibility
     },
     manualPagination: true,
