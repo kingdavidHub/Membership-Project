@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import {
   type SortingState,
@@ -42,7 +42,7 @@ export function PaymentsTable({ data, pageCount }: PaymentsTableProps) {
   const displayPageCount = Math.max(Math.ceil(data.length / pagination.pageSize), 1)
 
   // Client-side slice: show only the current page's rows.
-  const safeData = React.useMemo(
+  const safeData = useMemo(
     () => data.slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
     [data, pagination.pageIndex, pagination.pageSize]
   )
