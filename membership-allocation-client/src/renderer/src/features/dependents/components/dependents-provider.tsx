@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Dependent } from '../data/schema'
 
-type DependentsDialogType = 'add' | 'edit' | 'delete' | 'bulk-delete'
+type DependentsDialogType = 'add' | 'edit' | 'bulk-delete'
 
 type DependentsContextType = {
   open: DependentsDialogType | null

@@ -1,7 +1,9 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
+import { useMutation } from '@tanstack/react-query'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -13,9 +15,11 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { DataTableColumnHeader } from '@/components/data-table'
+import { membersService } from '@/api/services'
 import { type Dependent } from '../data/schema'
 import { useDependents } from './dependents-provider'
 import { dependentRelationLabels } from '../data/dependent-relations'
+import { useDependentsNavigationStore } from '@/stores/dependents-navigation-store'
 
 export const columns: ColumnDef<Dependent>[] = [
   {
@@ -83,7 +87,23 @@ export const columns: ColumnDef<Dependent>[] = [
   {
     id: 'actions',
     cell: function CellComponent({ row }) {
-      const { setOpen, setCurrentRow } = useDependents()
+      const { setOpen, setCurrentRow, memberId } = useDependents()
+      const removeDependent = useDependentsNavigationStore((s) => s.removeDependent)
+
+      const deleteMutation = useMutation({
+        mutationFn: async () => {
+          await membersService.deleteDependents(memberId, [row.original._id])
+        },
+        onSuccess: () => {
+          const fullName = `${row.original.firstName} ${row.original.lastName}`
+          toast.success(`Dependent "${fullName}" has been deleted successfully.`)
+          removeDependent(row.original._id)
+        },
+        onError: () => {
+          toast.error('Failed to delete dependent. Please try again.')
+        }
+      })
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -104,14 +124,12 @@ export const columns: ColumnDef<Dependent>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => {
-                setCurrentRow(row.original)
-                setOpen('delete')
-              }}
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
               className="text-destructive focus:text-destructive"
             >
               <Trash2 className="me-2 h-4 w-4" />
-              Delete
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
