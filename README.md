@@ -256,6 +256,101 @@ Application build settings are in `electron-builder.yml`. Configure:
 - **Dormant Members**: Long-term inactive members
 - **Deceased Members**: Memorial records management
 
+## 🌐 Web Deployment (Vercel)
+
+The frontend can also be deployed as a web application on **Vercel**. When deploying, the critical environment variable is `VITE_API_URL`, which tells the frontend where to send API requests.
+
+### Building for Vercel
+
+```bash
+cd membership-allocation-client
+yarn build:vite
+```
+
+---
+
+## 🔴 IMPORTANT: Changing Backend Environment on Vercel
+
+> **This is critical for production deployments.** The `VITE_API_URL` environment variable determines which backend server your deployed frontend connects to. If this is wrong, the app will fail to communicate with the backend.
+
+### Why This Matters
+
+- The frontend is deployed on **Vercel**
+- The backend is deployed separately (e.g., on Render, Railway, or your own server)
+- `VITE_API_URL` tells the frontend **where to send API requests**
+- If you change backend servers, you **MUST** update this variable on Vercel, otherwise the app breaks
+
+### How to Change `VITE_API_URL` on Vercel
+
+#### Step-by-Step Instructions (Vercel Dashboard):
+
+1. **Log in to Vercel**
+   - Go to [https://vercel.com](https://vercel.com)
+   - Sign in with your account (GitHub, GitLab, or email)
+
+2. **Select Your Project**
+   - From the dashboard, click on your **Membership Allocation** project
+
+3. **Open Project Settings**
+   - Click on the **"Settings"** tab at the top of the project page
+
+4. **Navigate to Environment Variables**
+   - In the left sidebar, click **"Environment Variables"**
+
+5. **⚠️ Click on "Production" to See the Environment Variables**
+   - At the top of the Environment Variables section, you will see tabs: **Production**, **Preview**, and **Development**
+   - **Click on "Production"** to view and edit the production environment variables — this is the one that matters for your live app
+   - Make sure you are editing the **Production** tab, not Preview or Development
+
+6. **Find or Add `VITE_API_URL`**
+   - Look for `VITE_API_URL` in the list of variables
+   - **If it exists:** Click the **pencil icon** (✏️) next to it to edit
+   - **If it doesn't exist:** Click **"Add"** to create a new one
+
+7. **Set the Value**
+   - **Key:** `VITE_API_URL`
+   - **Value:** `https://your-new-backend-url.com/api/v1`
+   - **Environments:** Make sure **Production** is checked ✅
+
+8. **Save Changes**
+   - Click **"Save"**
+
+9. **Redeploy Your Application** ⚠️ **This step is mandatory!**
+   - Environment variables are only picked up **during build time**
+   - Go to the **"Deployments"** tab
+   - Click the **"⋯"** (three dots) on the latest deployment
+   - Click **"Redeploy"**
+   - Select **"Redeploy"** (not "Redeploy with existing Build Cache")
+   - Wait for the deployment to complete
+
+> ⚠️ **If you skip the redeploy, your app will still use the OLD environment variable!**
+
+### Common Backend URL Values
+
+| Scenario | `VITE_API_URL` Value |
+|----------|---------------------|
+| Render (Production) | `https://membership-backend-xxxx.onrender.com/api/v1` |
+| Local Backend | `http://localhost:3000/api/v1` |
+| Railway | `https://your-app.up.railway.app/api/v1` |
+| Custom Domain | `https://api.yourdomain.com/api/v1` |
+
+### Troubleshooting
+
+- **"Network Error" in production?** Check Vercel → Settings → Environment Variables → make sure `VITE_API_URL` is correct and assigned to **Production**
+- **Changed the URL but nothing happened?** You **must redeploy** after changing environment variables
+- **CORS errors?** Make sure your backend allows requests from your Vercel domain (e.g., `https://your-app.vercel.app`)
+- **How to verify which backend you're connected to?** Open your deployed app → DevTools (F12) → Network tab → perform an action → check the request URL
+
+### Deployment Checklist
+
+- [ ] Backend is deployed and running
+- [ ] `VITE_API_URL` is set in Vercel with correct backend URL
+- [ ] Backend CORS is configured to allow your Vercel domain
+- [ ] Redeployed the frontend after setting the environment variable
+- [ ] Tested the connection in production
+
+---
+
 ## 🔐 Security Features
 
 - **Role-Based Access Control (RBAC)**: Three-tier permission system
